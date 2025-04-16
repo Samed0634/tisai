@@ -29,7 +29,7 @@ const AppLayout = () => {
           <SidebarHeader className="flex items-center gap-2 px-6 py-5 border-b">
             <div className="flex items-center gap-2">
               <BarChart2 className="h-6 w-6 text-primary-500" />
-              <span className="font-bold text-xl text-secondary-800">Aura Data</span>
+              <span className="font-bold text-xl text-secondary-800">TİS Prosedür</span>
             </div>
           </SidebarHeader>
           

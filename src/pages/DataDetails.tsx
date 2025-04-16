@@ -66,11 +66,11 @@ const DataDetails = () => {
       data = callsData;
       break;
     case "sessions":
-      title = "Haftalık İlk Oturum Tutulması Gereken İşyerleri";
+      title = "Haftalık İlk Oturum Tutulacak İşyerleri";
       data = sessionsData;
       break;
     case "daily":
-      title = "Günlük İşyerleri";
+      title = "Yetki Belgesi Gelen İşyerleri";
       data = dailyData;
       break;
     default:

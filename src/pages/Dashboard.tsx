@@ -1,11 +1,9 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Clock, FileText, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-// Örnek veri - Gerçek uygulamada API'den gelecek
 const dashboardData = {
   weeklyCallRequiredCompanies: 12,
   weeklyFirstSessionCompanies: 8,
@@ -37,7 +35,6 @@ const DashboardCard: React.FC<{
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  // Detay sayfasına yönlendirme fonksiyonları
   const goToCallDetails = () => navigate("/details/calls");
   const goToSessionDetails = () => navigate("/details/sessions");
   const goToDailyDetails = () => navigate("/details/daily");
@@ -108,7 +105,7 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Yaklaşan Etkinlikler</CardTitle>
+            <CardTitle>Yaklaşan Toplantılar</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4 border-b pb-4">
