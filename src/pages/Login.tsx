@@ -35,16 +35,9 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Burada n8n HTTP webhook'a istek yapılacak
-      // Örnek olarak direkt başarılı kabul edelim
-      const response = await new Promise<{ success: boolean }>((resolve) => {
-        setTimeout(() => {
-          resolve({ success: true });
-        }, 1000);
-      });
-
-      if (response.success) {
-        // Başarılı giriş
+      // Check for the specific credentials
+      if (data.username === "samet" && data.password === "1234") {
+        // Successful login
         localStorage.setItem("token", "dummy-token");
         toast({
           title: "Giriş başarılı",
@@ -52,7 +45,7 @@ const Login = () => {
         });
         navigate("/");
       } else {
-        // Başarısız giriş
+        // Failed login
         toast({
           title: "Giriş başarısız",
           description: "Kullanıcı adı veya şifre hatalı.",
