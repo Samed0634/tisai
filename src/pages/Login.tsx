@@ -77,9 +77,9 @@ const Login = () => {
           <div className="flex items-center justify-center mb-2">
             <BarChart2 className="h-10 w-10 text-primary-500" />
           </div>
-          <CardTitle className="text-2xl font-bold text-center">Aura Data Flow</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">TİS Takip Sistemi</CardTitle>
           <CardDescription className="text-center">
-            İş Takip Sistemi
+            Hizmet-İş TİS Daire Başkanlığı
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -126,7 +126,7 @@ const Login = () => {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Aura Data Flow
+            © {new Date().getFullYear()} Hizmet İş Sendikası
           </p>
         </CardFooter>
       </Card>
