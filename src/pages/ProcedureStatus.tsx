@@ -50,6 +50,7 @@ const ProcedureStatus = () => {
               <TableHead>İşçi Sayısı</TableHead>
               <TableHead>Üye Sayısı</TableHead>
               <TableHead>Güncel Durum</TableHead>
+              <TableHead>Son İşlem Tarihi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -70,11 +71,12 @@ const ProcedureStatus = () => {
                       {item.currentStatus}
                     </span>
                   </TableCell>
+                  <TableCell>{getLastActionDate(item)}</TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
                   Sonuç bulunamadı
                 </TableCell>
               </TableRow>
@@ -106,6 +108,34 @@ const getStatusColor = (status: string): string => {
     default:
       return "bg-gray-100 text-gray-800";
   }
+};
+
+// Helper function to get the last action date
+const getLastActionDate = (item: any): string => {
+  const dates = item.dates;
+  if (!dates) return "-";
+
+  // Find the most recent date
+  const dateKeys = Object.keys(dates) as Array<keyof typeof dates>;
+  if (dateKeys.length === 0) return "-";
+
+  // Sort dates by most recent first
+  const sortedDates = dateKeys
+    .filter(key => dates[key]) // Filter out undefined dates
+    .sort((a, b) => {
+      const dateA = new Date(dates[a] || "");
+      const dateB = new Date(dates[b] || "");
+      return dateB.getTime() - dateA.getTime();
+    });
+
+  if (sortedDates.length === 0) return "-";
+  
+  // Format the date to a more readable Turkish format (DD.MM.YYYY)
+  const mostRecentDate = dates[sortedDates[0]];
+  if (!mostRecentDate) return "-";
+  
+  const date = new Date(mostRecentDate);
+  return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
 };
 
 export default ProcedureStatus;
