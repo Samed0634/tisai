@@ -9,7 +9,7 @@ import {
   SidebarProvider 
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { BarChart2, Home, LogOut, MessageCircle, Plus, RefreshCw, User } from "lucide-react";
+import { BarChart2, Home, LogOut, MessageCircle, Plus, RefreshCw, Upload, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate, Outlet } from "react-router-dom";
 
@@ -50,19 +50,19 @@ const AppLayout = () => {
               <Button 
                 variant="ghost" 
                 className="w-full justify-start" 
-                onClick={() => navigate("/actions")}
+                onClick={() => navigate("/new-data")}
               >
-                <BarChart2 className="mr-2 h-4 w-4" />
-                İşlem Seç
+                <Plus className="mr-2 h-4 w-4" />
+                Yeni Veri
               </Button>
               
               <Button 
                 variant="ghost" 
                 className="w-full justify-start" 
-                onClick={() => navigate("/new-data")}
+                onClick={() => navigate("/upload-tis")}
               >
-                <Plus className="mr-2 h-4 w-4" />
-                Yeni Veri
+                <Upload className="mr-2 h-4 w-4" />
+                Bağıtlanan TİS Yükleme
               </Button>
               
               <Button 
@@ -77,10 +77,19 @@ const AppLayout = () => {
               <Button 
                 variant="ghost" 
                 className="w-full justify-start" 
-                onClick={() => navigate("/chatbot")}
+                onClick={() => navigate("/procedure-bot")}
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
-                Bilgi Al
+                Prosedür Bilgi Botu
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start" 
+                onClick={() => navigate("/tis-bot")}
+              >
+                <MessageCircle className="mr-2 h-4 w-4" />
+                TİS Bilgi Botu
               </Button>
             </nav>
           </SidebarContent>

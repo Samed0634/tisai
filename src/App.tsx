@@ -6,10 +6,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Actions from "./pages/Actions";
 import NewData from "./pages/NewData";
 import UpdateData from "./pages/UpdateData";
-import Chatbot from "./pages/Chatbot";
+import ProcedureBot from "./pages/ProcedureBot";
+import TisBot from "./pages/TisBot";
+import UploadTis from "./pages/UploadTis";
 import DataDetails from "./pages/DataDetails";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
@@ -42,10 +43,11 @@ const App = () => (
             </ProtectedRoute>
           }>
             <Route index element={<Dashboard />} />
-            <Route path="actions" element={<Actions />} />
             <Route path="new-data" element={<NewData />} />
             <Route path="update-data" element={<UpdateData />} />
-            <Route path="chatbot" element={<Chatbot />} />
+            <Route path="upload-tis" element={<UploadTis />} />
+            <Route path="procedure-bot" element={<ProcedureBot />} />
+            <Route path="tis-bot" element={<TisBot />} />
             <Route path="details/:type" element={<DataDetails />} />
           </Route>
 
