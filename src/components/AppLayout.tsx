@@ -13,21 +13,31 @@ import { Button } from "@/components/ui/button";
 import { BarChart2, Home, LogOut, MessageCircle, Plus, RefreshCw, Upload, User, List, FileText, Search, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate, Outlet } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Create a header component with the toggle button
 const AppHeader = () => {
   const { toggleSidebar } = useSidebar();
+  const isMobile = useIsMobile();
   
   return (
-    <div className="sticky top-0 z-10 flex items-center justify-end h-16 px-6 bg-background border-b">
+    <div className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 md:px-6 bg-background border-b">
+      <div className="md:hidden flex items-center">
+        <img 
+          src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
+          alt="TİS Prosedür Logo" 
+          className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
+        />
+        <span className="font-bold text-lg ml-2 text-secondary-800">TİS Prosedür</span>
+      </div>
       <Button
         variant="outline"
         size="sm"
         onClick={toggleSidebar}
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 ml-auto"
       >
         <Menu className="h-4 w-4" />
-        İşlemlerim
+        {!isMobile && "İşlemlerim"}
       </Button>
     </div>
   );
@@ -35,11 +45,60 @@ const AppHeader = () => {
 
 const AppLayout = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
+
+  const navigationItems = [
+    {
+      title: "Anasayfa",
+      icon: Home,
+      path: "/"
+    },
+    {
+      title: "Yeni Veri",
+      icon: Plus,
+      path: "/new-data"
+    },
+    {
+      title: "Veri Güncelle",
+      icon: RefreshCw,
+      path: "/update-data"
+    },
+    {
+      title: "Bağıtlanan TİS Yükleme",
+      icon: Upload,
+      path: "/upload-tis"
+    },
+    {
+      title: "Prosedür Bilgi Botu",
+      icon: MessageCircle,
+      path: "/procedure-bot"
+    },
+    {
+      title: "TİS Bilgi Botu",
+      icon: MessageCircle,
+      path: "/tis-bot"
+    },
+    {
+      title: "Tüm Prosedür Durumu",
+      icon: List,
+      path: "/procedure-status"
+    },
+    {
+      title: "İhtar Yazısı Yaz",
+      icon: FileText,
+      path: "/write-legal-notice"
+    },
+    {
+      title: "Yargı Kararı Sor",
+      icon: Search,
+      path: "/court-decision-query"
+    }
+  ];
 
   return (
     <SidebarProvider>
@@ -58,86 +117,17 @@ const AppLayout = () => {
           
           <SidebarContent className="px-3 py-4">
             <nav className="space-y-2">
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/")}
-              >
-                <Home className="mr-2 h-4 w-4" />
-                Anasayfa
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/new-data")}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Yeni Veri
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/update-data")}
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Veri Güncelle
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/upload-tis")}
-              >
-                <Upload className="mr-2 h-4 w-4" />
-                Bağıtlanan TİS Yükleme
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/procedure-bot")}
-              >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Prosedür Bilgi Botu
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/tis-bot")}
-              >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                TİS Bilgi Botu
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/procedure-status")}
-              >
-                <List className="mr-2 h-4 w-4" />
-                Tüm Prosedür Durumu
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/write-legal-notice")}
-              >
-                <FileText className="mr-2 h-4 w-4" />
-                İhtar Yazısı Yaz
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/court-decision-query")}
-              >
-                <Search className="mr-2 h-4 w-4" />
-                Yargı Kararı Sor
-              </Button>
+              {navigationItems.map((item) => (
+                <Button 
+                  key={item.path}
+                  variant="ghost" 
+                  className="w-full justify-start" 
+                  onClick={() => navigate(item.path)}
+                >
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.title}
+                </Button>
+              ))}
             </nav>
           </SidebarContent>
           
@@ -167,7 +157,7 @@ const AppLayout = () => {
         
         <div className="flex-1 flex flex-col overflow-hidden">
           <AppHeader />
-          <main className="flex-1 overflow-y-auto p-6">
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">
             <Outlet />
           </main>
         </div>
