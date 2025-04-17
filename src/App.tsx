@@ -15,6 +15,8 @@ import DataDetails from "./pages/DataDetails";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
 import ProcedureStatus from "./pages/ProcedureStatus";
+import WriteLegalNotice from "./pages/WriteLegalNotice";
+import CourtDecisionQuery from "./pages/CourtDecisionQuery";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,8 @@ const App = () => (
             <Route path="procedure-bot" element={<ProcedureBot />} />
             <Route path="tis-bot" element={<TisBot />} />
             <Route path="procedure-status" element={<ProcedureStatus />} />
+            <Route path="write-legal-notice" element={<WriteLegalNotice />} />
+            <Route path="court-decision-query" element={<CourtDecisionQuery />} />
             <Route path="details/:type" element={<DataDetails />} />
           </Route>
 
