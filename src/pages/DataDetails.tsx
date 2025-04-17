@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +6,7 @@ import { generateActivityMessage } from "@/utils/activityUtils";
 import FilterDropdown from "@/components/FilterDropdown";
 import WorkplaceTable from "@/components/WorkplaceTable";
 import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
+import { Badge } from "@/components/ui/badge";
 
 const DataDetails = () => {
   const { type } = useParams<{ type: string }>();
@@ -16,7 +16,6 @@ const DataDetails = () => {
   const { toast } = useToast();
   const [processDate, setProcessDate] = useState("");
 
-  // Get title for the current category
   const title = categoryTitles[type as keyof typeof categoryTitles] || "Detaylar";
 
   const openUpdateDialog = (company: WorkplaceItem) => {
@@ -35,10 +34,8 @@ const DataDetails = () => {
       return;
     }
 
-    // Update status and create activity
     const activityMessage = generateActivityMessage(selectedCompany.name, type);
     
-    // Remove the completed item from the list
     setData(prevData => prevData.filter(item => item.id !== selectedCompany.id));
 
     toast({
@@ -47,6 +44,70 @@ const DataDetails = () => {
     });
 
     setIsDialogOpen(false);
+  };
+
+  const StatusBadge = ({ status }) => {
+    const getStatusClassName = () => {
+      switch(status) {
+        case "İşlem Bekliyor":
+          return "bg-yellow-100 text-yellow-800";
+        case "Tamamlandı":
+          return "bg-green-100 text-green-800";
+        default:
+          return "bg-gray-100 text-gray-800";
+      }
+    };
+
+    return (
+      <Badge variant="outline" className={getStatusClassName()}>
+        {status}
+      </Badge>
+    );
+  };
+
+  const WorkplaceTable = ({ data, onEdit }) => {
+    return (
+      <Card>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>İşyeri Adı</TableHead>
+              <TableHead>Sorumlu Uzman</TableHead>
+              <TableHead>Şube</TableHead>
+              <TableHead>SGK No</TableHead>
+              <TableHead>İşçi Sayısı</TableHead>
+              <TableHead>Üye Sayısı</TableHead>
+              <TableHead>Durum</TableHead>
+              <TableHead className="text-right">İşlem</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell>{item.responsibleExpert}</TableCell>
+                <TableCell>{item.branch}</TableCell>
+                <TableCell>{item.sgkNo}</TableCell>
+                <TableCell>{item.employeeCount}</TableCell>
+                <TableCell>{item.memberCount}</TableCell>
+                <TableCell>
+                  <StatusBadge status={item.status} />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => onEdit(item)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+    );
   };
 
   return (

@@ -12,6 +12,7 @@ import {
   Scale 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 const dashboardData = [
   { 
@@ -108,10 +109,13 @@ const upcomingMeetings = [
 
 const DashboardCard = ({ title, value, icon, onClick }) => {
   return (
-    <Card onClick={onClick} className="cursor-pointer transition-all hover:shadow-md hover:border-primary-300">
+    <Card 
+      onClick={onClick} 
+      className="cursor-pointer transition-all hover:shadow-md hover:border-primary-300 bg-red-100 border-red-300"
+    >
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <div className="rounded-md bg-primary-50 p-2 text-primary-700">
+        <div className="rounded-md bg-red-200 p-2 text-red-700">
           {icon}
         </div>
       </CardHeader>
@@ -195,3 +199,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

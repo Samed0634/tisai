@@ -1,63 +1,5 @@
+import { WorkplaceItem } from './mockData';
 
-// Mock data for different categories - In real app, this would come from API
-export const generateMockData = (type: string) => {
-  const baseData = [
-    { 
-      id: 1, 
-      name: "ABC İşyeri", 
-      responsibleExpert: "Ahmet Yılmaz",
-      branch: "İstanbul Şubesi",
-      sgkNo: "12345678901", 
-      employeeCount: 25, 
-      memberCount: 15, 
-      status: "İşlem Bekliyor" 
-    },
-    { 
-      id: 2, 
-      name: "DEF İşyeri", 
-      responsibleExpert: "Mehmet Demir",
-      branch: "Ankara Şubesi",
-      sgkNo: "23456789012", 
-      employeeCount: 40, 
-      memberCount: 20, 
-      status: "İşlem Bekliyor" 
-    },
-    { 
-      id: 3, 
-      name: "GHI İşyeri", 
-      responsibleExpert: "Ayşe Kaya",
-      branch: "İzmir Şubesi",
-      sgkNo: "34567890123", 
-      employeeCount: 15, 
-      memberCount: 8, 
-      status: "İşlem Bekliyor" 
-    },
-    { 
-      id: 4, 
-      name: "JKL İşyeri", 
-      responsibleExpert: "Fatma Şahin",
-      branch: "Bursa Şubesi",
-      sgkNo: "45678901234", 
-      employeeCount: 60, 
-      memberCount: 35, 
-      status: "İşlem Bekliyor" 
-    },
-    { 
-      id: 5, 
-      name: "MNO İşyeri", 
-      responsibleExpert: "Mustafa Kurt",
-      branch: "Adana Şubesi",
-      sgkNo: "56789012345", 
-      employeeCount: 30, 
-      memberCount: 18, 
-      status: "İşlem Bekliyor" 
-    },
-  ];
-  
-  return baseData;
-};
-
-// Map category IDs to their titles
 export const categoryTitles = {
   "authorization-requests": "Yetki Tespiti İstenecek İşyerleri",
   "authorization-notices": "Yetki Belgesi Tebliğ Yapılan İşyerleri",
@@ -65,19 +7,82 @@ export const categoryTitles = {
   "first-session": "İlk Oturum Tutulması Gereken İşyerleri",
   "dispute-notices": "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri",
   "strike-decisions": "Grev Kararı Alınması Gereken İşyerleri",
-  "yhk-submissions": "YHK'ya Gönderilmesi Gereken İşyerleri",
-  "calls": "Haftalık Çağrı Yapılması Gereken İşyerleri",
-  "sessions": "Haftalık İlk Oturum Tutulacak İşyerleri",
-  "daily": "Günlük İşyerleri"
+  "yhk-submissions": "YHK'ya Gönderilmesi Gereken İşyerleri"
+};
+
+export const generateMockData = (type: string): WorkplaceItem[] => {
+  const mockData: WorkplaceItem[] = [
+    {
+      id: '1',
+      name: 'ABC İnşaat',
+      responsibleExpert: 'Mehmet Yılmaz',
+      branch: 'İstanbul Şubesi',
+      sgkNo: '1234567',
+      employeeCount: 50,
+      memberCount: 30,
+      status: "İşlem Bekliyor"
+    },
+    {
+      id: '2',
+      name: 'XYZ Tekstil',
+      responsibleExpert: 'Ayşe Demir',
+      branch: 'Ankara Şubesi',
+      sgkNo: '7654321',
+      employeeCount: 120,
+      memberCount: 85,
+      status: "İşlem Bekliyor"
+    },
+    {
+      id: '3',
+      name: 'QWE Gıda',
+      responsibleExpert: 'Ahmet Can',
+      branch: 'İzmir Şubesi',
+      sgkNo: '2345678',
+      employeeCount: 80,
+      memberCount: 60,
+      status: "İşlem Bekliyor"
+    },
+    {
+      id: '4',
+      name: 'RTY Metal',
+      responsibleExpert: 'Elif Kaya',
+      branch: 'Bursa Şubesi',
+      sgkNo: '8765432',
+      employeeCount: 65,
+      memberCount: 45,
+      status: "İşlem Bekliyor"
+    },
+    {
+      id: '5',
+      name: 'ASD Kimya',
+      responsibleExpert: 'Canan Yılmaz',
+      branch: 'Adana Şubesi',
+      sgkNo: '3456789',
+      employeeCount: 95,
+      memberCount: 70,
+      status: "İşlem Bekliyor"
+    }
+  ];
+
+  // Filter mock data based on the type
+  return mockData.filter(item => {
+    switch(type) {
+      case "authorization-requests":
+        return item.name.includes('ABC');
+      // ... add more type-based filtering if needed
+      default:
+        return true;
+    }
+  });
 };
 
 export type WorkplaceItem = {
-  id: number;
+  id: string;
   name: string;
   responsibleExpert: string;
   branch: string;
   sgkNo: string;
   employeeCount: number;
   memberCount: number;
-  status: string;
+  status: 'İşlem Bekliyor' | 'Tamamlandı';
 };
