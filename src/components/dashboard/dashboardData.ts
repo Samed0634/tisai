@@ -1,4 +1,3 @@
-
 import { 
   AlertTriangle, 
   Building, 
@@ -10,6 +9,7 @@ import {
   Scale 
 } from "lucide-react";
 import React from "react";
+import { getWorkplaceCount } from "@/utils/mockData";
 
 export interface DashboardItem {
   id: string;
@@ -34,50 +34,52 @@ export interface UpcomingMeeting {
   time: string;
 }
 
-export const dashboardData: DashboardItem[] = [
-  { 
-    id: "authorization-requests", 
-    title: "Yetki Tespiti İstenecek İşyerleri", 
-    value: 12, 
-    icon: React.createElement(Building, { className: "h-5 w-5" }) 
-  },
-  { 
-    id: "authorization-notices", 
-    title: "Yetki Belgesi Tebliğ Yapılan İşyerleri", 
-    value: 8, 
-    icon: React.createElement(FileCheck, { className: "h-5 w-5" }) 
-  },
-  { 
-    id: "call-required", 
-    title: "Çağrı Yapılacak İşyerleri", 
-    value: 15, 
-    icon: React.createElement(MessageSquare, { className: "h-5 w-5" }) 
-  },
-  { 
-    id: "first-session", 
-    title: "İlk Oturum Tutulması Gereken İşyerleri", 
-    value: 10, 
-    icon: React.createElement(Calendar, { className: "h-5 w-5" }) 
-  },
-  { 
-    id: "dispute-notices", 
-    title: "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri", 
-    value: 5, 
-    icon: React.createElement(AlertTriangle, { className: "h-5 w-5" }) 
-  },
-  { 
-    id: "strike-decisions", 
-    title: "Grev Kararı Alınması Gereken İşyerleri", 
-    value: 3, 
-    icon: React.createElement(Gavel, { className: "h-5 w-5" }) 
-  },
-  { 
-    id: "yhk-submissions", 
-    title: "YHK'ya Gönderilmesi Gereken İşyerleri", 
-    value: 2, 
-    icon: React.createElement(Scale, { className: "h-5 w-5" }) 
-  }
-];
+export const getDashboardData = (): DashboardItem[] => {
+  return [
+    { 
+      id: "authorization-requests", 
+      title: "Yetki Tespiti İstenecek İşyerleri", 
+      value: getWorkplaceCount("authorization-requests"), 
+      icon: React.createElement(Building, { className: "h-5 w-5" }) 
+    },
+    { 
+      id: "authorization-notices", 
+      title: "Yetki Belgesi Tebliğ Yapılan İşyerleri", 
+      value: getWorkplaceCount("authorization-notices"), 
+      icon: React.createElement(FileCheck, { className: "h-5 w-5" }) 
+    },
+    { 
+      id: "call-required", 
+      title: "Çağrı Yapılacak İşyerleri", 
+      value: getWorkplaceCount("call-required"), 
+      icon: React.createElement(MessageSquare, { className: "h-5 w-5" }) 
+    },
+    { 
+      id: "first-session", 
+      title: "İlk Oturum Tutulması Gereken İşyerleri", 
+      value: getWorkplaceCount("first-session"), 
+      icon: React.createElement(Calendar, { className: "h-5 w-5" }) 
+    },
+    { 
+      id: "dispute-notices", 
+      title: "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri", 
+      value: getWorkplaceCount("dispute-notices"), 
+      icon: React.createElement(AlertTriangle, { className: "h-5 w-5" }) 
+    },
+    { 
+      id: "strike-decisions", 
+      title: "Grev Kararı Alınması Gereken İşyerleri", 
+      value: getWorkplaceCount("strike-decisions"), 
+      icon: React.createElement(Gavel, { className: "h-5 w-5" }) 
+    },
+    { 
+      id: "yhk-submissions", 
+      title: "YHK'ya Gönderilmesi Gereken İşyerleri", 
+      value: getWorkplaceCount("yhk-submissions"), 
+      icon: React.createElement(Scale, { className: "h-5 w-5" }) 
+    }
+  ];
+};
 
 export const recentActivities: RecentActivity[] = [
   { 

@@ -20,8 +20,9 @@ export type WorkplaceItem = {
   status: 'İşlem Bekliyor' | 'Tamamlandı';
 };
 
-export const generateMockData = (type: string): WorkplaceItem[] => {
-  const mockData: WorkplaceItem[] = [
+// Create specific mock data for each category
+const mockDataSets: Record<string, WorkplaceItem[]> = {
+  "authorization-requests": [
     {
       id: '1',
       name: 'ABC İnşaat',
@@ -41,7 +42,9 @@ export const generateMockData = (type: string): WorkplaceItem[] => {
       employeeCount: 120,
       memberCount: 85,
       status: "İşlem Bekliyor"
-    },
+    }
+  ],
+  "authorization-notices": [
     {
       id: '3',
       name: 'QWE Gıda',
@@ -61,7 +64,9 @@ export const generateMockData = (type: string): WorkplaceItem[] => {
       employeeCount: 65,
       memberCount: 45,
       status: "İşlem Bekliyor"
-    },
+    }
+  ],
+  "call-required": [
     {
       id: '5',
       name: 'ASD Kimya',
@@ -71,17 +76,103 @@ export const generateMockData = (type: string): WorkplaceItem[] => {
       employeeCount: 95,
       memberCount: 70,
       status: "İşlem Bekliyor"
+    },
+    {
+      id: '6',
+      name: 'LKJ İlaç',
+      responsibleExpert: 'Burak Özkan',
+      branch: 'İstanbul Şubesi',
+      sgkNo: '9876543',
+      employeeCount: 75,
+      memberCount: 50,
+      status: "İşlem Bekliyor"
+    },
+    {
+      id: '7',
+      name: 'ZXC Otomotiv',
+      responsibleExpert: 'Deniz Aydın',
+      branch: 'Bursa Şubesi',
+      sgkNo: '2345678',
+      employeeCount: 110,
+      memberCount: 80,
+      status: "İşlem Bekliyor"
     }
-  ];
+  ],
+  "first-session": [
+    {
+      id: '8',
+      name: 'POI Makina',
+      responsibleExpert: 'Murat Kılıç',
+      branch: 'Konya Şubesi',
+      sgkNo: '8765432',
+      employeeCount: 85,
+      memberCount: 60,
+      status: "İşlem Bekliyor"
+    }
+  ],
+  "dispute-notices": [
+    {
+      id: '9',
+      name: 'MKL Plastik',
+      responsibleExpert: 'Seda Yıldız',
+      branch: 'Kocaeli Şubesi',
+      sgkNo: '3456789',
+      employeeCount: 65,
+      memberCount: 45,
+      status: "İşlem Bekliyor"
+    },
+    {
+      id: '10',
+      name: 'NHY Elektronik',
+      responsibleExpert: 'Ali Çelik',
+      branch: 'Ankara Şubesi',
+      sgkNo: '9876543',
+      employeeCount: 55,
+      memberCount: 40,
+      status: "İşlem Bekliyor"
+    }
+  ],
+  "strike-decisions": [
+    {
+      id: '11',
+      name: 'UJM Tekstil',
+      responsibleExpert: 'Zeynep Demir',
+      branch: 'İzmir Şubesi',
+      sgkNo: '2345678',
+      employeeCount: 95,
+      memberCount: 70,
+      status: "İşlem Bekliyor"
+    }
+  ],
+  "yhk-submissions": [
+    {
+      id: '12',
+      name: 'BVC Metal',
+      responsibleExpert: 'Oğuz Yılmaz',
+      branch: 'Kayseri Şubesi',
+      sgkNo: '8765432',
+      employeeCount: 75,
+      memberCount: 55,
+      status: "İşlem Bekliyor"
+    },
+    {
+      id: '13',
+      name: 'FGH İnşaat',
+      responsibleExpert: 'Aylin Kaya',
+      branch: 'Antalya Şubesi',
+      sgkNo: '3456789',
+      employeeCount: 60,
+      memberCount: 45,
+      status: "İşlem Bekliyor"
+    }
+  ]
+};
 
-  // Filter mock data based on the type
-  return mockData.filter(item => {
-    switch(type) {
-      case "authorization-requests":
-        return item.name.includes('ABC');
-      // ... add more type-based filtering if needed
-      default:
-        return true;
-    }
-  });
+export const generateMockData = (type: string): WorkplaceItem[] => {
+  return mockDataSets[type] || [];
+};
+
+// Get the count of workplaces for each category
+export const getWorkplaceCount = (categoryId: string): number => {
+  return mockDataSets[categoryId]?.length || 0;
 };

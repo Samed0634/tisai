@@ -5,13 +5,14 @@ import DashboardCard from "@/components/dashboard/DashboardCard";
 import RecentActivities from "@/components/dashboard/RecentActivities";
 import UpcomingMeetings from "@/components/dashboard/UpcomingMeetings";
 import { 
-  dashboardData, 
+  getDashboardData,
   recentActivities, 
   upcomingMeetings 
 } from "@/components/dashboard/dashboardData";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const dashboardData = getDashboardData();
 
   const handleCardClick = (categoryId: string) => {
     navigate(`/details/${categoryId}`);
