@@ -6,12 +6,32 @@ import {
   SidebarContent, 
   SidebarFooter, 
   SidebarHeader, 
-  SidebarProvider 
+  SidebarProvider,
+  useSidebar
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { BarChart2, Home, LogOut, MessageCircle, Plus, RefreshCw, Upload, User, List, FileText, Search } from "lucide-react";
+import { BarChart2, Home, LogOut, MessageCircle, Plus, RefreshCw, Upload, User, List, FileText, Search, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate, Outlet } from "react-router-dom";
+
+// Create a header component with the toggle button
+const AppHeader = () => {
+  const { toggleSidebar } = useSidebar();
+  
+  return (
+    <div className="sticky top-0 z-10 flex items-center justify-end h-16 px-6 bg-background border-b">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={toggleSidebar}
+        className="flex items-center gap-2"
+      >
+        <Menu className="h-4 w-4" />
+        İşlemlerim
+      </Button>
+    </div>
+  );
+};
 
 const AppLayout = () => {
   const navigate = useNavigate();
@@ -146,6 +166,7 @@ const AppLayout = () => {
         </Sidebar>
         
         <div className="flex-1 flex flex-col overflow-hidden">
+          <AppHeader />
           <main className="flex-1 overflow-y-auto p-6">
             <Outlet />
           </main>
