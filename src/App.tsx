@@ -14,6 +14,7 @@ import UploadTis from "./pages/UploadTis";
 import DataDetails from "./pages/DataDetails";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
+import ProcedureStatus from "./pages/ProcedureStatus";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="upload-tis" element={<UploadTis />} />
             <Route path="procedure-bot" element={<ProcedureBot />} />
             <Route path="tis-bot" element={<TisBot />} />
+            <Route path="procedure-status" element={<ProcedureStatus />} />
             <Route path="details/:type" element={<DataDetails />} />
           </Route>
 
