@@ -111,11 +111,13 @@ const DashboardCard = ({ title, value, icon, onClick }) => {
   return (
     <Card 
       onClick={onClick} 
-      className="cursor-pointer transition-all hover:shadow-md hover:border-primary-300 bg-red-100 border-red-300"
+      className="cursor-pointer transition-all hover:shadow-md hover:border-primary-300"
     >
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <div className="rounded-md bg-red-200 p-2 text-red-700">
+        <CardTitle className="text-sm font-medium">
+          <span className="bg-[#ea384c] text-white px-2 py-1 rounded inline-block">{title}</span>
+        </CardTitle>
+        <div className="rounded-md bg-primary-50 p-2 text-primary-700">
           {icon}
         </div>
       </CardHeader>
@@ -199,4 +201,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
