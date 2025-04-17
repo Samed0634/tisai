@@ -1,23 +1,111 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarDays, Clock, FileText, UserPlus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { 
+  AlertTriangle, 
+  Building, 
+  Calendar, 
+  FileCheck, 
+  FileText, 
+  Gavel, 
+  MessageSquare, 
+  Scale 
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const dashboardData = {
-  weeklyCallRequiredCompanies: 12,
-  weeklyFirstSessionCompanies: 8,
-  dailyCompanies: 5,
-};
+const dashboardData = [
+  { 
+    id: "authorization-requests", 
+    title: "Yetki Tespiti İstenecek İşyerleri", 
+    value: 12, 
+    icon: <Building className="h-5 w-5" /> 
+  },
+  { 
+    id: "authorization-notices", 
+    title: "Yetki Belgesi Tebliğ Yapılan İşyerleri", 
+    value: 8, 
+    icon: <FileCheck className="h-5 w-5" /> 
+  },
+  { 
+    id: "call-required", 
+    title: "Çağrı Yapılacak İşyerleri", 
+    value: 15, 
+    icon: <MessageSquare className="h-5 w-5" /> 
+  },
+  { 
+    id: "first-session", 
+    title: "İlk Oturum Tutulması Gereken İşyerleri", 
+    value: 10, 
+    icon: <Calendar className="h-5 w-5" /> 
+  },
+  { 
+    id: "dispute-notices", 
+    title: "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri", 
+    value: 5, 
+    icon: <AlertTriangle className="h-5 w-5" /> 
+  },
+  { 
+    id: "strike-decisions", 
+    title: "Grev Kararı Alınması Gereken İşyerleri", 
+    value: 3, 
+    icon: <Gavel className="h-5 w-5" /> 
+  },
+  { 
+    id: "yhk-submissions", 
+    title: "YHK'ya Gönderilmesi Gereken İşyerleri", 
+    value: 2, 
+    icon: <Scale className="h-5 w-5" /> 
+  }
+];
 
-const DashboardCard: React.FC<{
-  title: string;
-  value: number;
-  icon: React.ReactNode;
-  onClick?: () => void;
-}> = ({ title, value, icon, onClick }) => {
+const recentActivities = [
+  { 
+    id: 1, 
+    title: "ABC İşyeri verileri güncellendi", 
+    time: "Bugün, 10:24", 
+    icon: <Building className="h-4 w-4 text-primary-500" /> 
+  },
+  { 
+    id: 2, 
+    title: "XYZ İşyeri için oturum ayarlandı", 
+    time: "Dün, 14:30", 
+    icon: <Calendar className="h-4 w-4 text-primary-500" /> 
+  },
+  { 
+    id: 3, 
+    title: "DEF İşyeri çağrısı yapıldı", 
+    time: "2 gün önce, 11:15",
+    icon: <MessageSquare className="h-4 w-4 text-primary-500" /> 
+  }
+];
+
+const upcomingMeetings = [
+  { 
+    id: 1, 
+    title: "MNO İşyeri İlk Oturum", 
+    date: "18", 
+    month: "Nis", 
+    time: "15:00 - 16:30" 
+  },
+  { 
+    id: 2, 
+    title: "PQR İşyeri Çağrı", 
+    date: "20", 
+    month: "Nis", 
+    time: "11:00 - 12:00" 
+  },
+  { 
+    id: 3, 
+    title: "STU İşyeri Toplantı", 
+    date: "22", 
+    month: "Nis", 
+    time: "13:30 - 14:30" 
+  }
+];
+
+const DashboardCard = ({ title, value, icon, onClick }) => {
   return (
-    <Card onClick={onClick} className="card-dashboard cursor-pointer">
+    <Card onClick={onClick} className="cursor-pointer transition-all hover:shadow-md hover:border-primary-300">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <div className="rounded-md bg-primary-50 p-2 text-primary-700">
@@ -25,8 +113,8 @@ const DashboardCard: React.FC<{
         </div>
       </CardHeader>
       <CardContent>
-        <div className="stats-value">{value}</div>
-        <p className="stats-label">İşyeri</p>
+        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-xs text-muted-foreground">İşyeri</p>
       </CardContent>
     </Card>
   );
@@ -35,36 +123,26 @@ const DashboardCard: React.FC<{
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  const goToCallDetails = () => navigate("/details/calls");
-  const goToSessionDetails = () => navigate("/details/sessions");
-  const goToDailyDetails = () => navigate("/details/daily");
+  const handleCardClick = (categoryId) => {
+    navigate(`/details/${categoryId}`);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="heading-1">Gösterge Paneli</h1>
-        <Button onClick={() => navigate("/actions")}>İşlem Seç</Button>
+        <h1 className="text-2xl font-bold tracking-tight">Gösterge Paneli</h1>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <DashboardCard
-          title="Haftalık Çağrı Yapılacak İşyerleri"
-          value={dashboardData.weeklyCallRequiredCompanies}
-          icon={<Clock className="h-5 w-5" />}
-          onClick={goToCallDetails}
-        />
-        <DashboardCard
-          title="Haftalık İlk Oturum İşyerleri"
-          value={dashboardData.weeklyFirstSessionCompanies}
-          icon={<CalendarDays className="h-5 w-5" />}
-          onClick={goToSessionDetails}
-        />
-        <DashboardCard
-          title="Günlük İşyerleri"
-          value={dashboardData.dailyCompanies}
-          icon={<FileText className="h-5 w-5" />}
-          onClick={goToDailyDetails}
-        />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {dashboardData.map((item) => (
+          <DashboardCard
+            key={item.id}
+            title={item.title}
+            value={item.value}
+            icon={item.icon}
+            onClick={() => handleCardClick(item.id)}
+          />
+        ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -73,33 +151,17 @@ const Dashboard = () => {
             <CardTitle>Son Aktiviteler</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-4 border-b pb-4">
-              <div className="rounded-full bg-primary-50 p-2">
-                <UserPlus className="h-4 w-4 text-primary-500" />
+            {recentActivities.map((activity) => (
+              <div key={activity.id} className="flex items-center gap-4 border-b pb-4 last:border-b-0 last:pb-0">
+                <div className="rounded-full bg-primary-50 p-2">
+                  {activity.icon}
+                </div>
+                <div>
+                  <p className="font-medium">{activity.title}</p>
+                  <p className="text-sm text-muted-foreground">{activity.time}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium">ABC İşyeri verileri güncellendi</p>
-                <p className="text-sm text-muted-foreground">Bugün, 10:24</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 border-b pb-4">
-              <div className="rounded-full bg-primary-50 p-2">
-                <CalendarDays className="h-4 w-4 text-primary-500" />
-              </div>
-              <div>
-                <p className="font-medium">XYZ İşyeri için oturum ayarlandı</p>
-                <p className="text-sm text-muted-foreground">Dün, 14:30</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="rounded-full bg-primary-50 p-2">
-                <Clock className="h-4 w-4 text-primary-500" />
-              </div>
-              <div>
-                <p className="font-medium">DEF İşyeri çağrısı yapıldı</p>
-                <p className="text-sm text-muted-foreground">2 gün önce, 11:15</p>
-              </div>
-            </div>
+            ))}
           </CardContent>
         </Card>
 
@@ -108,36 +170,18 @@ const Dashboard = () => {
             <CardTitle>Yaklaşan Toplantılar</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-4 border-b pb-4">
-              <div className="text-center min-w-[50px]">
-                <p className="text-sm font-medium bg-primary-50 rounded-t-md text-primary-700 py-1">Nis</p>
-                <p className="text-xl font-bold bg-white border rounded-b-md py-1">18</p>
+            {upcomingMeetings.map((meeting) => (
+              <div key={meeting.id} className="flex items-center gap-4 border-b pb-4 last:border-b-0 last:pb-0">
+                <div className="text-center min-w-[50px]">
+                  <p className="text-sm font-medium bg-primary-50 rounded-t-md text-primary-700 py-1">{meeting.month}</p>
+                  <p className="text-xl font-bold bg-white border rounded-b-md py-1">{meeting.date}</p>
+                </div>
+                <div>
+                  <p className="font-medium">{meeting.title}</p>
+                  <p className="text-sm text-muted-foreground">{meeting.time}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium">MNO İşyeri İlk Oturum</p>
-                <p className="text-sm text-muted-foreground">15:00 - 16:30</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 border-b pb-4">
-              <div className="text-center min-w-[50px]">
-                <p className="text-sm font-medium bg-primary-50 rounded-t-md text-primary-700 py-1">Nis</p>
-                <p className="text-xl font-bold bg-white border rounded-b-md py-1">20</p>
-              </div>
-              <div>
-                <p className="font-medium">PQR İşyeri Çağrı</p>
-                <p className="text-sm text-muted-foreground">11:00 - 12:00</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-center min-w-[50px]">
-                <p className="text-sm font-medium bg-primary-50 rounded-t-md text-primary-700 py-1">Nis</p>
-                <p className="text-xl font-bold bg-white border rounded-b-md py-1">22</p>
-              </div>
-              <div>
-                <p className="font-medium">STU İşyeri Toplantı</p>
-                <p className="text-sm text-muted-foreground">13:30 - 14:30</p>
-              </div>
-            </div>
+            ))}
           </CardContent>
         </Card>
       </div>
