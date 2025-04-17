@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { 
@@ -28,7 +27,7 @@ const AppHeader = () => {
           alt="TİSAI.v1 Logo" 
           className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
         />
-        <span className="font-bold text-lg ml-2 text-secondary-800">TİSAI.v1: Toplu İş Sözleşmesi'nin AI Agent ile Takibi</span>
+        <span className="font-bold text-lg ml-2 text-secondary-800">TİSAI.v1</span>
       </div>
       <Button
         variant="outline"
@@ -111,7 +110,7 @@ const AppLayout = () => {
                 alt="TİSAI.v1 Logo" 
                 className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
               />
-              <span className="font-bold text-xl text-secondary-800">TİSAI.v1: Toplu İş Sözleşmesi'nin AI Agent ile Takibi</span>
+              <span className="font-bold text-xl text-secondary-800">TİSAI.v1</span>
             </div>
           </SidebarHeader>
           
