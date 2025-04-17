@@ -25,10 +25,10 @@ const AppHeader = () => {
       <div className="md:hidden flex items-center">
         <img 
           src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
-          alt="TİS Prosedür Logo" 
+          alt="TİSAI.v1 Logo" 
           className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
         />
-        <span className="font-bold text-lg ml-2 text-secondary-800">TİS Prosedür</span>
+        <span className="font-bold text-lg ml-2 text-secondary-800">TİSAI.v1: Toplu İş Sözleşmesi'nin AI Agent ile Takibi</span>
       </div>
       <Button
         variant="outline"
@@ -108,10 +108,10 @@ const AppLayout = () => {
             <div className="flex items-center gap-2">
               <img 
                 src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
-                alt="TİS Prosedür Logo" 
+                alt="TİSAI.v1 Logo" 
                 className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
               />
-              <span className="font-bold text-xl text-secondary-800">TİS Prosedür</span>
+              <span className="font-bold text-xl text-secondary-800">TİSAI.v1: Toplu İş Sözleşmesi'nin AI Agent ile Takibi</span>
             </div>
           </SidebarHeader>
           
