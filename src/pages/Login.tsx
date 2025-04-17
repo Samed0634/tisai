@@ -47,21 +47,56 @@ const Login = () => {
         }),
       });
       
-      const result = await response.json();
+      // Check if response is ok first
+      if (!response.ok) {
+        throw new Error("Sunucu hatası");
+      }
       
-      if (response.ok && result.success) {
-        // Successful login
+      // Try to parse response as text first
+      const responseText = await response.text();
+      
+      // Check if it's a plain text response
+      if (responseText === "Giriş Başarılı") {
+        // Success with plain text response
+        localStorage.setItem("token", "authenticated");
+        toast({
+          title: "Giriş başarılı",
+          description: "Hoş geldiniz.",
+        });
+        navigate("/");
+        return;
+      }
+      
+      // Try to parse as JSON if it's not just a simple text
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.error("JSON parse error:", e);
+        throw new Error("Geçersiz sunucu yanıtı");
+      }
+      
+      // Check n8n response formats
+      if (result.auth === "ok") {
+        // Successful login with JSON response
         localStorage.setItem("token", result.token || "authenticated");
         toast({
           title: "Giriş başarılı",
           description: "Hoş geldiniz.",
         });
         navigate("/");
+      } else if (result["{ \"auth\": \"fail\" }"]) {
+        // Failed login with special n8n format
+        toast({
+          title: "Giriş başarısız",
+          description: "Kullanıcı adı veya şifre hatalı.",
+          variant: "destructive",
+        });
       } else {
         // Failed login
         toast({
           title: "Giriş başarısız",
-          description: result.message || "Kullanıcı adı veya şifre hatalı.",
+          description: result.message || "Kimlik doğrulama hatası.",
           variant: "destructive",
         });
       }
@@ -142,4 +177,3 @@ const Login = () => {
 };
 
 export default Login;
-
