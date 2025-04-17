@@ -29,11 +29,11 @@ import { useToast } from "@/hooks/use-toast";
 // Sample data for different categories - In real app, this would come from API
 const generateMockData = (type) => {
   const baseData = [
-    { id: 1, name: "ABC İşyeri", sgkNo: "12345678901", employeeCount: 25, memberCount: 15, processDate: "2023-04-20" },
-    { id: 2, name: "DEF İşyeri", sgkNo: "23456789012", employeeCount: 40, memberCount: 20, processDate: "2023-04-18" },
-    { id: 3, name: "GHI İşyeri", sgkNo: "34567890123", employeeCount: 15, memberCount: 8, processDate: "2023-04-22" },
-    { id: 4, name: "JKL İşyeri", sgkNo: "45678901234", employeeCount: 60, memberCount: 35, processDate: "2023-04-19" },
-    { id: 5, name: "MNO İşyeri", sgkNo: "56789012345", employeeCount: 30, memberCount: 18, processDate: "2023-04-21" },
+    { id: 1, name: "ABC İşyeri", sgkNo: "12345678901", employeeCount: 25, memberCount: 15, status: "İşlem Bekliyor" },
+    { id: 2, name: "DEF İşyeri", sgkNo: "23456789012", employeeCount: 40, memberCount: 20, status: "İşlem Bekliyor" },
+    { id: 3, name: "GHI İşyeri", sgkNo: "34567890123", employeeCount: 15, memberCount: 8, status: "İşlem Bekliyor" },
+    { id: 4, name: "JKL İşyeri", sgkNo: "45678901234", employeeCount: 60, memberCount: 35, status: "İşlem Bekliyor" },
+    { id: 5, name: "MNO İşyeri", sgkNo: "56789012345", employeeCount: 30, memberCount: 18, status: "İşlem Bekliyor" },
   ];
   
   return baseData;
@@ -57,29 +57,40 @@ const DataDetails = () => {
   const { type } = useParams();
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [data, setData] = useState(generateMockData(type));
   const { toast } = useToast();
+  const [processDate, setProcessDate] = useState("");
 
-  // Get data based on the category type
-  const data = generateMockData(type);
-  
   // Get title for the current category
   const title = categoryTitles[type] || "Detaylar";
 
   const openUpdateDialog = (company) => {
     setSelectedCompany(company);
+    setProcessDate("");
     setIsDialogOpen(true);
   };
 
   const handleUpdate = () => {
-    // In real app: Update data in the database via API call
-    toast({
-      title: "İşlem Tamamlandı",
-      description: `${selectedCompany.name} için işlem tamamlanmıştır.`,
-    });
+    if (!processDate) {
+      toast({
+        title: "Uyarı",
+        description: "Lütfen tarih seçiniz.",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    // Add to recent activities
+    // Update status and create activity
     const activityMessage = generateActivityMessage(selectedCompany.name, type);
     
+    // Remove the completed item from the list
+    setData(prevData => prevData.filter(item => item.id !== selectedCompany.id));
+
+    toast({
+      title: "İşlem Tamamlandı",
+      description: `${selectedCompany.name} için ${activityMessage}.`,
+    });
+
     setIsDialogOpen(false);
   };
   
@@ -126,7 +137,7 @@ const DataDetails = () => {
               <TableHead>SGK No</TableHead>
               <TableHead>İşçi Sayısı</TableHead>
               <TableHead>Üye Sayısı</TableHead>
-              <TableHead>İşlem Yapılan Tarih</TableHead>
+              <TableHead>Durum</TableHead>
               <TableHead className="text-right">İşlem</TableHead>
             </TableRow>
           </TableHeader>
@@ -137,7 +148,7 @@ const DataDetails = () => {
                 <TableCell>{item.sgkNo}</TableCell>
                 <TableCell>{item.employeeCount}</TableCell>
                 <TableCell>{item.memberCount}</TableCell>
-                <TableCell>{item.processDate}</TableCell>
+                <TableCell>{item.status}</TableCell>
                 <TableCell className="text-right">
                   <Button 
                     variant="ghost" 
@@ -164,16 +175,14 @@ const DataDetails = () => {
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label>İşlem Yapılan Tarih</Label>
+                <Label>İşlem Tarihi</Label>
                 <div className="flex w-full items-center space-x-2">
-                  <Button 
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedCompany.processDate}
-                    <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
+                  <Input 
+                    type="date" 
+                    value={processDate} 
+                    onChange={(e) => setProcessDate(e.target.value)} 
+                    className="w-full"
+                  />
                 </div>
               </div>
 
