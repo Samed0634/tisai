@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -86,7 +85,7 @@ const Login = () => {
             <img 
               src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
               alt="TİS Takip Sistemi Logo" 
-              className="h-16 w-16 object-contain"
+              className="h-16 w-16 object-contain rounded-full border-2 border-primary/20" 
             />
           </div>
           <CardTitle className="text-2xl font-bold text-center">TİS Takip Sistemi</CardTitle>
