@@ -35,8 +35,8 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Send request to webhook for authentication
-      const response = await fetch("https://primary-production-dcf9.up.railway.app/webhook/login", {
+      // Send request to test webhook for authentication
+      const response = await fetch("https://primary-production-dcf9.up.railway.app/webhook-test/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -142,3 +142,4 @@ const Login = () => {
 };
 
 export default Login;
+
