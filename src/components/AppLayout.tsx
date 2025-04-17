@@ -59,19 +59,19 @@ const AppLayout = () => {
               <Button 
                 variant="ghost" 
                 className="w-full justify-start" 
-                onClick={() => navigate("/upload-tis")}
+                onClick={() => navigate("/update-data")}
               >
-                <Upload className="mr-2 h-4 w-4" />
-                Bağıtlanan TİS Yükleme
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Veri Güncelle
               </Button>
               
               <Button 
                 variant="ghost" 
                 className="w-full justify-start" 
-                onClick={() => navigate("/update-data")}
+                onClick={() => navigate("/upload-tis")}
               >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Veri Güncelle
+                <Upload className="mr-2 h-4 w-4" />
+                Bağıtlanan TİS Yükleme
               </Button>
               
               <Button 
