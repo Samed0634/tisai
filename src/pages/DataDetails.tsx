@@ -29,11 +29,11 @@ import { useToast } from "@/hooks/use-toast";
 // Sample data for different categories - In real app, this would come from API
 const generateMockData = (type) => {
   const baseData = [
-    { id: 1, name: "ABC İşyeri", sgkNo: "12345678901", employeeCount: 25, memberCount: 15, dueDate: "2023-04-20", status: "Bekliyor" },
-    { id: 2, name: "DEF İşyeri", sgkNo: "23456789012", employeeCount: 40, memberCount: 20, dueDate: "2023-04-18", status: "Tamamlandı" },
-    { id: 3, name: "GHI İşyeri", sgkNo: "34567890123", employeeCount: 15, memberCount: 8, dueDate: "2023-04-22", status: "Bekliyor" },
-    { id: 4, name: "JKL İşyeri", sgkNo: "45678901234", employeeCount: 60, memberCount: 35, dueDate: "2023-04-19", status: "Tamamlandı" },
-    { id: 5, name: "MNO İşyeri", sgkNo: "56789012345", employeeCount: 30, memberCount: 18, dueDate: "2023-04-21", status: "Bekliyor" },
+    { id: 1, name: "ABC İşyeri", sgkNo: "12345678901", employeeCount: 25, memberCount: 15, processDate: "2023-04-20" },
+    { id: 2, name: "DEF İşyeri", sgkNo: "23456789012", employeeCount: 40, memberCount: 20, processDate: "2023-04-18" },
+    { id: 3, name: "GHI İşyeri", sgkNo: "34567890123", employeeCount: 15, memberCount: 8, processDate: "2023-04-22" },
+    { id: 4, name: "JKL İşyeri", sgkNo: "45678901234", employeeCount: 60, memberCount: 35, processDate: "2023-04-19" },
+    { id: 5, name: "MNO İşyeri", sgkNo: "56789012345", employeeCount: 30, memberCount: 18, processDate: "2023-04-21" },
   ];
   
   return baseData;
@@ -73,11 +73,28 @@ const DataDetails = () => {
   const handleUpdate = () => {
     // In real app: Update data in the database via API call
     toast({
-      title: "Veri Güncellendi",
-      description: `${selectedCompany.name} için veri güncelleme işlemi başarılı.`,
+      title: "İşlem Tamamlandı",
+      description: `${selectedCompany.name} için işlem tamamlanmıştır.`,
     });
 
+    // Add to recent activities
+    const activityMessage = generateActivityMessage(selectedCompany.name, type);
+    
     setIsDialogOpen(false);
+  };
+  
+  const generateActivityMessage = (companyName, categoryType) => {
+    const categoryMap = {
+      "authorization-requests": "yetki tespiti istenmiştir",
+      "authorization-notices": "yetki belgesi tebliğ edilmiştir",
+      "call-required": "çağrı yapılmıştır",
+      "first-session": "ilk oturum tutulmuştur",
+      "dispute-notices": "uyuşmazlık bildirimi yapılmıştır",
+      "strike-decisions": "grev kararı alınmıştır",
+      "yhk-submissions": "YHK'ya gönderilmiştir",
+    };
+    
+    return `${companyName} işyerinde ${categoryMap[categoryType] || "işlem yapılmıştır"}`;
   };
 
   return (
@@ -94,7 +111,7 @@ const DataDetails = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tümü</SelectItem>
-              <SelectItem value="pending">Bekleyenler</SelectItem>
+              <SelectItem value="pending">İşlem Bekleyenler</SelectItem>
               <SelectItem value="completed">Tamamlananlar</SelectItem>
             </SelectContent>
           </Select>
@@ -109,8 +126,7 @@ const DataDetails = () => {
               <TableHead>SGK No</TableHead>
               <TableHead>İşçi Sayısı</TableHead>
               <TableHead>Üye Sayısı</TableHead>
-              <TableHead>Termin Tarihi</TableHead>
-              <TableHead>Durum</TableHead>
+              <TableHead>İşlem Yapılan Tarih</TableHead>
               <TableHead className="text-right">İşlem</TableHead>
             </TableRow>
           </TableHeader>
@@ -121,18 +137,7 @@ const DataDetails = () => {
                 <TableCell>{item.sgkNo}</TableCell>
                 <TableCell>{item.employeeCount}</TableCell>
                 <TableCell>{item.memberCount}</TableCell>
-                <TableCell>{item.dueDate}</TableCell>
-                <TableCell>
-                  <span 
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      item.status === "Tamamlandı"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </TableCell>
+                <TableCell>{item.processDate}</TableCell>
                 <TableCell className="text-right">
                   <Button 
                     variant="ghost" 
@@ -152,36 +157,21 @@ const DataDetails = () => {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Veri Güncelleme: {selectedCompany.name}</DialogTitle>
+              <DialogTitle>İşlem Tamamlama: {selectedCompany.name}</DialogTitle>
               <DialogDescription>
-                İşyeri için termin bilgilerini güncelleyin.
+                İşyeri için işlem bilgilerini güncelleyin.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="status">Durum</Label>
-                <Select defaultValue={selectedCompany.status}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Bekliyor">Bekliyor</SelectItem>
-                    <SelectItem value="Tamamlandı">Tamamlandı</SelectItem>
-                    <SelectItem value="Ertelendi">Ertelendi</SelectItem>
-                    <SelectItem value="İptal">İptal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid gap-2">
-                <Label>Termin Tarihi</Label>
+                <Label>İşlem Yapılan Tarih</Label>
                 <div className="flex w-full items-center space-x-2">
                   <Button 
                     variant="outline"
                     className="w-full justify-start text-left font-normal"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedCompany.dueDate}
+                    {selectedCompany.processDate}
                     <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
                 </div>
@@ -191,7 +181,7 @@ const DataDetails = () => {
                 <Label htmlFor="notes">Notlar</Label>
                 <Textarea
                   id="notes"
-                  placeholder="Güncelleme ile ilgili notlar..."
+                  placeholder="İşlem ile ilgili notlar..."
                   className="min-h-[100px]"
                 />
               </div>
@@ -201,7 +191,7 @@ const DataDetails = () => {
                 İptal
               </Button>
               <Button onClick={handleUpdate}>
-                Güncelle
+                İşlemi Tamamla
               </Button>
             </DialogFooter>
           </DialogContent>

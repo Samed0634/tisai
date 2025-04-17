@@ -61,20 +61,23 @@ const dashboardData = [
 const recentActivities = [
   { 
     id: 1, 
-    title: "ABC İşyeri verileri güncellendi", 
+    title: "ABC İşyerinde yetki tespiti istenmiştir", 
     time: "Bugün, 10:24", 
+    date: "17.04.2025",
     icon: <Building className="h-4 w-4 text-primary-500" /> 
   },
   { 
     id: 2, 
-    title: "XYZ İşyeri için oturum ayarlandı", 
-    time: "Dün, 14:30", 
+    title: "XYZ İşyerinde ilk oturum tutulmuştur", 
+    time: "Dün, 14:30",
+    date: "16.04.2025", 
     icon: <Calendar className="h-4 w-4 text-primary-500" /> 
   },
   { 
     id: 3, 
-    title: "DEF İşyeri çağrısı yapıldı", 
+    title: "DEF İşyerinde çağrı yapılmıştır", 
     time: "2 gün önce, 11:15",
+    date: "15.04.2025",
     icon: <MessageSquare className="h-4 w-4 text-primary-500" /> 
   }
 ];
@@ -148,7 +151,7 @@ const Dashboard = () => {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Son Aktiviteler</CardTitle>
+            <CardTitle>Son İşlemler</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {recentActivities.map((activity) => (
@@ -156,9 +159,11 @@ const Dashboard = () => {
                 <div className="rounded-full bg-primary-50 p-2">
                   {activity.icon}
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="font-medium">{activity.title}</p>
-                  <p className="text-sm text-muted-foreground">{activity.time}</p>
+                  <p className="text-sm text-muted-foreground">
+                    İşlem Tarihi: {activity.date} ({activity.time})
+                  </p>
                 </div>
               </div>
             ))}
