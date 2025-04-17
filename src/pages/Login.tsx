@@ -6,9 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { BarChart2, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Kullanıcı adı gereklidir" }),
@@ -52,7 +52,6 @@ const Login = () => {
       const result = await response.json();
       
       if (result.success) {
-        // Başarılı giriş
         localStorage.setItem("token", "authenticated");
         toast({
           title: "Giriş başarılı",
@@ -60,7 +59,6 @@ const Login = () => {
         });
         navigate("/");
       } else {
-        // Başarısız giriş
         toast({
           title: "Giriş başarısız",
           description: "Kullanıcı adı veya şifre hatalı.",
@@ -84,11 +82,15 @@ const Login = () => {
       <Card className="w-[350px]">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-2">
-            <BarChart2 className="h-10 w-10 text-primary-500" />
+            <img 
+              src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
+              alt="TİS Takip Sistemi Logo" 
+              className="h-16 w-16 object-contain"
+            />
           </div>
           <CardTitle className="text-2xl font-bold text-center">TİS Takip Sistemi</CardTitle>
           <CardDescription className="text-center">
-            Hizmet-İş TİS Daire Başkanlığı
+            Hizmet İş Sendikası TİS Daire Başkanlığı
           </CardDescription>
         </CardHeader>
         <CardContent>
