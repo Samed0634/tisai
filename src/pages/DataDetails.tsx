@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { 
@@ -29,11 +28,56 @@ import { useToast } from "@/hooks/use-toast";
 // Sample data for different categories - In real app, this would come from API
 const generateMockData = (type) => {
   const baseData = [
-    { id: 1, name: "ABC İşyeri", sgkNo: "12345678901", employeeCount: 25, memberCount: 15, status: "İşlem Bekliyor" },
-    { id: 2, name: "DEF İşyeri", sgkNo: "23456789012", employeeCount: 40, memberCount: 20, status: "İşlem Bekliyor" },
-    { id: 3, name: "GHI İşyeri", sgkNo: "34567890123", employeeCount: 15, memberCount: 8, status: "İşlem Bekliyor" },
-    { id: 4, name: "JKL İşyeri", sgkNo: "45678901234", employeeCount: 60, memberCount: 35, status: "İşlem Bekliyor" },
-    { id: 5, name: "MNO İşyeri", sgkNo: "56789012345", employeeCount: 30, memberCount: 18, status: "İşlem Bekliyor" },
+    { 
+      id: 1, 
+      name: "ABC İşyeri", 
+      responsibleExpert: "Ahmet Yılmaz",
+      branch: "İstanbul Şubesi",
+      sgkNo: "12345678901", 
+      employeeCount: 25, 
+      memberCount: 15, 
+      status: "İşlem Bekliyor" 
+    },
+    { 
+      id: 2, 
+      name: "DEF İşyeri", 
+      responsibleExpert: "Mehmet Demir",
+      branch: "Ankara Şubesi",
+      sgkNo: "23456789012", 
+      employeeCount: 40, 
+      memberCount: 20, 
+      status: "İşlem Bekliyor" 
+    },
+    { 
+      id: 3, 
+      name: "GHI İşyeri", 
+      responsibleExpert: "Ayşe Kaya",
+      branch: "İzmir Şubesi",
+      sgkNo: "34567890123", 
+      employeeCount: 15, 
+      memberCount: 8, 
+      status: "İşlem Bekliyor" 
+    },
+    { 
+      id: 4, 
+      name: "JKL İşyeri", 
+      responsibleExpert: "Fatma Şahin",
+      branch: "Bursa Şubesi",
+      sgkNo: "45678901234", 
+      employeeCount: 60, 
+      memberCount: 35, 
+      status: "İşlem Bekliyor" 
+    },
+    { 
+      id: 5, 
+      name: "MNO İşyeri", 
+      responsibleExpert: "Mustafa Kurt",
+      branch: "Adana Şubesi",
+      sgkNo: "56789012345", 
+      employeeCount: 30, 
+      memberCount: 18, 
+      status: "İşlem Bekliyor" 
+    },
   ];
   
   return baseData;
@@ -134,6 +178,8 @@ const DataDetails = () => {
           <TableHeader>
             <TableRow>
               <TableHead>İşyeri Adı</TableHead>
+              <TableHead>Sorumlu Uzman</TableHead>
+              <TableHead>Şube</TableHead>
               <TableHead>SGK No</TableHead>
               <TableHead>İşçi Sayısı</TableHead>
               <TableHead>Üye Sayısı</TableHead>
@@ -145,6 +191,8 @@ const DataDetails = () => {
             {data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell>{item.responsibleExpert}</TableCell>
+                <TableCell>{item.branch}</TableCell>
                 <TableCell>{item.sgkNo}</TableCell>
                 <TableCell>{item.employeeCount}</TableCell>
                 <TableCell>{item.memberCount}</TableCell>
