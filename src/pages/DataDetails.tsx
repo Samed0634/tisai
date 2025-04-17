@@ -1,12 +1,23 @@
+
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { generateMockData, categoryTitles, WorkplaceItem } from "@/utils/mockData";
 import { generateActivityMessage } from "@/utils/activityUtils";
 import FilterDropdown from "@/components/FilterDropdown";
-import WorkplaceTable from "@/components/WorkplaceTable";
-import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
 
 const DataDetails = () => {
   const { type } = useParams<{ type: string }>();
@@ -46,7 +57,7 @@ const DataDetails = () => {
     setIsDialogOpen(false);
   };
 
-  const StatusBadge = ({ status }) => {
+  const StatusBadge = ({ status }: { status: string }) => {
     const getStatusClassName = () => {
       switch(status) {
         case "İşlem Bekliyor":
@@ -65,8 +76,15 @@ const DataDetails = () => {
     );
   };
 
-  const WorkplaceTable = ({ data, onEdit }) => {
-    return (
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+        <div className="flex items-center gap-2">
+          <FilterDropdown />
+        </div>
+      </div>
+
       <Card>
         <Table>
           <TableHeader>
@@ -97,7 +115,7 @@ const DataDetails = () => {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    onClick={() => onEdit(item)}
+                    onClick={() => openUpdateDialog(item)}
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -107,22 +125,6 @@ const DataDetails = () => {
           </TableBody>
         </Table>
       </Card>
-    );
-  };
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-        <div className="flex items-center gap-2">
-          <FilterDropdown />
-        </div>
-      </div>
-
-      <WorkplaceTable 
-        data={data} 
-        onEdit={openUpdateDialog} 
-      />
 
       <UpdateWorkplaceDialog 
         open={isDialogOpen}

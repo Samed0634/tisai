@@ -1,4 +1,3 @@
-import { WorkplaceItem } from './mockData';
 
 export const categoryTitles = {
   "authorization-requests": "Yetki Tespiti İstenecek İşyerleri",
@@ -8,6 +7,17 @@ export const categoryTitles = {
   "dispute-notices": "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri",
   "strike-decisions": "Grev Kararı Alınması Gereken İşyerleri",
   "yhk-submissions": "YHK'ya Gönderilmesi Gereken İşyerleri"
+};
+
+export type WorkplaceItem = {
+  id: string;
+  name: string;
+  responsibleExpert: string;
+  branch: string;
+  sgkNo: string;
+  employeeCount: number;
+  memberCount: number;
+  status: 'İşlem Bekliyor' | 'Tamamlandı';
 };
 
 export const generateMockData = (type: string): WorkplaceItem[] => {
@@ -74,15 +84,4 @@ export const generateMockData = (type: string): WorkplaceItem[] => {
         return true;
     }
   });
-};
-
-export type WorkplaceItem = {
-  id: string;
-  name: string;
-  responsibleExpert: string;
-  branch: string;
-  sgkNo: string;
-  employeeCount: number;
-  memberCount: number;
-  status: 'İşlem Bekliyor' | 'Tamamlandı';
 };
