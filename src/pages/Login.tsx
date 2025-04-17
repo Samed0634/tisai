@@ -35,10 +35,23 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Check for the specific credentials
-      if (data.username === "samet" && data.password === "1234") {
+      // Send request to webhook for authentication
+      const response = await fetch("https://primary-production-dcf9.up.railway.app/webhook/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: data.username,
+          password: data.password,
+        }),
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
         // Successful login
-        localStorage.setItem("token", "dummy-token");
+        localStorage.setItem("token", result.token || "authenticated");
         toast({
           title: "Giriş başarılı",
           description: "Hoş geldiniz.",
@@ -48,7 +61,7 @@ const Login = () => {
         // Failed login
         toast({
           title: "Giriş başarısız",
-          description: "Kullanıcı adı veya şifre hatalı.",
+          description: result.message || "Kullanıcı adı veya şifre hatalı.",
           variant: "destructive",
         });
       }
@@ -58,6 +71,7 @@ const Login = () => {
         description: "Sunucuya bağlanırken hata oluştu.",
         variant: "destructive",
       });
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
