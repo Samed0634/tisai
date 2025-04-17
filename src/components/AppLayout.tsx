@@ -9,7 +9,7 @@ import {
   SidebarProvider 
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { BarChart2, CalendarDays, Home, LogOut, MessageCircle, Plus, RefreshCw, User } from "lucide-react";
+import { BarChart2, Home, LogOut, MessageCircle, Plus, RefreshCw, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate, Outlet } from "react-router-dom";
 
@@ -81,15 +81,6 @@ const AppLayout = () => {
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
                 Bilgi Al
-              </Button>
-
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start" 
-                onClick={() => navigate("/calendar")}
-              >
-                <CalendarDays className="mr-2 h-4 w-4" />
-                Takvim
               </Button>
             </nav>
           </SidebarContent>
