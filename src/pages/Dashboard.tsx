@@ -14,6 +14,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings } from "lucide-react";
 
+// Add category to each activity if it doesn't exist
+const enhancedRecentActivities = recentActivities.map(activity => ({
+  ...activity,
+  category: activity.category || "default"
+}));
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const allDashboardData = getDashboardData();
@@ -75,7 +81,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <RecentActivities activities={recentActivities} />
+        <RecentActivities activities={enhancedRecentActivities} />
         <UpcomingMeetings meetings={upcomingMeetings} />
       </div>
     </div>

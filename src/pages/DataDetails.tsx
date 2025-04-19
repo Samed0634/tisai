@@ -1,6 +1,7 @@
+
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Edit, ArrowUpDown } from "lucide-react";
+import { Edit, ArrowUpDown, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { generateMockData, categoryTitles, WorkplaceItem } from "@/utils/mockData";
 import { generateActivityMessage } from "@/utils/activityUtils";

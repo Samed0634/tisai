@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,7 +17,7 @@ import AppLayout from "./components/AppLayout";
 import ProcedureStatus from "./pages/ProcedureStatus";
 import WriteLegalNotice from "./pages/WriteLegalNotice";
 import CourtDecisionQuery from "./pages/CourtDecisionQuery";
-import ActivityHistory from "./components/ActivityHistory";
+import ActivityHistory from "./pages/ActivityHistory";
 
 const queryClient = new QueryClient();
 
@@ -55,7 +56,7 @@ const App = () => (
             <Route path="write-legal-notice" element={<WriteLegalNotice />} />
             <Route path="court-decision-query" element={<CourtDecisionQuery />} />
             <Route path="details/:type" element={<DataDetails />} />
-            <Route path="activity-history" element={<ActivityHistory activities={[]} />} />
+            <Route path="activity-history" element={<ActivityHistory />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
