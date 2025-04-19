@@ -1,3 +1,4 @@
+
 import { 
   Building,
   FileCheck,
@@ -9,6 +10,7 @@ import {
   FileText
 } from "lucide-react";
 import React from "react";
+import { getWorkplaceCount } from "@/utils/mockData";
 
 export interface DashboardItem {
   id: string;
@@ -41,105 +43,105 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Yetki Tespiti İstenecek İşyerleri", 
       value: getWorkplaceCount("authorization-requests"),
       icon: React.createElement(Building, { className: "h-5 w-5" }),
-      color: "#FEF7CD"
+      color: "#FEF7CD" // Sarı
     },
     { 
       id: "authorization-notices", 
       title: "Yetki Belgesi Tebliğ Yapılan İşyerleri", 
       value: getWorkplaceCount("authorization-notices"),
       icon: React.createElement(FileCheck, { className: "h-5 w-5" }),
-      color: "#FEF7CD"
+      color: "#FEF7CD" // Sarı
     },
     { 
       id: "call-required", 
       title: "Çağrı Yapılacak İşyerleri", 
       value: getWorkplaceCount("call-required"),
       icon: React.createElement(MessageSquare, { className: "h-5 w-5" }),
-      color: "#ea384c"
+      color: "#ea384c" // Kırmızı
     },
     { 
       id: "place-and-date", 
       title: "Yer ve Gün Tespit Tarihli İşyerleri", 
       value: 0,
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
-      color: "#D3E4FD"
+      color: "#D3E4FD" // Buz Mavisi
     },
     { 
       id: "pre-determined-session", 
       title: "Önceden Belirlenen İlk Oturum Tarihi İşyerleri", 
       value: 0,
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
-      color: "#D3E4FD"
+      color: "#D3E4FD" // Buz Mavisi
     },
     { 
       id: "first-session", 
       title: "İlk Oturum Tutulması Gereken İşyerleri", 
       value: getWorkplaceCount("first-session"),
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
-      color: "#ea384c"
+      color: "#ea384c" // Kırmızı
     },
     { 
       id: "dispute-notices", 
       title: "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri", 
       value: getWorkplaceCount("dispute-notices"),
       icon: React.createElement(AlertTriangle, { className: "h-5 w-5" }),
-      color: "#ea384c"
+      color: "#ea384c" // Kırmızı
     },
     { 
       id: "mediator-deadline", 
       title: "Arabulucu Ataması Son Tarih", 
       value: 0,
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
-      color: "#D3E4FD"
+      color: "#D3E4FD" // Buz Mavisi
     },
     { 
       id: "strike-decisions", 
       title: "Grev Kararı Alınması Gereken İşyerleri", 
       value: getWorkplaceCount("strike-decisions"),
       icon: React.createElement(Gavel, { className: "h-5 w-5" }),
-      color: "#ea384c"
+      color: "#ea384c" // Kırmızı
     },
     { 
       id: "strike-voting", 
       title: "Grev Oylaması Yapılması Gereken İşyerleri", 
       value: 0,
       icon: React.createElement(Gavel, { className: "h-5 w-5" }),
-      color: "#ea384c"
+      color: "#ea384c" // Kırmızı
     },
     { 
       id: "yhk-submissions", 
       title: "YHK'ya Gönderilmesi Gereken İşyerleri", 
       value: getWorkplaceCount("yhk-submissions"),
       icon: React.createElement(Scale, { className: "h-5 w-5" }),
-      color: "#ea384c"
+      color: "#ea384c" // Kırmızı
     },
     { 
       id: "yhk-reminder", 
       title: "YHK'daki TİS Hatırlatması", 
       value: 0,
       icon: React.createElement(Scale, { className: "h-5 w-5" }),
-      color: "#D3E4FD"
+      color: "#D3E4FD" // Buz Mavisi
     },
     { 
       id: "signed-agreements", 
       title: "İmzalanan TİS'ler", 
       value: 0,
       icon: React.createElement(FileText, { className: "h-5 w-5" }),
-      color: "#F2FCE2"
+      color: "#F2FCE2" // Yeşil
     },
     { 
       id: "expiring-agreements", 
       title: "Sona Erecek TİS'ler", 
       value: 0,
       icon: React.createElement(FileText, { className: "h-5 w-5" }),
-      color: "#FEF7CD"
+      color: "#FEF7CD" // Sarı
     },
     { 
       id: "strike-banned", 
       title: "Grev Yasağı Olan İşyerleri", 
       value: 0,
       icon: React.createElement(Gavel, { className: "h-5 w-5" }),
-      color: "#D3E4FD"
+      color: "#D3E4FD" // Buz Mavisi
     }
   ];
 };
