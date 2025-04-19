@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings } from "lucide-react";
 
-// Add category to each activity if it doesn't exist
 const enhancedRecentActivities = recentActivities.map(activity => ({
   ...activity,
   category: activity.category || "default"
@@ -30,18 +29,83 @@ const fetchDashboardData = async () => {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const allDashboardData = getDashboardData();
+  const staticDashboardData = getDashboardData();
   const [selectedCards, setSelectedCards] = useState<string[]>(
-    allDashboardData.map(item => item.id)
+    staticDashboardData.map(item => item.id)
   );
 
-  // Fetch dashboard data using React Query
-  const { data: dashboardData, isLoading, error } = useQuery({
+  const { data: dashboardData, isLoading } = useQuery({
     queryKey: ['dashboardData'],
     queryFn: fetchDashboardData
   });
 
-  console.log('Fetched dashboard data:', dashboardData); // Log the fetched data
+  const getListLength = (listName: string) => {
+    if (!dashboardData) return 0;
+    return (dashboardData[listName] as any[] || []).length;
+  };
+
+  const allDashboardData = [
+    { 
+      ...staticDashboardData[0],
+      value: getListLength('yetkiTespitIstenenListesi')
+    },
+    { 
+      ...staticDashboardData[1],
+      value: getListLength('yetkiBelgesiTebligYapilanListesi')
+    },
+    { 
+      ...staticDashboardData[2],
+      value: getListLength('cagriYapilacakListesi')
+    },
+    { 
+      ...staticDashboardData[3],
+      value: getListLength('yerVeGunTespitListesi')
+    },
+    { 
+      ...staticDashboardData[4],
+      value: getListLength('oncedenBelirlenenIlkOturumListesi')
+    },
+    { 
+      ...staticDashboardData[5],
+      value: getListLength('ilkOturumGerekenListesi')
+    },
+    { 
+      ...staticDashboardData[6],
+      value: getListLength('uyusmazlikGerekenListesi')
+    },
+    { 
+      ...staticDashboardData[7],
+      value: getListLength('arabulucuAtamasiSonTarihListesi')
+    },
+    { 
+      ...staticDashboardData[8],
+      value: getListLength('grevKarariAlinmasiGerekenListesi')
+    },
+    { 
+      ...staticDashboardData[9],
+      value: getListLength('grevOylamasiYapilmasiGerekenListesi')
+    },
+    { 
+      ...staticDashboardData[10],
+      value: getListLength('yhkGonderimGerekenListesi')
+    },
+    { 
+      ...staticDashboardData[11],
+      value: getListLength('yhkHatirlatmasiListesi')
+    },
+    { 
+      ...staticDashboardData[12],
+      value: getListLength('imzalananTislerListesi')
+    },
+    { 
+      ...staticDashboardData[13],
+      value: getListLength('sonaErecekTislerListesi')
+    },
+    { 
+      ...staticDashboardData[14],
+      value: getListLength('grevYasagiOlanListesi')
+    }
+  ];
 
   const handleCardClick = (categoryId: string) => {
     navigate(`/details/${categoryId}`);
@@ -58,6 +122,10 @@ const Dashboard = () => {
   const filteredDashboardData = allDashboardData.filter(item =>
     selectedCards.includes(item.id)
   );
+
+  if (isLoading) {
+    return <div>Yükleniyor...</div>;
+  }
 
   return (
     <div className="space-y-6">
