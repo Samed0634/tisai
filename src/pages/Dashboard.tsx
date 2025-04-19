@@ -1,26 +1,22 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import DashboardGrid from "@/components/dashboard/DashboardGrid";
+import DashboardCard from "@/components/dashboard/DashboardCard";
 import RecentActivities from "@/components/dashboard/RecentActivities";
 import UpcomingMeetings from "@/components/dashboard/UpcomingMeetings";
-import { recentActivities, upcomingMeetings } from "@/components/dashboard/dashboardData";
-import { useWebhookData } from "@/hooks/useWebhookData";
-import { createDashboardData } from "@/components/dashboard/dashboardConfig";
+import { 
+  getDashboardData,
+  recentActivities, 
+  upcomingMeetings 
+} from "@/components/dashboard/dashboardData";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { webhookData } = useWebhookData();
+  const dashboardData = getDashboardData();
 
   const handleCardClick = (categoryId: string) => {
     navigate(`/details/${categoryId}`);
   };
-
-  const dashboardData = createDashboardData(
-    webhookData,
-    recentActivities.length,
-    upcomingMeetings.length
-  );
 
   return (
     <div className="space-y-6">
@@ -28,7 +24,17 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold tracking-tight">Gösterge Paneli</h1>
       </div>
 
-      <DashboardGrid data={dashboardData} onCardClick={handleCardClick} />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {dashboardData.map((item) => (
+          <DashboardCard
+            key={item.id}
+            title={item.title}
+            value={item.value}
+            icon={item.icon}
+            onClick={() => handleCardClick(item.id)}
+          />
+        ))}
+      </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         <RecentActivities activities={recentActivities} />
