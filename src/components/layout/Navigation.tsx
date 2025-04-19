@@ -1,85 +1,71 @@
-
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { 
-  Home, 
-  Plus, 
-  RefreshCw, 
-  Upload, 
-  MessageCircle, 
-  List, 
-  FileText, 
-  Search 
+import {
+  BarChart3,
+  Building2,
+  Calendar,
+  Contact2,
+  FileJson2,
+  FolderKanban,
+  Gavel,
+  History,
+  ListChecks,
+  MessageSquareCode,
+  Scale,
+  Upload,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SidebarContent, SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
+import { NavigationLink } from "./NavigationLink";
 
-export const navigationItems = [
-  {
-    title: "Anasayfa",
-    icon: Home,
-    path: "/"
-  },
-  {
-    title: "Yeni Veri",
-    icon: Plus,
-    path: "/new-data"
-  },
-  {
-    title: "Veri Güncelle",
-    icon: RefreshCw,
-    path: "/update-data"
-  },
-  {
-    title: "Bağıtlanan TİS Yükleme",
-    icon: Upload,
-    path: "/upload-tis"
-  },
-  {
-    title: "Prosedür Bilgi Botu",
-    icon: MessageCircle,
-    path: "/procedure-bot"
-  },
-  {
-    title: "TİS Bilgi Botu",
-    icon: MessageCircle,
-    path: "/tis-bot"
-  },
-  {
-    title: "Tüm Prosedür Durumu",
-    icon: List,
-    path: "/procedure-status"
-  },
-  {
-    title: "İhtar Yazısı Yaz",
-    icon: FileText,
-    path: "/write-legal-notice"
-  },
-  {
-    title: "Yargı Kararı Sor",
-    icon: Search,
-    path: "/court-decision-query"
-  }
-];
-
-export const Navigation = () => {
-  const navigate = useNavigate();
-
+export function Navigation() {
   return (
-    <SidebarContent className="px-3 py-4">
-      <nav className="space-y-2">
-        {navigationItems.map((item) => (
-          <Button 
-            key={item.path}
-            variant="ghost" 
-            className="w-full justify-start" 
-            onClick={() => navigate(item.path)}
-          >
-            <item.icon className="mr-2 h-4 w-4" />
-            {item.title}
-          </Button>
-        ))}
-      </nav>
-    </SidebarContent>
+    <nav className="space-y-2 px-4">
+      <NavigationLink to="/">
+        <BarChart3 className="h-4 w-4" />
+        Gösterge Paneli
+      </NavigationLink>
+
+      <NavigationLink to="/new-data">
+        <Building2 className="h-4 w-4" />
+        Yeni Veri Girişi
+      </NavigationLink>
+
+      <NavigationLink to="/update-data">
+        <Contact2 className="h-4 w-4" />
+        Veri Güncelleme
+      </NavigationLink>
+
+      <NavigationLink to="/upload-tis">
+        <Upload className="h-4 w-4" />
+        TİS Yükle
+      </NavigationLink>
+
+      <NavigationLink to="/procedure-bot">
+        <MessageSquareCode className="h-4 w-4" />
+        Prosedür Bot
+      </NavigationLink>
+
+      <NavigationLink to="/tis-bot">
+        <FileJson2 className="h-4 w-4" />
+        TİS Bot
+      </NavigationLink>
+
+      <NavigationLink to="/procedure-status">
+        <ListChecks className="h-4 w-4" />
+        Prosedür Durumu
+      </NavigationLink>
+
+      <NavigationLink to="/write-legal-notice">
+        <Gavel className="h-4 w-4" />
+        İhtarname Yaz
+      </NavigationLink>
+
+      <NavigationLink to="/court-decision-query">
+        <Scale className="h-4 w-4" />
+        Yargı Kararı Sor
+      </NavigationLink>
+      
+      <NavigationLink to="/activity-history">
+        <History className="h-4 w-4" />
+        İşlem Geçmişi
+      </NavigationLink>
+    </nav>
   );
-};
+}

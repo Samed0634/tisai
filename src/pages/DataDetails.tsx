@@ -1,11 +1,9 @@
-
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Edit, Settings } from "lucide-react";
+import { Edit, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { generateMockData, categoryTitles, WorkplaceItem } from "@/utils/mockData";
 import { generateActivityMessage } from "@/utils/activityUtils";
-import FilterDropdown from "@/components/FilterDropdown";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -27,7 +25,7 @@ import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
 
 const COLUMNS = [
   { id: 'no', title: 'NO' },
-  { id: 'status', title: 'Güncel İşlem' },
+  { id: 'status', title: 'Süreç', fixed: true },
   { id: 'responsibleExpert', title: 'Sorumlu Uzman' },
   { id: 'province', title: 'İşyerinin Bulunduğu İl' },
   { id: 'branch', title: 'Bağlı Olduğu Şube' },
@@ -71,10 +69,30 @@ const DataDetails = () => {
   const { toast } = useToast();
   const [processDate, setProcessDate] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE_COLUMNS);
+  const [sortKey, setSortKey] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const title = categoryTitles[type as keyof typeof categoryTitles] || "Detaylar";
 
+  const handleSort = (columnId: string) => {
+    if (sortKey === columnId) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(columnId);
+      setSortOrder('asc');
+    }
+  };
+
+  const sortedData = [...data].sort((a, b) => {
+    if (!sortKey) return 0;
+    const aValue = (a as any)[sortKey];
+    const bValue = (b as any)[sortKey];
+    const compareResult = aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+    return sortOrder === 'asc' ? compareResult : -compareResult;
+  });
+
   const toggleColumn = (columnId: string) => {
+    if (columnId === 'status') return;
     setVisibleColumns(current =>
       current.includes(columnId)
         ? current.filter(id => id !== columnId)
@@ -134,7 +152,25 @@ const DataDetails = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
         <div className="flex items-center gap-2">
-          <FilterDropdown />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="ml-auto">
+                <ArrowUpDown className="mr-2 h-4 w-4" />
+                Sırala
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[200px]">
+              {COLUMNS.filter(column => visibleColumns.includes(column.id)).map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  checked={sortKey === column.id}
+                  onCheckedChange={() => handleSort(column.id)}
+                >
+                  {`${column.title}'e göre sırala`}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -147,6 +183,7 @@ const DataDetails = () => {
                   key={column.id}
                   checked={visibleColumns.includes(column.id)}
                   onCheckedChange={() => toggleColumn(column.id)}
+                  disabled={column.fixed}
                 >
                   {column.title}
                 </DropdownMenuCheckboxItem>
@@ -162,13 +199,18 @@ const DataDetails = () => {
             <TableRow>
               {COLUMNS.filter(column => visibleColumns.includes(column.id))
                 .map(column => (
-                  <TableHead key={column.id}>{column.title}</TableHead>
+                  <TableHead 
+                    key={column.id}
+                    className={sortKey === column.id ? 'text-primary' : ''}
+                  >
+                    {column.title}
+                  </TableHead>
                 ))}
               <TableHead className="text-right">İşlem</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item) => (
+            {sortedData.map((item) => (
               <TableRow key={item.id}>
                 {COLUMNS.filter(column => visibleColumns.includes(column.id))
                   .map(column => (
