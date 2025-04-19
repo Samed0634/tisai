@@ -4,7 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
   Sidebar, 
   SidebarHeader, 
-  SidebarProvider
+  SidebarProvider,
+  SidebarContent
 } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 import { AppHeader } from "./layout/AppHeader";
@@ -27,7 +28,9 @@ const AppLayout = () => {
             </div>
           </SidebarHeader>
           
-          <Navigation />
+          <SidebarContent>
+            <Navigation />
+          </SidebarContent>
           <UserFooter />
         </Sidebar>
         
