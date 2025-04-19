@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import RecentActivities from "@/components/dashboard/RecentActivities";
 import UpcomingMeetings from "@/components/dashboard/UpcomingMeetings";
@@ -20,12 +20,28 @@ const enhancedRecentActivities = recentActivities.map(activity => ({
   category: activity.category || "default"
 }));
 
+const fetchDashboardData = async () => {
+  const response = await fetch('https://primary-production-dcf9.up.railway.app/webhook/terminsorgu');
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const allDashboardData = getDashboardData();
   const [selectedCards, setSelectedCards] = useState<string[]>(
     allDashboardData.map(item => item.id)
   );
+
+  // Fetch dashboard data using React Query
+  const { data: dashboardData, isLoading, error } = useQuery({
+    queryKey: ['dashboardData'],
+    queryFn: fetchDashboardData
+  });
+
+  console.log('Fetched dashboard data:', dashboardData); // Log the fetched data
 
   const handleCardClick = (categoryId: string) => {
     navigate(`/details/${categoryId}`);
