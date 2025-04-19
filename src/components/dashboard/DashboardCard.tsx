@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
 
 interface DashboardCardProps {
   title: string;
