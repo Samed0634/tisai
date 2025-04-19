@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { recentActivities } from "@/components/dashboard/dashboardData";
+import { recentActivities, RecentActivity } from "@/components/dashboard/dashboardData";
 import ActivityHistoryComponent from "@/components/ActivityHistory";
 
 interface Activity {
