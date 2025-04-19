@@ -39,76 +39,95 @@ const Dashboard = () => {
     queryFn: fetchDashboardData
   });
 
-  const getListLength = (listName: string) => {
-    if (!dashboardData) return 0;
-    return (dashboardData[listName] as any[] || []).length;
+  const getListItems = (listName: string) => {
+    if (!dashboardData) return [];
+    return (dashboardData[listName] as any[] || []);
   };
 
   const allDashboardData = [
     { 
       ...staticDashboardData[0],
-      value: getListLength('yetkiTespitIstenenListesi')
+      value: getListItems('yetkiTespitIstenenListesi').length,
+      items: getListItems('yetkiTespitIstenenListesi')
     },
     { 
       ...staticDashboardData[1],
-      value: getListLength('yetkiBelgesiTebligYapilanListesi')
+      value: getListItems('yetkiBelgesiTebligYapilanListesi').length,
+      items: getListItems('yetkiBelgesiTebligYapilanListesi')
     },
     { 
       ...staticDashboardData[2],
-      value: getListLength('cagriYapilacakListesi')
+      value: getListItems('cagriYapilacakListesi').length,
+      items: getListItems('cagriYapilacakListesi')
     },
     { 
       ...staticDashboardData[3],
-      value: getListLength('yerVeGunTespitListesi')
+      value: getListItems('yerVeGunTespitListesi').length,
+      items: getListItems('yerVeGunTespitListesi')
     },
     { 
       ...staticDashboardData[4],
-      value: getListLength('oncedenBelirlenenIlkOturumListesi')
+      value: getListItems('oncedenBelirlenenIlkOturumListesi').length,
+      items: getListItems('oncedenBelirlenenIlkOturumListesi')
     },
     { 
       ...staticDashboardData[5],
-      value: getListLength('ilkOturumGerekenListesi')
+      value: getListItems('ilkOturumGerekenListesi').length,
+      items: getListItems('ilkOturumGerekenListesi')
     },
     { 
       ...staticDashboardData[6],
-      value: getListLength('uyusmazlikGerekenListesi')
+      value: getListItems('uyusmazlikGerekenListesi').length,
+      items: getListItems('uyusmazlikGerekenListesi')
     },
     { 
       ...staticDashboardData[7],
-      value: getListLength('arabulucuAtamasiSonTarihListesi')
+      value: getListItems('arabulucuAtamasiSonTarihListesi').length,
+      items: getListItems('arabulucuAtamasiSonTarihListesi')
     },
     { 
       ...staticDashboardData[8],
-      value: getListLength('grevKarariAlinmasiGerekenListesi')
+      value: getListItems('grevKarariAlinmasiGerekenListesi').length,
+      items: getListItems('grevKarariAlinmasiGerekenListesi')
     },
     { 
       ...staticDashboardData[9],
-      value: getListLength('grevOylamasiYapilmasiGerekenListesi')
+      value: getListItems('grevOylamasiYapilmasiGerekenListesi').length,
+      items: getListItems('grevOylamasiYapilmasiGerekenListesi')
     },
     { 
       ...staticDashboardData[10],
-      value: getListLength('yhkGonderimGerekenListesi')
+      value: getListItems('yhkGonderimGerekenListesi').length,
+      items: getListItems('yhkGonderimGerekenListesi')
     },
     { 
       ...staticDashboardData[11],
-      value: getListLength('yhkHatirlatmasiListesi')
+      value: getListItems('yhkHatirlatmasiListesi').length,
+      items: getListItems('yhkHatirlatmasiListesi')
     },
     { 
       ...staticDashboardData[12],
-      value: getListLength('imzalananTislerListesi')
+      value: getListItems('imzalananTislerListesi').length,
+      items: getListItems('imzalananTislerListesi')
     },
     { 
       ...staticDashboardData[13],
-      value: getListLength('sonaErecekTislerListesi')
+      value: getListItems('sonaErecekTislerListesi').length,
+      items: getListItems('sonaErecekTislerListesi')
     },
     { 
       ...staticDashboardData[14],
-      value: getListLength('grevYasagiOlanListesi')
+      value: getListItems('grevYasagiOlanListesi').length,
+      items: getListItems('grevYasagiOlanListesi')
     }
   ];
 
   const handleCardClick = (categoryId: string) => {
-    navigate(`/details/${categoryId}`);
+    const category = allDashboardData.find(item => item.id === categoryId);
+    if (category?.items) {
+      console.log(`Items for ${category.title}:`, category.items);
+      navigate(`/details/${categoryId}`, { state: { items: category.items } });
+    }
   };
 
   const toggleCard = (cardId: string) => {
