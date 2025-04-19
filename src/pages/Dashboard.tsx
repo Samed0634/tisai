@@ -31,6 +31,7 @@ const Dashboard = () => {
             title={item.title}
             value={item.value}
             icon={item.icon}
+            color={item.color}
             onClick={() => handleCardClick(item.id)}
           />
         ))}
