@@ -34,14 +34,14 @@ const Dashboard = () => {
     staticDashboardData.map(item => item.id)
   );
 
-  const { data: dashboardData, isLoading } = useQuery({
+  const { data: n8nDashboardData, isLoading } = useQuery({
     queryKey: ['dashboardData'],
     queryFn: fetchDashboardData
   });
 
   const getListItems = (listName: string) => {
-    if (!dashboardData) return [];
-    return (dashboardData[listName] as any[] || []);
+    if (!n8nDashboardData) return [];
+    return (n8nDashboardData[listName] as any[] || []);
   };
 
   const allDashboardData = [
