@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData, recentActivities, upcomingMeetings } from "@/components/dashboard/dashboardData";
@@ -109,14 +110,18 @@ const Dashboard = () => {
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
     if (category?.items) {
-      if (categoryId === 'authorization-requests') {
+      if (categoryId === "authorization-requests") {
         const firstItem = category.items[0];
         if (firstItem) {
           setSelectedItem(firstItem);
+        } else {
+          console.log("No items found for this category");
         }
       } else {
         navigate(`/details/${categoryId}`, { state: { items: category.items } });
       }
+    } else {
+      console.log("No items available for category:", categoryId);
     }
   };
 
