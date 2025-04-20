@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,10 +10,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const loginSchema = z.object({
-  username: z.string().min(1, { message: "Kullanıcı adı gereklidir" }),
-  password: z.string().min(1, { message: "Şifre gereklidir" }),
+  email: z.string().email({ message: "Geçerli bir e-posta adresi giriniz" }),
+  password: z.string().min(6, { message: "Şifre en az 6 karakter olmalıdır" }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -23,10 +24,27 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Check if user is already logged in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate("/");
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        navigate("/");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -35,41 +53,25 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch("https://primary-production-dcf9.up.railway.app/webhook/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: data.username,
-          password: data.password,
-        }),
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
       });
       
-      if (!response.ok) {
-        throw new Error("Sunucu hatası");
+      if (error) {
+        throw error;
       }
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        localStorage.setItem("token", "authenticated");
-        toast({
-          title: "Giriş başarılı",
-          description: "Hoş geldiniz.",
-        });
-        navigate("/");
-      } else {
-        toast({
-          title: "Giriş başarısız",
-          description: "Kullanıcı adı veya şifre hatalı.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
+
       toast({
-        title: "Bağlantı hatası",
-        description: "Sunucuya bağlanırken hata oluştu.",
+        title: "Giriş başarılı",
+        description: "Hoş geldiniz.",
+      });
+      
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Giriş başarısız",
+        description: error?.message || "E-posta veya şifre hatalı.",
         variant: "destructive",
       });
       console.error("Login error:", error);
@@ -99,12 +101,12 @@ const Login = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="username"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kullanıcı Adı</FormLabel>
+                    <FormLabel>E-posta</FormLabel>
                     <FormControl>
-                      <Input placeholder="Kullanıcı adınızı giriniz" {...field} />
+                      <Input type="email" placeholder="E-posta adresinizi giriniz" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
