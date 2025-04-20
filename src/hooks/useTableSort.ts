@@ -1,8 +1,11 @@
 
 import { useState } from "react";
-import { WorkplaceItem } from "@/utils/mockData";
 
-export const useTableSort = (data: WorkplaceItem[]) => {
+interface SortableItem {
+  [key: string]: any;
+}
+
+export const useTableSort = <T extends SortableItem>(data: T[]) => {
   const [sortKey, setSortKey] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -17,8 +20,8 @@ export const useTableSort = (data: WorkplaceItem[]) => {
 
   const sortedData = [...data].sort((a, b) => {
     if (!sortKey) return 0;
-    const aValue = (a as any)[sortKey];
-    const bValue = (b as any)[sortKey];
+    const aValue = a[sortKey];
+    const bValue = b[sortKey];
     const compareResult = aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
     return sortOrder === 'asc' ? compareResult : -compareResult;
   });
