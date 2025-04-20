@@ -1,6 +1,9 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDashboardData, recentActivities, upcomingMeetings } from "@/components/dashboard/dashboardData";
+import { getDashboardData } from "@/components/dashboard/dashboardCards";
+import { recentActivities } from "@/components/dashboard/recentActivities";
+import { upcomingMeetings } from "@/components/dashboard/upcomingMeetings";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
