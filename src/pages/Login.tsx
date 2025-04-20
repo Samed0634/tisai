@@ -53,13 +53,32 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      // Attempt to generate a captcha token using the correct method
+      let captchaToken = null;
+      try {
+        const { data: captchaData } = await supabase.auth.mfa.challengeAndVerify({ 
+          factorType: 'totp'  // Using TOTP as the factor type for captcha
+        });
+        captchaToken = captchaData?.token;
+      } catch (captchaError) {
+        console.error("Failed to generate captcha token:", captchaError);
+        // Continue with login without captcha if it fails
+      }
+      
+      // Sign in with or without captcha token
+      const signInOptions: any = {
         email: data.email,
         password: data.password,
-        options: {
-          captchaToken: await generateCaptchaToken()
-        }
-      });
+      };
+      
+      // Only add captcha token if it was successfully generated
+      if (captchaToken) {
+        signInOptions.options = {
+          captchaToken: captchaToken
+        };
+      }
+      
+      const { error } = await supabase.auth.signInWithPassword(signInOptions);
       
       if (error) {
         throw error;
@@ -80,23 +99,6 @@ const Login = () => {
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // Function to generate reCAPTCHA token
-  const generateCaptchaToken = async () => {
-    try {
-      const { data: { token }, error } = await supabase.auth.mfa.challenge({ factorType: 'totp' });
-      if (error) throw error;
-      return token;
-    } catch (error) {
-      console.error("reCAPTCHA error:", error);
-      toast({
-        title: "reCAPTCHA Hatası",
-        description: "Doğrulama işlemi başarısız oldu. Lütfen tekrar deneyin.",
-        variant: "destructive",
-      });
-      throw error;
     }
   };
 
