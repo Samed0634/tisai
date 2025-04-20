@@ -53,13 +53,13 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Attempt to generate a captcha token using the correct method
+      // Attempt to generate a captcha token - without specifying factorType which is incorrect
       let captchaToken = null;
       try {
-        const { data: captchaData } = await supabase.auth.mfa.challengeAndVerify({ 
-          factorType: 'totp'  // Using TOTP as the factor type for captcha
-        });
-        captchaToken = captchaData?.token;
+        // Using the correct method without the incorrect factorType parameter
+        const { data: captchaData } = await supabase.auth.mfa.challengeAndVerify({});
+        // Access the token correctly based on the returned structure
+        captchaToken = captchaData?.access_token;
       } catch (captchaError) {
         console.error("Failed to generate captcha token:", captchaError);
         // Continue with login without captcha if it fails
@@ -89,7 +89,10 @@ const Login = () => {
         description: "Hoş geldiniz.",
       });
       
-      navigate("/");
+      // Force navigation to dashboard after successful login
+      setTimeout(() => {
+        window.location.href = "/"; // Use direct location change to force a full refresh
+      }, 500);
     } catch (error: any) {
       toast({
         title: "Giriş başarısız",
