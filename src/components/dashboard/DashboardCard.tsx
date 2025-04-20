@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface DashboardCardProps {
   title: string;
@@ -8,6 +9,7 @@ interface DashboardCardProps {
   icon: React.ReactNode;
   onClick: () => void;
   color: string;
+  className?: string; // Adding optional className prop
 }
 
 const DashboardCard: React.FC<DashboardCardProps> = ({ 
@@ -15,15 +17,19 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   value, 
   icon, 
   onClick,
-  color
+  color,
+  className
 }) => {
   return (
     <Card 
       onClick={onClick} 
-      className="group cursor-pointer transition-all duration-300 hover:scale-[1.02] bg-white border shadow-sm hover:shadow-md"
+      className={cn(
+        "group cursor-pointer transition-all duration-300 hover:scale-[1.02] bg-white border shadow-sm hover:shadow-md",
+        className
+      )}
     >
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+        <CardTitle className={cn("text-sm font-medium text-muted-foreground", className)}>
           {title}
         </CardTitle>
         <div className="rounded-lg bg-primary/10 p-2.5 text-primary transition-all group-hover:scale-110 group-hover:bg-primary/15">
@@ -31,10 +37,10 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-foreground">
+        <div className={cn("text-2xl font-bold text-foreground", className)}>
           {value}
         </div>
-        <p className="text-xs text-muted-foreground">İşyeri</p>
+        <p className={cn("text-xs text-muted-foreground", className)}>İşyeri</p>
       </CardContent>
     </Card>
   );
