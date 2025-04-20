@@ -1,3 +1,4 @@
+
 import { 
   Building,
   FileCheck,
@@ -63,14 +64,14 @@ export const getDashboardData = (): DashboardItem[] => {
       color: "#ea384c" // Kırmızı
     },
     { 
-      id: "place-and-date", 
+      id: "place-date-determination", 
       title: "Yer ve Gün Tespit Tarihli İşyerleri", 
       value: 0,
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
       color: "#D3E4FD" // Buz Mavisi
     },
     { 
-      id: "pre-determined-session", 
+      id: "pre-determined-first-session", 
       title: "Önceden Belirlenen İlk Oturum Tarihi İşyerleri", 
       value: 0,
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
@@ -91,7 +92,7 @@ export const getDashboardData = (): DashboardItem[] => {
       color: "#ea384c" // Kırmızı
     },
     { 
-      id: "mediator-deadline", 
+      id: "mediator-appointment-deadline", 
       title: "Arabulucu Ataması Son Tarih", 
       value: 0,
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
@@ -126,21 +127,21 @@ export const getDashboardData = (): DashboardItem[] => {
       color: "#D3E4FD" // Buz Mavisi
     },
     { 
-      id: "signed-agreements", 
+      id: "signed-tis", 
       title: "İmzalanan TİS'ler", 
       value: 0,
       icon: React.createElement(FileText, { className: "h-5 w-5" }),
       color: "#F2FCE2" // Yeşil
     },
     { 
-      id: "expiring-agreements", 
+      id: "expiring-tis", 
       title: "Sona Erecek TİS'ler", 
       value: 0,
       icon: React.createElement(FileText, { className: "h-5 w-5" }),
       color: "#FEF7CD" // Sarı
     },
     { 
-      id: "strike-banned", 
+      id: "strike-ban", 
       title: "Grev Yasağı Olan İşyerleri", 
       value: 0,
       icon: React.createElement(Gavel, { className: "h-5 w-5" }),

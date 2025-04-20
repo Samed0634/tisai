@@ -48,6 +48,12 @@ const DataDetails = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [processDate, setProcessDate] = useState("");
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (items.length === 0) {
+      console.log("No items found for this category");
+    }
+  }, [items]);
   
   // Handle API field mapping for column visibility
   const mapApiFieldsToColumnIds = (item: WorkplaceItem) => {

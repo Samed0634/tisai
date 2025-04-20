@@ -2,16 +2,25 @@
 import { useQuery } from "@tanstack/react-query";
 
 const fetchDashboardData = async () => {
-  const response = await fetch('https://primary-production-dcf9.up.railway.app/webhook/terminsorgu');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+  try {
+    const response = await fetch('https://primary-production-dcf9.up.railway.app/webhook/terminsorgu');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log("Dashboard data loaded:", Object.keys(data));
+    return data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    throw error;
   }
-  return response.json();
 };
 
 export const useDashboardData = () => {
   return useQuery({
     queryKey: ['dashboardData'],
-    queryFn: fetchDashboardData
+    queryFn: fetchDashboardData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2
   });
 };
