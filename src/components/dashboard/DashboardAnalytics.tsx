@@ -22,4 +22,3 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
 };
 
 export default DashboardAnalytics;
-

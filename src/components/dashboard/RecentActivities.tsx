@@ -8,7 +8,7 @@ interface RecentActivity {
   time: string;
   date: string;
   icon: React.ReactNode;
-  category: string;
+  category?: string; // Changed to optional to match dashboardData.ts definition
 }
 
 interface RecentActivitiesProps {
@@ -39,7 +39,7 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
       <CardContent className="space-y-4">
         {lastTenActivities.map((activity) => (
           <div key={activity.id} className="flex items-center gap-4 border-b pb-4 last:border-b-0 last:pb-0">
-            <div className={`rounded-full p-2 ${getActivityColor(activity.category)}`}>
+            <div className={`rounded-full p-2 ${activity.category ? getActivityColor(activity.category) : "bg-gray-100 text-gray-800"}`}>
               {activity.icon}
             </div>
             <div className="flex-1">
