@@ -11,7 +11,18 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { WorkplaceItem } from "@/utils/mockData";
+
+interface WorkplaceItem {
+  id: string;
+  name: string;
+  responsibleExpert?: string;
+  branch?: string;
+  sgkNo?: string;
+  employeeCount?: number;
+  memberCount?: number;
+  status?: string;
+  [key: string]: any;
+}
 
 interface WorkplaceTableProps {
   data: WorkplaceItem[];

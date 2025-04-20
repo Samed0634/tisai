@@ -12,7 +12,18 @@ import {
 } from "@/components/ui/table";
 import { COLUMNS } from "@/constants/tableColumns";
 import { StatusBadge } from "./StatusBadge";
-import { WorkplaceItem } from "@/utils/mockData";
+
+interface WorkplaceItem {
+  id: string;
+  name: string;
+  responsibleExpert?: string;
+  branch?: string;
+  sgkNo?: string;
+  employeeCount?: number;
+  memberCount?: number;
+  status?: string;
+  [key: string]: any;
+}
 
 interface WorkplaceTableProps {
   visibleColumns: string[];
@@ -50,7 +61,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
               .map(column => (
                 <TableCell key={column.id}>
                   {column.id === 'status' ? (
-                    <StatusBadge status={item.status} />
+                    <StatusBadge status={item.status || ''} />
                   ) : (
                     (item as any)[column.id]
                   )}

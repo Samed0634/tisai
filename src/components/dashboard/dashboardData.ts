@@ -10,7 +10,6 @@ import {
   FileText
 } from "lucide-react";
 import React from "react";
-import { getWorkplaceCount } from "@/utils/mockData";
 
 export interface DashboardItem {
   id: string;
@@ -18,6 +17,7 @@ export interface DashboardItem {
   value: number;
   icon: React.ReactNode;
   color: string;
+  items?: any[];
 }
 
 export interface RecentActivity {
@@ -37,26 +37,29 @@ export interface UpcomingMeeting {
   time: string;
 }
 
+// Default count function that returns 0 if no real data is available
+const getDefaultCount = () => 0;
+
 export const getDashboardData = (): DashboardItem[] => {
   return [
     { 
       id: "authorization-requests", 
       title: "Yetki Tespiti İstenecek İşyerleri", 
-      value: getWorkplaceCount("authorization-requests"),
+      value: getDefaultCount(),
       icon: React.createElement(Building, { className: "h-5 w-5" }),
       color: "#FEF7CD" // Sarı
     },
     { 
       id: "authorization-notices", 
       title: "Yetki Belgesi Tebliğ Yapılan İşyerleri", 
-      value: getWorkplaceCount("authorization-notices"),
+      value: getDefaultCount(),
       icon: React.createElement(FileCheck, { className: "h-5 w-5" }),
       color: "#FEF7CD" // Sarı
     },
     { 
       id: "call-required", 
       title: "Çağrı Yapılacak İşyerleri", 
-      value: getWorkplaceCount("call-required"),
+      value: getDefaultCount(),
       icon: React.createElement(MessageSquare, { className: "h-5 w-5" }),
       color: "#ea384c" // Kırmızı
     },
@@ -77,14 +80,14 @@ export const getDashboardData = (): DashboardItem[] => {
     { 
       id: "first-session", 
       title: "İlk Oturum Tutulması Gereken İşyerleri", 
-      value: getWorkplaceCount("first-session"),
+      value: getDefaultCount(),
       icon: React.createElement(Calendar, { className: "h-5 w-5" }),
       color: "#ea384c" // Kırmızı
     },
     { 
       id: "dispute-notices", 
       title: "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri", 
-      value: getWorkplaceCount("dispute-notices"),
+      value: getDefaultCount(),
       icon: React.createElement(AlertTriangle, { className: "h-5 w-5" }),
       color: "#ea384c" // Kırmızı
     },
@@ -98,7 +101,7 @@ export const getDashboardData = (): DashboardItem[] => {
     { 
       id: "strike-decisions", 
       title: "Grev Kararı Alınması Gereken İşyerleri", 
-      value: getWorkplaceCount("strike-decisions"),
+      value: getDefaultCount(),
       icon: React.createElement(Gavel, { className: "h-5 w-5" }),
       color: "#ea384c" // Kırmızı
     },
@@ -112,7 +115,7 @@ export const getDashboardData = (): DashboardItem[] => {
     { 
       id: "yhk-submissions", 
       title: "YHK'ya Gönderilmesi Gereken İşyerleri", 
-      value: getWorkplaceCount("yhk-submissions"),
+      value: getDefaultCount(),
       icon: React.createElement(Scale, { className: "h-5 w-5" }),
       color: "#ea384c" // Kırmızı
     },

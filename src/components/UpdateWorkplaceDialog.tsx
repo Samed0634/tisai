@@ -12,7 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { WorkplaceItem } from "@/utils/mockData";
+
+interface WorkplaceItem {
+  id: string;
+  name: string;
+  responsibleExpert?: string;
+  branch?: string;
+  sgkNo?: string;
+  employeeCount?: number;
+  memberCount?: number;
+  status?: string;
+  [key: string]: any;
+}
 
 interface UpdateWorkplaceDialogProps {
   open: boolean;
