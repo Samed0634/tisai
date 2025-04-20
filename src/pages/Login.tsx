@@ -56,6 +56,9 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
+        options: {
+          captchaToken: await generateCaptchaToken()
+        }
       });
       
       if (error) {
@@ -77,6 +80,23 @@ const Login = () => {
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Function to generate reCAPTCHA token
+  const generateCaptchaToken = async () => {
+    try {
+      const { data: { token }, error } = await supabase.auth.mfa.challenge({ factorType: 'totp' });
+      if (error) throw error;
+      return token;
+    } catch (error) {
+      console.error("reCAPTCHA error:", error);
+      toast({
+        title: "reCAPTCHA Hatası",
+        description: "Doğrulama işlemi başarısız oldu. Lütfen tekrar deneyin.",
+        variant: "destructive",
+      });
+      throw error;
     }
   };
 
