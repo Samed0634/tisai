@@ -1,5 +1,11 @@
 
-export const COLUMNS = [
+export type ColumnType = {
+  id: string;
+  title: string;
+  fixed?: boolean;
+};
+
+export const COLUMNS: ColumnType[] = [
   { id: 'no', title: 'NO' },
   { id: 'status', title: 'Süreç', fixed: true },
   { id: 'responsibleExpert', title: 'Sorumlu Uzman' },
@@ -33,4 +39,4 @@ export const COLUMNS = [
   { id: 'tisSignDate', title: 'TİS İmza Tarihi' },
   { id: 'tisStartDate', title: 'TİS Başlangıç Tarihi' },
   { id: 'tisEndDate', title: 'TİS Bitiş Tarihi' }
-] as const;
+];

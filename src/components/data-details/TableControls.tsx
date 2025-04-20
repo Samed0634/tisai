@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { COLUMNS } from "@/constants/tableColumns";
+import { COLUMNS, ColumnType } from "@/constants/tableColumns";
 
 interface TableControlsProps {
   visibleColumns: string[];
@@ -56,7 +56,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
               key={column.id}
               checked={visibleColumns.includes(column.id)}
               onCheckedChange={() => toggleColumn(column.id)}
-              disabled={column.fixed}
+              disabled={column.fixed === true}
             >
               {column.title}
             </DropdownMenuCheckboxItem>
