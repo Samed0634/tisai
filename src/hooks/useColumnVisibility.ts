@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 
-const DEFAULT_VISIBLE_COLUMNS = ['status', 'name', 'branch', 'responsibleExpert', 'sgkNo', 'employeeCount', 'memberCount'];
+const DEFAULT_VISIBLE_COLUMNS = ['id', 'name', 'branch', 'responsibleExpert', 'sgkNo', 'employeeCount', 'memberCount'];
 
 export const useColumnVisibility = () => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE_COLUMNS);
