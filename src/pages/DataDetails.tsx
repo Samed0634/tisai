@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
@@ -49,8 +49,29 @@ const DataDetails = () => {
   const [processDate, setProcessDate] = useState("");
   const { toast } = useToast();
   
+  // Handle API field mapping for column visibility
+  const mapApiFieldsToColumnIds = (item: WorkplaceItem) => {
+    if (!item) return {};
+    
+    const fieldMap: Record<string, string> = {
+      "İşyeri Adı": "name",
+      "Bağlı Olduğu Şube": "branch",
+      "Sorumlu Uzman": "responsibleExpert",
+      "İl": "province",
+      "İşyeri Türü": "workplaceType",
+      "SGK No": "sgkNo",
+      "İşçi Sayısı": "employeeCount",
+      "Üye Sayısı": "memberCount"
+    };
+    
+    return Object.entries(item).reduce((acc, [key, value]) => {
+      const mappedKey = fieldMap[key] || key;
+      return { ...acc, [mappedKey]: value };
+    }, {});
+  };
+  
   const { visibleColumns, toggleColumn } = useColumnVisibility();
-  const { sortKey, sortOrder, handleSort, sortedData } = useTableSort(items);
+  const { sortKey, sortOrder, handleSort, sortedData } = useTableSort(items.map(mapApiFieldsToColumnIds));
 
   const title = categoryTitles[type as keyof typeof categoryTitles] || "Detaylar";
 
@@ -70,7 +91,7 @@ const DataDetails = () => {
       return;
     }
 
-    const activityMessage = `${selectedCompany.name} işlemi tamamlandı.`;
+    const activityMessage = `${selectedCompany.name || selectedCompany["İşyeri Adı"]} işlemi tamamlandı.`;
     
     toast({
       title: "İşlem Tamamlandı",
@@ -78,6 +99,13 @@ const DataDetails = () => {
     });
 
     setIsDialogOpen(false);
+  };
+
+  // Get all dynamic columns from data
+  const getAllColumns = () => {
+    if (items.length === 0) return [];
+    
+    return Object.keys(items[0]).filter(key => key !== 'id');
   };
 
   return (
@@ -96,7 +124,7 @@ const DataDetails = () => {
         <WorkplaceTable
           visibleColumns={visibleColumns}
           sortKey={sortKey}
-          data={sortedData}
+          data={items} 
           onUpdateClick={openUpdateDialog}
         />
       </Card>

@@ -15,4 +15,3 @@ export const useDashboardData = () => {
     queryFn: fetchDashboardData
   });
 };
-
