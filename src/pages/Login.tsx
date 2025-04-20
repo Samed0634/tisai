@@ -53,32 +53,12 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Attempt to generate a captcha token - without specifying factorType which is incorrect
-      let captchaToken = null;
-      try {
-        // Using the correct method without the incorrect factorType parameter
-        const { data: captchaData } = await supabase.auth.mfa.challengeAndVerify({});
-        // Access the token correctly based on the returned structure
-        captchaToken = captchaData?.access_token;
-      } catch (captchaError) {
-        console.error("Failed to generate captcha token:", captchaError);
-        // Continue with login without captcha if it fails
-      }
-      
-      // Sign in with or without captcha token
-      const signInOptions: any = {
+      // Sign in without additional captcha verification
+      // We'll remove the captcha logic since it requires factorId and code that we don't have
+      const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
-      };
-      
-      // Only add captcha token if it was successfully generated
-      if (captchaToken) {
-        signInOptions.options = {
-          captchaToken: captchaToken
-        };
-      }
-      
-      const { error } = await supabase.auth.signInWithPassword(signInOptions);
+      });
       
       if (error) {
         throw error;
