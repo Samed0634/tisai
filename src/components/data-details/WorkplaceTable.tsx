@@ -22,6 +22,7 @@ interface WorkplaceItem {
   employeeCount?: number;
   memberCount?: number;
   status?: string;
+  deadlineDate?: string;
   [key: string]: any;
 }
 
@@ -30,6 +31,14 @@ interface WorkplaceTableProps {
   sortKey: string;
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
+}
+
+function isPastDeadline(deadlineDate: string | undefined) {
+  if (!deadlineDate) return false;
+  const now = new Date();
+  const deadline = new Date(deadlineDate);
+  deadline.setHours(23, 59, 59, 999); // Deadline is inclusive of the whole date
+  return deadline < now;
 }
 
 export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
@@ -81,10 +90,9 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   // Get all available fields from the first data item
   const getAllFields = () => {
     if (data.length === 0) return [];
-    
     const firstItem = data[0];
     return Object.keys(firstItem).map((key) => {
-      const matchingColumn = COLUMNS.find((col) => 
+      const matchingColumn = COLUMNS.find((col) =>
         col.id === mapApiFieldToColumnId(key) || col.title === key
       );
       return matchingColumn || { id: key, title: key };
@@ -92,9 +100,15 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   };
 
   const allColumns = getAllFields();
-  const displayColumns = visibleColumns.length > 0 
+  const displayColumns = visibleColumns.length > 0
     ? COLUMNS.filter((col) => visibleColumns.includes(col.id))
     : allColumns;
+
+  // Helper for detecting pending status (no action taken)
+  function isNoAction(item: WorkplaceItem) {
+    // You can expand this according to the actual "pending" statuses of your workflow.
+    return !item.status || item.status === "" || item.status?.toLowerCase().includes("bekleniyor");
+  }
 
   return (
     <Table>
@@ -114,20 +128,43 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
       <TableBody>
         {data.map((item) => (
           <TableRow key={item.id || item.İşyeri_Adı || Math.random().toString()}>
-            {displayColumns.map((column) => (
-              <TableCell key={column.id}>
-                {column.id === 'status' ? (
-                  <StatusBadge status={item.status || ''} />
-                ) : (
-                  item[column.id] || 
-                  item[column.title] || 
-                  (Object.entries(item).find(([k]) => 
-                    mapApiFieldToColumnId(k) === column.id
-                  ) || [])[1] || 
-                  '-'
-                )}
-              </TableCell>
-            ))}
+            {displayColumns.map((column) => {
+              let value =
+                column.id === 'status'
+                  ? (item.status || '')
+                  : item[column.id] ||
+                    item[column.title] ||
+                    (Object.entries(item).find(([k]) =>
+                      mapApiFieldToColumnId(k) === column.id
+                    ) || [])[1] ||
+                    '-';
+
+              if (column.id === 'status') {
+                return (
+                  <TableCell key={column.id}>
+                    <StatusBadge status={value} />
+                  </TableCell>
+                );
+              }
+
+              // For "deadlineDate" (Termin Tarihi), check if overdue and pending action
+              if (column.id === "deadlineDate" && value && value !== "-") {
+                const showRed = isPastDeadline(value) && isNoAction(item);
+                return (
+                  <TableCell key={column.id}>
+                    <span className={showRed ? "text-destructive font-semibold" : ""}>
+                      {value}
+                    </span>
+                  </TableCell>
+                );
+              }
+
+              return (
+                <TableCell key={column.id}>
+                  {value}
+                </TableCell>
+              );
+            })}
             <TableCell className="text-right">
               <Button
                 variant="ghost"
