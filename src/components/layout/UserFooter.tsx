@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,20 +10,34 @@ import { useToast } from "@/hooks/use-toast";
 export const UserFooter = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserEmail = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        setEmail(user.email);
+      }
+    };
+    getUserEmail();
+  }, []);
 
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      
+
       if (error) {
         throw error;
       }
-      
+
       toast({
         title: "Çıkış başarılı",
         description: "Güvenli bir şekilde çıkış yapıldı.",
       });
-      
+
       // Force navigation to login page
       setTimeout(() => {
         window.location.href = "/login";
@@ -50,14 +63,10 @@ export const UserFooter = () => {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-sm font-medium">Kullanıcı</p>
+            <p className="text-sm font-medium">{email ?? "Kullanıcı"}</p>
           </div>
         </div>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={handleLogout}
-        >
+        <Button variant="ghost" size="icon" onClick={handleLogout}>
           <LogOut className="h-4 w-4" />
         </Button>
       </div>
