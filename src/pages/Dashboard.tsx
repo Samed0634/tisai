@@ -1,9 +1,11 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import RecentActivities from "@/components/dashboard/RecentActivities";
 import UpcomingMeetings from "@/components/dashboard/UpcomingMeetings";
+import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
 import { getDashboardData, recentActivities, upcomingMeetings } from "@/components/dashboard/dashboardData";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +14,12 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Settings } from "lucide-react";
 
 const enhancedRecentActivities = recentActivities.map(activity => ({
@@ -33,6 +41,7 @@ const Dashboard = () => {
   const [selectedCards, setSelectedCards] = useState<string[]>(
     staticDashboardData.map(item => item.id)
   );
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   const { data: n8nDashboardData, isLoading } = useQuery({
     queryKey: ['dashboardData'],
@@ -125,8 +134,16 @@ const Dashboard = () => {
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
     if (category?.items) {
-      console.log(`Items for ${category.title}:`, category.items);
-      navigate(`/details/${categoryId}`, { state: { items: category.items } });
+      if (categoryId === 'authorization-requests') {
+        // For Yetki Tespiti İstenecek İşyerleri, show the dialog
+        const firstItem = category.items[0];
+        if (firstItem) {
+          setSelectedItem(firstItem);
+        }
+      } else {
+        // For other categories, navigate to details page
+        navigate(`/details/${categoryId}`, { state: { items: category.items } });
+      }
     }
   };
 
@@ -187,6 +204,15 @@ const Dashboard = () => {
         <RecentActivities activities={enhancedRecentActivities} />
         <UpcomingMeetings meetings={upcomingMeetings} />
       </div>
+
+      <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle>İşyeri Detayları</DialogTitle>
+          </DialogHeader>
+          {selectedItem && <WorkplaceItemDetails item={selectedItem} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
