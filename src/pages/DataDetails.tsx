@@ -69,9 +69,19 @@ const DataDetails = () => {
       return { ...acc, [mappedKey]: value };
     }, {});
   };
+
+  // Ensure that items are transformed to match WorkplaceItem interface
+  const processedItems = items.map((item) => {
+    // Make sure each item has at least id and name properties
+    return {
+      id: item.id || item["İşyeri Adı"] || String(Math.random()),
+      name: item.name || item["İşyeri Adı"] || "Unnamed",
+      ...item
+    };
+  });
   
   const { visibleColumns, toggleColumn } = useColumnVisibility();
-  const { sortKey, sortOrder, handleSort, sortedData } = useTableSort(items.map(mapApiFieldsToColumnIds));
+  const { sortKey, sortOrder, handleSort, sortedData } = useTableSort(processedItems);
 
   const title = categoryTitles[type as keyof typeof categoryTitles] || "Detaylar";
 
@@ -124,7 +134,7 @@ const DataDetails = () => {
         <WorkplaceTable
           visibleColumns={visibleColumns}
           sortKey={sortKey}
-          data={items} 
+          data={processedItems} 
           onUpdateClick={openUpdateDialog}
         />
       </Card>
