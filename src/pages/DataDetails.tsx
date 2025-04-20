@@ -28,11 +28,23 @@ export const categoryTitles: Record<string, string> = {
   "strike-ban": "Grev Yasağı Olan İşyerleri"
 };
 
+interface WorkplaceItem {
+  id: string;
+  name: string;
+  responsibleExpert?: string;
+  branch?: string;
+  sgkNo?: string;
+  employeeCount?: number;
+  memberCount?: number;
+  status?: string;
+  [key: string]: any;
+}
+
 const DataDetails = () => {
   const { type } = useParams<{ type: string }>();
   const location = useLocation();
-  const items = location.state?.items || [];
-  const [selectedCompany, setSelectedCompany] = useState<any | null>(null);
+  const items = (location.state?.items || []) as WorkplaceItem[];
+  const [selectedCompany, setSelectedCompany] = useState<WorkplaceItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [processDate, setProcessDate] = useState("");
   const { toast } = useToast();
@@ -42,7 +54,7 @@ const DataDetails = () => {
 
   const title = categoryTitles[type as keyof typeof categoryTitles] || "Detaylar";
 
-  const openUpdateDialog = (company: any) => {
+  const openUpdateDialog = (company: WorkplaceItem) => {
     setSelectedCompany(company);
     setProcessDate("");
     setIsDialogOpen(true);

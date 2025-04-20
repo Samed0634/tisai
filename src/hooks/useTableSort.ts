@@ -1,11 +1,19 @@
 
 import { useState } from "react";
 
-interface SortableItem {
+interface WorkplaceItem {
+  id: string;
+  name: string;
+  responsibleExpert?: string;
+  branch?: string;
+  sgkNo?: string;
+  employeeCount?: number;
+  memberCount?: number;
+  status?: string;
   [key: string]: any;
 }
 
-export const useTableSort = <T extends SortableItem>(data: T[]) => {
+export const useTableSort = <T extends WorkplaceItem>(data: T[]) => {
   const [sortKey, setSortKey] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
