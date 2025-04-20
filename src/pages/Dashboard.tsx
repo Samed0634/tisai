@@ -1,39 +1,17 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import DashboardCard from "@/components/dashboard/DashboardCard";
-import RecentActivities from "@/components/dashboard/RecentActivities";
-import UpcomingMeetings from "@/components/dashboard/UpcomingMeetings";
-import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
 import { getDashboardData, recentActivities, upcomingMeetings } from "@/components/dashboard/dashboardData";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Settings } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardGrid from "@/components/dashboard/DashboardGrid";
+import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
 const enhancedRecentActivities = recentActivities.map(activity => ({
   ...activity,
   category: activity.category || "default"
 }));
-
-const fetchDashboardData = async () => {
-  const response = await fetch('https://primary-production-dcf9.up.railway.app/webhook/terminsorgu');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -43,10 +21,7 @@ const Dashboard = () => {
   );
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
-  const { data: n8nDashboardData, isLoading } = useQuery({
-    queryKey: ['dashboardData'],
-    queryFn: fetchDashboardData
-  });
+  const { data: n8nDashboardData, isLoading } = useDashboardData();
 
   const getListItems = (listName: string) => {
     if (!n8nDashboardData) return [];
@@ -135,13 +110,11 @@ const Dashboard = () => {
     const category = allDashboardData.find(item => item.id === categoryId);
     if (category?.items) {
       if (categoryId === 'authorization-requests') {
-        // For Yetki Tespiti İstenecek İşyerleri, show the dialog
         const firstItem = category.items[0];
         if (firstItem) {
           setSelectedItem(firstItem);
         }
       } else {
-        // For other categories, navigate to details page
         navigate(`/details/${categoryId}`, { state: { items: category.items } });
       }
     }
@@ -165,45 +138,21 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Gösterge Paneli</h1>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[300px] max-h-[400px] overflow-y-auto">
-            {allDashboardData.map((item) => (
-              <DropdownMenuCheckboxItem
-                key={item.id}
-                checked={selectedCards.includes(item.id)}
-                onCheckedChange={() => toggleCard(item.id)}
-              >
-                {item.title}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <DashboardHeader
+        allDashboardData={allDashboardData}
+        selectedCards={selectedCards}
+        onToggleCard={toggleCard}
+      />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredDashboardData.map((item) => (
-          <DashboardCard
-            key={item.id}
-            title={item.title}
-            value={item.value}
-            icon={item.icon}
-            color={item.color}
-            onClick={() => handleCardClick(item.id)}
-          />
-        ))}
-      </div>
+      <DashboardGrid
+        items={filteredDashboardData}
+        onCardClick={handleCardClick}
+      />
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <RecentActivities activities={enhancedRecentActivities} />
-        <UpcomingMeetings meetings={upcomingMeetings} />
-      </div>
+      <DashboardAnalytics
+        activities={enhancedRecentActivities}
+        meetings={upcomingMeetings}
+      />
 
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden">
