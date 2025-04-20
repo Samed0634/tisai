@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -12,20 +13,20 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.15);
 }
 
-/* Ambient Background Animation */
+/* Subtle Background Pattern */
 body::before {
   content: '';
   position: fixed;
@@ -34,8 +35,9 @@ body::before {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 15% 50%, rgba(17, 24, 39, 0.9) 0%, transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(17, 24, 39, 0.9) 0%, transparent 25%);
+    linear-gradient(120deg, rgba(224, 242, 254, 0.3), rgba(239, 246, 255, 0.3)),
+    radial-gradient(circle at 15% 50%, rgba(224, 242, 254, 0.2) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(239, 246, 255, 0.2) 0%, transparent 25%);
   z-index: -1;
   pointer-events: none;
 }
