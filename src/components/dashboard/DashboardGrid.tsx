@@ -1,7 +1,7 @@
 
 import React from "react";
 import DashboardCard from "./DashboardCard";
-import { DashboardItem } from "./dashboardData";
+import { DashboardItem } from "./dashboardTypes";
 
 interface DashboardGridProps {
   items: DashboardItem[];
@@ -26,4 +26,3 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => 
 };
 
 export default DashboardGrid;
-

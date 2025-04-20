@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings } from "lucide-react";
-import { DashboardItem } from "./dashboardData";
+import { DashboardItem } from "./dashboardTypes";
 
 interface DashboardHeaderProps {
   allDashboardData: DashboardItem[];
@@ -47,4 +47,3 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 };
 
 export default DashboardHeader;
-

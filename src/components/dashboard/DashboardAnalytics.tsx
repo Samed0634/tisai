@@ -2,7 +2,7 @@
 import React from "react";
 import RecentActivities from "./RecentActivities";
 import UpcomingMeetings from "./UpcomingMeetings";
-import { RecentActivity, UpcomingMeeting } from "./dashboardData";
+import { RecentActivity, UpcomingMeeting } from "./dashboardTypes";
 
 interface DashboardAnalyticsProps {
   activities: RecentActivity[];
