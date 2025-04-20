@@ -8,7 +8,25 @@ import { WorkplaceTable } from "@/components/data-details/WorkplaceTable";
 import { useColumnVisibility } from "@/hooks/useColumnVisibility";
 import { useTableSort } from "@/hooks/useTableSort";
 import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
-import { categoryTitles } from "./DataDetails";
+
+// Define the category titles map
+export const categoryTitles: Record<string, string> = {
+  "authorization-requests": "Yetki Tespiti İstenecek İşyerleri",
+  "authorization-notices": "Yetki Belgesi Tebliğ Yapılan İşyerleri",
+  "call-required": "Çağrı Yapılacak İşyerleri",
+  "place-date-determination": "Yer ve Gün Tespiti Yapılacak İşyerleri",
+  "pre-determined-first-session": "Önceden Belirlenen İlk Oturum İşyerleri",
+  "first-session": "İlk Oturum Tutulması Gereken İşyerleri",
+  "dispute-notices": "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri",
+  "mediator-appointment-deadline": "Arabulucu Ataması Son Tarih İşyerleri",
+  "strike-decisions": "Grev Kararı Alınması Gereken İşyerleri",
+  "strike-voting": "Grev Oylaması Yapılması Gereken İşyerleri",
+  "yhk-submissions": "YHK'ya Gönderilmesi Gereken İşyerleri",
+  "yhk-reminder": "YHK Hatırlatması Yapılacak İşyerleri",
+  "signed-tis": "İmzalanan TİSler",
+  "expiring-tis": "Sona Erecek TİSler",
+  "strike-ban": "Grev Yasağı Olan İşyerleri"
+};
 
 const DataDetails = () => {
   const { type } = useParams<{ type: string }>();
