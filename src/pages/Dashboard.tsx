@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -31,83 +30,11 @@ const Dashboard = () => {
     return (n8nDashboardData[listName] as any[] || []);
   };
 
-  const allDashboardData = [
-    { 
-      ...staticDashboardData[0],
-      value: getListItems('yetkiTespitIstenenListesi').length,
-      items: getListItems('yetkiTespitIstenenListesi')
-    },
-    { 
-      ...staticDashboardData[1],
-      value: getListItems('yetkiBelgesiTebligYapilanListesi').length,
-      items: getListItems('yetkiBelgesiTebligYapilanListesi')
-    },
-    { 
-      ...staticDashboardData[2],
-      value: getListItems('cagriYapilacakListesi').length,
-      items: getListItems('cagriYapilacakListesi')
-    },
-    { 
-      ...staticDashboardData[3],
-      value: getListItems('yerVeGunTespitListesi').length,
-      items: getListItems('yerVeGunTespitListesi')
-    },
-    { 
-      ...staticDashboardData[4],
-      value: getListItems('oncedenBelirlenenIlkOturumListesi').length,
-      items: getListItems('oncedenBelirlenenIlkOturumListesi')
-    },
-    { 
-      ...staticDashboardData[5],
-      value: getListItems('ilkOturumGerekenListesi').length,
-      items: getListItems('ilkOturumGerekenListesi')
-    },
-    { 
-      ...staticDashboardData[6],
-      value: getListItems('uyusmazlikGerekenListesi').length,
-      items: getListItems('uyusmazlikGerekenListesi')
-    },
-    { 
-      ...staticDashboardData[7],
-      value: getListItems('arabulucuAtamasiSonTarihListesi').length,
-      items: getListItems('arabulucuAtamasiSonTarihListesi')
-    },
-    { 
-      ...staticDashboardData[8],
-      value: getListItems('grevKarariAlinmasiGerekenListesi').length,
-      items: getListItems('grevKarariAlinmasiGerekenListesi')
-    },
-    { 
-      ...staticDashboardData[9],
-      value: getListItems('grevOylamasiYapilmasiGerekenListesi').length,
-      items: getListItems('grevOylamasiYapilmasiGerekenListesi')
-    },
-    { 
-      ...staticDashboardData[10],
-      value: getListItems('yhkGonderimGerekenListesi').length,
-      items: getListItems('yhkGonderimGerekenListesi')
-    },
-    { 
-      ...staticDashboardData[11],
-      value: getListItems('yhkHatirlatmasiListesi').length,
-      items: getListItems('yhkHatirlatmasiListesi')
-    },
-    { 
-      ...staticDashboardData[12],
-      value: getListItems('imzalananTislerListesi').length,
-      items: getListItems('imzalananTislerListesi')
-    },
-    { 
-      ...staticDashboardData[13],
-      value: getListItems('sonaErecekTislerListesi').length,
-      items: getListItems('sonaErecekTislerListesi')
-    },
-    { 
-      ...staticDashboardData[14],
-      value: getListItems('grevYasagiOlanListesi').length,
-      items: getListItems('grevYasagiOlanListesi')
-    }
-  ];
+  const allDashboardData = staticDashboardData.map(item => ({
+    ...item,
+    value: getListItems(item.dataSource).length,
+    items: getListItems(item.dataSource)
+  }));
 
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);

@@ -1,4 +1,3 @@
-
 import React from "react";
 
 export interface DashboardItem {
@@ -8,6 +7,7 @@ export interface DashboardItem {
   icon: React.ReactNode;
   color: string;
   items?: any[];
+  dataSource: string;
 }
 
 export interface RecentActivity {
