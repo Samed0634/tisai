@@ -6,7 +6,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,  
+  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -21,6 +21,48 @@ interface WorkplaceTableProps {
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
 }
+
+// Order of columns as specified in the requirements
+const COLUMN_ORDER = [
+  "ID",
+  "İŞYERİ TÜRÜ",
+  "SORUMLU UZMAN",
+  "İŞYERİNİN BULUNDUĞU İL",
+  "BAĞLI OLDUĞU ŞUBE",
+  "İŞYERİ ADI",
+  "SGK NO",
+  "İŞÇİ SAYISI",
+  "ÜYE SAYISI",
+  "İŞVEREN SENDİKASI",
+  "İHALE BAŞLANGIÇ TARİHİ",
+  "İHALE BİTİŞ TARİHİ",
+  "İHALE ADI",
+  "YETKİ BELGESİ TÜRÜ",
+  "YETKİ TESPİT İSTEM TARİHİ",
+  "GREV YASAĞI DURUMU",
+  "YETKİ BELGESİ TEBLİĞ TARİHİ",
+  "ÇAĞRI TARİHİ",
+  "YETKİ DURUMU",
+  "YER VE GÜN TESPİT TARİHİ",
+  "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ",
+  "İLK OTURUM TARİHİ",
+  "GREVE KATILAMAYACAKLAR İÇİN LİSTE TALEBİ",
+  "60.GÜN DOLAN İŞYERLERİ",
+  "UYUŞMAZLIK TARİHİ",
+  "ARABULUCU ATANMA TARİHİ",
+  "ARABULUCU",
+  "ARABULUCU TOPLANTI TARİHİ",
+  "ARABULUCU RAPORU TEBLİĞ TARİHİ",
+  "GREV KARARI TARİHİ",
+  "FİİLİ GREV KARARI TARİHİ",
+  "GREV OYLAMASI TARİHİ",
+  "YHK GÖNDERİM TARİHİ",
+  "TİS GELİŞ TARİHİ",
+  "TİS İMZA TARİHİ",
+  "TİS BAŞLANGIÇ TARİHİ",
+  "TİS BİTİŞ TARİHİ",
+  "SON DURUM"
+];
 
 function isPastDeadline(deadlineDate: string | undefined) {
   if (!deadlineDate) return false;
@@ -38,74 +80,70 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   data,
   onUpdateClick,
 }) => {
-  // Get all available fields from the first data item
-  const getColumns = () => {
-    if (data.length === 0) return [];
-    return Object.keys(data[0]).map(key => ({
-      field: key,
-      header: key
-    }));
-  };
-
-  const columns = getColumns();
-
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {columns.map((column) => (
-            <TableHead key={column.field}>
-              {column.header}
-            </TableHead>
-          ))}
-          <TableHead className="text-right">İşlem</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((item) => (
-          <TableRow key={item.id || Math.random().toString()}>
-            {columns.map((column) => {
-              const value = item[column.field] || '-';
-
-              if (column.field === 'status') {
-                return (
-                  <TableCell key={column.field}>
-                    <StatusBadge status={value} />
-                  </TableCell>
-                );
-              }
-
-              // Check for deadline dates
-              if (column.field === "Termin Tarihi" || column.field === "deadlineDate") {
-                const showRed = isPastDeadline(value) && isNoAction(item);
-                return (
-                  <TableCell key={column.field}>
-                    <span className={showRed ? "text-destructive font-semibold" : ""}>
-                      {value}
-                    </span>
-                  </TableCell>
-                );
-              }
-
-              return (
-                <TableCell key={column.field}>
-                  {value?.toString() || '-'}
-                </TableCell>
-              );
-            })}
-            <TableCell className="text-right">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onUpdateClick(item)}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-            </TableCell>
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {COLUMN_ORDER.map((header) => (
+              <TableHead key={header} className="whitespace-nowrap">
+                {header}
+              </TableHead>
+            ))}
+            <TableHead className="text-right">İşlem</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {data.map((item) => (
+            <TableRow key={item.id || Math.random().toString()}>
+              {COLUMN_ORDER.map((field) => {
+                const value = item[field] || '-';
+
+                if (field === "SON DURUM") {
+                  return (
+                    <TableCell key={field} className="whitespace-nowrap">
+                      <StatusBadge status={value.toString()} />
+                    </TableCell>
+                  );
+                }
+
+                // Check for deadline dates
+                const isDateField = [
+                  "İHALE BİTİŞ TARİHİ",
+                  "TİS BİTİŞ TARİHİ",
+                  "Termin Tarihi"
+                ].includes(field);
+
+                if (isDateField) {
+                  const showRed = isPastDeadline(value) && isNoAction(item);
+                  return (
+                    <TableCell key={field} className="whitespace-nowrap">
+                      <span className={showRed ? "text-destructive font-semibold" : ""}>
+                        {value?.toString() || '-'}
+                      </span>
+                    </TableCell>
+                  );
+                }
+
+                return (
+                  <TableCell key={field} className="whitespace-nowrap">
+                    {value?.toString() || '-'}
+                  </TableCell>
+                );
+              })}
+              <TableCell className="text-right">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onUpdateClick(item)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
-
