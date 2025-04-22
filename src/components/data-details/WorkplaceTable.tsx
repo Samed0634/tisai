@@ -26,9 +26,14 @@ interface WorkplaceItem {
 interface WorkplaceTableProps {
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
+  visibleColumns?: string[]; // Added this line to accept the visibleColumns prop
 }
 
-export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({ data, onUpdateClick }) => {
+export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({ 
+  data, 
+  onUpdateClick,
+  visibleColumns = [] // Default to empty array
+}) => {
   return (
     <div className="rounded-md border">
       <Table>
