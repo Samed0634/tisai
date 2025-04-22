@@ -41,23 +41,39 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   onUpdateClick,
   visibleColumns = COLUMNS.map(col => col.id)
 }) => {
+  // Get visible columns including fixed ones
+  const displayColumns = COLUMNS.filter(col => visibleColumns.includes(col.id) || col.fixed);
+
   return (
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            {COLUMNS.filter(col => visibleColumns.includes(col.id)).map((column) => (
+            {displayColumns.map((column) => (
               <TableHead key={column.id} className="whitespace-nowrap">
                 {column.title}
               </TableHead>
             ))}
-            <TableHead className="text-right">İŞLEM</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.id || Math.random().toString()}>
-              {COLUMNS.filter(col => visibleColumns.includes(col.id)).map((column) => {
+              {displayColumns.map((column) => {
+                if (column.id === "İŞLEM") {
+                  return (
+                    <TableCell key={column.id} className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onUpdateClick(item)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  );
+                }
+
                 const value = item[column.id] || '-';
 
                 if (column.id === "SON DURUM") {
@@ -92,15 +108,6 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                   </TableCell>
                 );
               })}
-              <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onUpdateClick(item)}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
