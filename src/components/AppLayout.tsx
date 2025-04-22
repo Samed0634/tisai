@@ -21,10 +21,10 @@ const AppLayout = () => {
             <div className="flex items-center gap-2">
               <img 
                 src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
-                alt="TISAI.v1 Logo" 
+                alt="Toplu İş Sözleşmesi Otomasyonu Logo" 
                 className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
               />
-              <span className="font-bold text-xl text-secondary-800">TISAI.v1</span>
+              <span className="font-bold text-xl text-secondary-800">Toplu İş Sözleşmesi Otomasyonu</span>
             </div>
           </SidebarHeader>
           
