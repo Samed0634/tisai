@@ -11,111 +11,66 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StatusBadge } from "./StatusBadge";
-import { COLUMNS } from "@/constants/tableColumns";
 
 interface WorkplaceItem {
   id: string;
+  name: string;
+  responsibleExpert?: string;
+  branch?: string;
+  status?: string;
+  authorityNoticeDate?: string;
+  callDate?: string;
   [key: string]: any;
 }
 
 interface WorkplaceTableProps {
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
-  visibleColumns?: string[];
 }
 
-function isPastDeadline(deadlineDate: string | undefined) {
-  if (!deadlineDate) return false;
-  const now = new Date();
-  const deadline = new Date(deadlineDate);
-  deadline.setHours(23, 59, 59, 999);
-  return deadline < now;
-}
-
-function isNoAction(item: WorkplaceItem) {
-  return !item.status || item.status === "" || item.status?.toLowerCase().includes("bekleniyor");
-}
-
-export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
-  data,
-  onUpdateClick,
-  visibleColumns = COLUMNS.map(col => col.id)
-}) => {
-  // Get visible columns including fixed ones
-  const displayColumns = COLUMNS.filter(col => visibleColumns.includes(col.id) || col.fixed);
-
+export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({ data, onUpdateClick }) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
-            {displayColumns.map((column) => (
-              <TableHead key={column.id} className="whitespace-nowrap">
-                {column.title}
-              </TableHead>
-            ))}
+            <TableHead>İşyeri Adı</TableHead>
+            <TableHead>Bağlı Olduğu Şube</TableHead>
+            <TableHead>Sorumlu Uzman</TableHead>
+            <TableHead>Yetki Belgesi Tebliğ Tarihi</TableHead>
+            <TableHead>Çağrı Tarihi</TableHead>
+            <TableHead>Güncel Durum</TableHead>
+            <TableHead className="text-right">İşlem</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={displayColumns.length} className="text-center py-6">
+              <TableCell colSpan={7} className="text-center py-6">
                 Görüntülenecek veri bulunamadı
               </TableCell>
             </TableRow>
           ) : (
             data.map((item) => (
-              <TableRow key={item.id || Math.random().toString()}>
-                {displayColumns.map((column) => {
-                  if (column.id === "İŞLEM") {
-                    return (
-                      <TableCell key={column.id} className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onUpdateClick(item)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    );
-                  }
-
-                  // Try to get value using exact column ID or normalize to match data keys
-                  const value = item[column.id] || '-';
-
-                  if (column.id === "SON DURUM") {
-                    return (
-                      <TableCell key={column.id} className="whitespace-nowrap">
-                        <StatusBadge status={value.toString()} />
-                      </TableCell>
-                    );
-                  }
-
-                  // Check for deadline dates
-                  const isDateField = [
-                    "İHALE BİTİŞ TARİHİ",
-                    "TİS BİTİŞ TARİHİ",
-                    "Termin Tarihi"
-                  ].includes(column.id);
-
-                  if (isDateField) {
-                    const showRed = isPastDeadline(value) && isNoAction(item);
-                    return (
-                      <TableCell key={column.id} className="whitespace-nowrap">
-                        <span className={showRed ? "text-destructive font-semibold" : ""}>
-                          {value?.toString() || '-'}
-                        </span>
-                      </TableCell>
-                    );
-                  }
-
-                  return (
-                    <TableCell key={column.id} className="whitespace-nowrap">
-                      {value?.toString() || '-'}
-                    </TableCell>
-                  );
-                })}
+              <TableRow key={item.id} className="hover:bg-muted/50">
+                <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell>{item.branch}</TableCell>
+                <TableCell>{item.responsibleExpert}</TableCell>
+                <TableCell>{item.authorityNoticeDate}</TableCell>
+                <TableCell>{item.callDate}</TableCell>
+                <TableCell>
+                  <StatusBadge status={item.status || 'Bekliyor'} />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => onUpdateClick(item)}
+                    className="hover:bg-primary hover:text-white"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           )}

@@ -16,12 +16,6 @@ import { Textarea } from "@/components/ui/textarea";
 interface WorkplaceItem {
   id: string;
   name: string;
-  responsibleExpert?: string;
-  branch?: string;
-  sgkNo?: string;
-  employeeCount?: number;
-  memberCount?: number;
-  status?: string;
   [key: string]: any;
 }
 
@@ -46,7 +40,7 @@ const UpdateWorkplaceDialog: React.FC<UpdateWorkplaceDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>İşlem Tamamlama: {workplace.name}</DialogTitle>
           <DialogDescription>
@@ -55,17 +49,15 @@ const UpdateWorkplaceDialog: React.FC<UpdateWorkplaceDialogProps> = ({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label>İşlem Tarihi</Label>
-            <div className="flex w-full items-center space-x-2">
-              <Input 
-                type="date" 
-                value={processDate} 
-                onChange={(e) => onProcessDateChange(e.target.value)} 
-                className="w-full"
-              />
-            </div>
+            <Label htmlFor="processDate">İşlem Tarihi</Label>
+            <Input
+              id="processDate"
+              type="date"
+              value={processDate}
+              onChange={(e) => onProcessDateChange(e.target.value)}
+              className="w-full"
+            />
           </div>
-
           <div className="grid gap-2">
             <Label htmlFor="notes">Notlar</Label>
             <Textarea
@@ -75,12 +67,16 @@ const UpdateWorkplaceDialog: React.FC<UpdateWorkplaceDialogProps> = ({
             />
           </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter className="sm:justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
             İptal
           </Button>
-          <Button onClick={onUpdate}>
-            İşlemi Tamamla
+          <Button type="button" onClick={onUpdate}>
+            Kaydet
           </Button>
         </DialogFooter>
       </DialogContent>
