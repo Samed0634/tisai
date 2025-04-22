@@ -9,7 +9,7 @@ interface DashboardCardProps {
   icon: React.ReactNode;
   onClick: () => void;
   color: string;
-  className?: string; // Adding optional className prop
+  className?: string;
 }
 
 const DashboardCard: React.FC<DashboardCardProps> = ({ 
@@ -24,23 +24,43 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
     <Card 
       onClick={onClick} 
       className={cn(
-        "group cursor-pointer transition-all duration-300 hover:scale-[1.02] bg-white border shadow-sm hover:shadow-md",
+        "relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg",
+        "border border-border/50 bg-card/50 backdrop-blur-sm",
+        "cursor-pointer group",
         className
       )}
     >
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className={cn("text-sm font-medium text-muted-foreground", className)}>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className={cn(
+          "text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors",
+          className
+        )}>
           {title}
         </CardTitle>
-        <div className="rounded-lg bg-primary/10 p-2.5 text-primary transition-all group-hover:scale-110 group-hover:bg-primary/15">
+        <div className={cn(
+          "rounded-xl bg-primary/10 p-2.5 text-primary",
+          "transition-all duration-300 ease-in-out",
+          "group-hover:scale-110 group-hover:bg-primary/15 group-hover:rotate-[-5deg]"
+        )}>
           {icon}
         </div>
       </CardHeader>
       <CardContent>
-        <div className={cn("text-2xl font-bold text-foreground", className)}>
-          {value}
+        <div className={cn(
+          "text-2xl font-bold tracking-tight",
+          "transition-colors duration-300",
+          "group-hover:text-primary",
+          className
+        )}>
+          {value.toLocaleString('tr-TR')}
         </div>
-        <p className={cn("text-xs text-muted-foreground", className)}>İşyeri</p>
+        <p className={cn(
+          "text-xs text-muted-foreground mt-1 opacity-70",
+          "group-hover:text-foreground/70 transition-colors",
+          className
+        )}>
+          İşyeri
+        </p>
       </CardContent>
     </Card>
   );

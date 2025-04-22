@@ -1,4 +1,3 @@
-
 import React from "react";
 import DashboardCard from "./DashboardCard";
 import { DashboardItem } from "./dashboardTypes";
@@ -37,9 +36,8 @@ interface DashboardGridProps {
 
 const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {items.map((item) => {
-        // Check highlightRed logic per card
         const highlightRed = shouldHighlightRed(item.items || []);
         return (
           <DashboardCard
