@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { TableControls } from "@/components/data-details/TableControls";
 import { WorkplaceTable } from "@/components/data-details/WorkplaceTable";
+import { SearchToolbar } from "@/components/data-details/SearchToolbar";
 import { useColumnVisibility } from "@/hooks/useColumnVisibility";
 import { useTableSort } from "@/hooks/useTableSort";
 import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
@@ -49,6 +50,39 @@ const DataDetails = () => {
   const [processDate, setProcessDate] = useState("");
   const { toast } = useToast();
 
+  // New state for search and filter
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedExpert, setSelectedExpert] = useState("");
+
+  // Get unique experts from items
+  const experts = useMemo(() => {
+    const uniqueExperts = new Set(
+      items
+        .map((item) => item.responsibleExpert)
+        .filter((expert): expert is string => Boolean(expert))
+    );
+    return Array.from(uniqueExperts).sort();
+  }, [items]);
+
+  // Filter items based on search query and selected expert
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
+      const matchesSearch = searchQuery.toLowerCase().trim() === "" 
+        ? true 
+        : (
+          (item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+          (item.responsibleExpert?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+          (item.branch?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+        );
+
+      const matchesExpert = selectedExpert === "" 
+        ? true 
+        : item.responsibleExpert === selectedExpert;
+
+      return matchesSearch && matchesExpert;
+    });
+  }, [items, searchQuery, selectedExpert]);
+
   useEffect(() => {
     if (items.length === 0) {
       console.log("No items found for this category");
@@ -56,7 +90,7 @@ const DataDetails = () => {
   }, [items]);
   
   // Process the items to match the column IDs
-  const processedItems = items.map((item) => {
+  const processedItems = filteredItems.map((item) => {
     // Ensure each item has a valid ID
     const processedItem: WorkplaceItem = {
       id: item.id || item["İşyeri Adı"] || String(Math.random()),
@@ -124,9 +158,17 @@ const DataDetails = () => {
         />
       </div>
 
+      <SearchToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        selectedExpert={selectedExpert}
+        onExpertChange={setSelectedExpert}
+        experts={experts}
+      />
+
       <Card>
         <WorkplaceTable
-          data={processedItems} 
+          data={sortedData} 
           onUpdateClick={openUpdateDialog}
           visibleColumns={visibleColumns}
         />
