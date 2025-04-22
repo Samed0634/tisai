@@ -25,17 +25,7 @@ export const useDashboardData = () => {
     queryFn: fetchDashboardData,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 2,
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    meta: {
-      errorHandler: () => {
-        toast({
-          title: "Veri Yükleme Hatası",
-          description: "Veriler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
-          variant: "destructive",
-        });
-      }
-    },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Veri Yükleme Hatası",
         description: "Veriler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
