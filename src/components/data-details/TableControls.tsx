@@ -7,6 +7,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { COLUMNS } from "@/constants/tableColumns";
 
@@ -61,11 +62,13 @@ export const TableControls: React.FC<TableControlsProps> = ({
               checked={visibleColumns.includes(column.id)}
               onCheckedChange={() => toggleColumn(column.id)}
               disabled={column.fixed}
+              className="whitespace-normal break-words"
             >
               {column.title}
               {column.fixed && " (Sabit)"}
             </DropdownMenuCheckboxItem>
           ))}
+          <DropdownMenuSeparator />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

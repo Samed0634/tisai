@@ -57,59 +57,68 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((item) => (
-            <TableRow key={item.id || Math.random().toString()}>
-              {displayColumns.map((column) => {
-                if (column.id === "İŞLEM") {
-                  return (
-                    <TableCell key={column.id} className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onUpdateClick(item)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  );
-                }
-
-                const value = item[column.id] || '-';
-
-                if (column.id === "SON DURUM") {
-                  return (
-                    <TableCell key={column.id} className="whitespace-nowrap">
-                      <StatusBadge status={value.toString()} />
-                    </TableCell>
-                  );
-                }
-
-                // Check for deadline dates
-                const isDateField = [
-                  "İHALE BİTİŞ TARİHİ",
-                  "TİS BİTİŞ TARİHİ",
-                  "Termin Tarihi"
-                ].includes(column.id);
-
-                if (isDateField) {
-                  const showRed = isPastDeadline(value) && isNoAction(item);
-                  return (
-                    <TableCell key={column.id} className="whitespace-nowrap">
-                      <span className={showRed ? "text-destructive font-semibold" : ""}>
-                        {value?.toString() || '-'}
-                      </span>
-                    </TableCell>
-                  );
-                }
-
-                return (
-                  <TableCell key={column.id} className="whitespace-nowrap">
-                    {value?.toString() || '-'}
-                  </TableCell>
-                );
-              })}
+          {data.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={displayColumns.length} className="text-center py-6">
+                Görüntülenecek veri bulunamadı
+              </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            data.map((item) => (
+              <TableRow key={item.id || Math.random().toString()}>
+                {displayColumns.map((column) => {
+                  if (column.id === "İŞLEM") {
+                    return (
+                      <TableCell key={column.id} className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onUpdateClick(item)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    );
+                  }
+
+                  // Try to get value using exact column ID or normalize to match data keys
+                  const value = item[column.id] || '-';
+
+                  if (column.id === "SON DURUM") {
+                    return (
+                      <TableCell key={column.id} className="whitespace-nowrap">
+                        <StatusBadge status={value.toString()} />
+                      </TableCell>
+                    );
+                  }
+
+                  // Check for deadline dates
+                  const isDateField = [
+                    "İHALE BİTİŞ TARİHİ",
+                    "TİS BİTİŞ TARİHİ",
+                    "Termin Tarihi"
+                  ].includes(column.id);
+
+                  if (isDateField) {
+                    const showRed = isPastDeadline(value) && isNoAction(item);
+                    return (
+                      <TableCell key={column.id} className="whitespace-nowrap">
+                        <span className={showRed ? "text-destructive font-semibold" : ""}>
+                          {value?.toString() || '-'}
+                        </span>
+                      </TableCell>
+                    );
+                  }
+
+                  return (
+                    <TableCell key={column.id} className="whitespace-nowrap">
+                      {value?.toString() || '-'}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

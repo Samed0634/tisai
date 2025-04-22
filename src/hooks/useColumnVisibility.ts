@@ -9,7 +9,9 @@ export const useColumnVisibility = () => {
 
   const toggleColumn = (columnId: string) => {
     const column = COLUMNS.find(col => col.id === columnId);
-    if (column?.fixed) return; // Don't toggle fixed columns
+    
+    // Don't toggle fixed columns
+    if (column?.fixed) return;
     
     setVisibleColumns(current =>
       current.includes(columnId)
@@ -18,9 +20,15 @@ export const useColumnVisibility = () => {
     );
   };
 
+  // Reset to default visible columns
+  const resetColumns = () => {
+    setVisibleColumns(DEFAULT_VISIBLE_COLUMNS);
+  };
+
   return {
     visibleColumns,
     toggleColumn,
+    resetColumns,
     DEFAULT_VISIBLE_COLUMNS
   };
 };

@@ -8,6 +8,7 @@ import { WorkplaceTable } from "@/components/data-details/WorkplaceTable";
 import { useColumnVisibility } from "@/hooks/useColumnVisibility";
 import { useTableSort } from "@/hooks/useTableSort";
 import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
+import { COLUMNS } from "@/constants/tableColumns";
 
 // Define the category titles map
 export const categoryTitles: Record<string, string> = {
@@ -55,35 +56,30 @@ const DataDetails = () => {
     }
   }, [items]);
   
-  // Handle API field mapping for column visibility
-  const mapApiFieldsToColumnIds = (item: WorkplaceItem) => {
-    if (!item) return {};
-    
-    const fieldMap: Record<string, string> = {
-      "İşyeri Adı": "name",
-      "Bağlı Olduğu Şube": "branch",
-      "Sorumlu Uzman": "responsibleExpert",
-      "İl": "province",
-      "İşyeri Türü": "workplaceType",
-      "SGK No": "sgkNo",
-      "İşçi Sayısı": "employeeCount",
-      "Üye Sayısı": "memberCount"
-    };
-    
-    return Object.entries(item).reduce((acc, [key, value]) => {
-      const mappedKey = fieldMap[key] || key;
-      return { ...acc, [mappedKey]: value };
-    }, {});
-  };
-
-  // Ensure that items are transformed to match WorkplaceItem interface
+  // Process the items to match the column IDs
   const processedItems = items.map((item) => {
-    // Make sure each item has at least id and name properties
-    return {
+    // Ensure each item has a valid ID
+    const processedItem: WorkplaceItem = {
       id: item.id || item["İşyeri Adı"] || String(Math.random()),
       name: item.name || item["İşyeri Adı"] || "Unnamed",
       ...item
     };
+    
+    // Convert column names to match expected format if needed
+    COLUMNS.forEach(column => {
+      if (item[column.id] === undefined) {
+        // Try to find matching fields with different casing or formats
+        const key = Object.keys(item).find(k => 
+          k.replace(/\s+/g, '') === column.id.replace(/\s+/g, '')
+        );
+        
+        if (key) {
+          processedItem[column.id] = item[key];
+        }
+      }
+    });
+    
+    return processedItem;
   });
   
   const { visibleColumns, toggleColumn } = useColumnVisibility();
@@ -107,7 +103,7 @@ const DataDetails = () => {
       return;
     }
 
-    const activityMessage = `${selectedCompany.name || selectedCompany["İşyeri Adı"]} işlemi tamamlandı.`;
+    const activityMessage = `${selectedCompany.name || selectedCompany["İŞYERİ ADI"]} işlemi tamamlandı.`;
     
     toast({
       title: "İşlem Tamamlandı",
@@ -115,13 +111,6 @@ const DataDetails = () => {
     });
 
     setIsDialogOpen(false);
-  };
-
-  // Get all dynamic columns from data
-  const getAllColumns = () => {
-    if (items.length === 0) return [];
-    
-    return Object.keys(items[0]).filter(key => key !== 'id');
   };
 
   return (
@@ -140,6 +129,7 @@ const DataDetails = () => {
         <WorkplaceTable
           data={processedItems} 
           onUpdateClick={openUpdateDialog}
+          visibleColumns={visibleColumns}
         />
       </Card>
 
