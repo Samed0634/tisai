@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -8,6 +9,7 @@ import { useColumnVisibility } from "@/hooks/useColumnVisibility";
 import { useTableSort } from "@/hooks/useTableSort";
 import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
 
+// Define the category titles map
 export const categoryTitles: Record<string, string> = {
   "authorization-requests": "Yetki Tespiti İstenecek İşyerleri",
   "authorization-notices": "Yetki Belgesi Tebliğ Yapılan İşyerleri",
@@ -53,6 +55,7 @@ const DataDetails = () => {
     }
   }, [items]);
   
+  // Handle API field mapping for column visibility
   const mapApiFieldsToColumnIds = (item: WorkplaceItem) => {
     if (!item) return {};
     
@@ -73,7 +76,9 @@ const DataDetails = () => {
     }, {});
   };
 
+  // Ensure that items are transformed to match WorkplaceItem interface
   const processedItems = items.map((item) => {
+    // Make sure each item has at least id and name properties
     return {
       id: item.id || item["İşyeri Adı"] || String(Math.random()),
       name: item.name || item["İşyeri Adı"] || "Unnamed",
@@ -112,6 +117,7 @@ const DataDetails = () => {
     setIsDialogOpen(false);
   };
 
+  // Get all dynamic columns from data
   const getAllColumns = () => {
     if (items.length === 0) return [];
     
@@ -134,7 +140,6 @@ const DataDetails = () => {
         <WorkplaceTable
           data={processedItems} 
           onUpdateClick={openUpdateDialog}
-          visibleColumns={[...visibleColumns, 'İŞLEM']}
         />
       </Card>
 
