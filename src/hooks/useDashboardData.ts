@@ -1,5 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 const fetchDashboardData = async () => {
   try {
@@ -17,10 +18,19 @@ const fetchDashboardData = async () => {
 };
 
 export const useDashboardData = () => {
+  const { toast } = useToast();
+
   return useQuery({
     queryKey: ['dashboardData'],
     queryFn: fetchDashboardData,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 2
+    retry: 2,
+    onError: (error) => {
+      toast({
+        title: "Veri Yükleme Hatası",
+        description: "Veriler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+        variant: "destructive",
+      });
+    }
   });
 };

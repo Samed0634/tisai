@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StatusBadge } from "./StatusBadge";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface WorkplaceItem {
   id: string;
@@ -26,14 +27,24 @@ interface WorkplaceItem {
 interface WorkplaceTableProps {
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
-  visibleColumns?: string[]; // Added this line to accept the visibleColumns prop
+  visibleColumns?: string[];
+  isLoading?: boolean;
 }
 
 export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({ 
   data, 
   onUpdateClick,
-  visibleColumns = [] // Default to empty array
+  visibleColumns = [],
+  isLoading = false
 }) => {
+  if (isLoading) {
+    return (
+      <div className="rounded-md border p-8">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-md border">
       <Table>
