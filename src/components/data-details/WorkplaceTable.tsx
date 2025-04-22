@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StatusBadge } from "./StatusBadge";
+import { COLUMNS } from "@/constants/tableColumns";
 
 interface WorkplaceItem {
   id: string;
@@ -20,49 +21,8 @@ interface WorkplaceItem {
 interface WorkplaceTableProps {
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
+  visibleColumns?: string[];
 }
-
-// Order of columns as specified in the requirements
-const COLUMN_ORDER = [
-  "ID",
-  "İŞYERİ TÜRÜ",
-  "SORUMLU UZMAN",
-  "İŞYERİNİN BULUNDUĞU İL",
-  "BAĞLI OLDUĞU ŞUBE",
-  "İŞYERİ ADI",
-  "SGK NO",
-  "İŞÇİ SAYISI",
-  "ÜYE SAYISI",
-  "İŞVEREN SENDİKASI",
-  "İHALE BAŞLANGIÇ TARİHİ",
-  "İHALE BİTİŞ TARİHİ",
-  "İHALE ADI",
-  "YETKİ BELGESİ TÜRÜ",
-  "YETKİ TESPİT İSTEM TARİHİ",
-  "GREV YASAĞI DURUMU",
-  "YETKİ BELGESİ TEBLİĞ TARİHİ",
-  "ÇAĞRI TARİHİ",
-  "YETKİ DURUMU",
-  "YER VE GÜN TESPİT TARİHİ",
-  "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ",
-  "İLK OTURUM TARİHİ",
-  "GREVE KATILAMAYACAKLAR İÇİN LİSTE TALEBİ",
-  "60.GÜN DOLAN İŞYERLERİ",
-  "UYUŞMAZLIK TARİHİ",
-  "ARABULUCU ATANMA TARİHİ",
-  "ARABULUCU",
-  "ARABULUCU TOPLANTI TARİHİ",
-  "ARABULUCU RAPORU TEBLİĞ TARİHİ",
-  "GREV KARARI TARİHİ",
-  "FİİLİ GREV KARARI TARİHİ",
-  "GREV OYLAMASI TARİHİ",
-  "YHK GÖNDERİM TARİHİ",
-  "TİS GELİŞ TARİHİ",
-  "TİS İMZA TARİHİ",
-  "TİS BAŞLANGIÇ TARİHİ",
-  "TİS BİTİŞ TARİHİ",
-  "SON DURUM"
-];
 
 function isPastDeadline(deadlineDate: string | undefined) {
   if (!deadlineDate) return false;
@@ -79,29 +39,30 @@ function isNoAction(item: WorkplaceItem) {
 export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   data,
   onUpdateClick,
+  visibleColumns = COLUMNS.map(col => col.id)
 }) => {
   return (
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            {COLUMN_ORDER.map((header) => (
-              <TableHead key={header} className="whitespace-nowrap">
-                {header}
+            {COLUMNS.filter(col => visibleColumns.includes(col.id)).map((column) => (
+              <TableHead key={column.id} className="whitespace-nowrap">
+                {column.title}
               </TableHead>
             ))}
-            <TableHead className="text-right">İşlem</TableHead>
+            <TableHead className="text-right">İŞLEM</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.id || Math.random().toString()}>
-              {COLUMN_ORDER.map((field) => {
-                const value = item[field] || '-';
+              {COLUMNS.filter(col => visibleColumns.includes(col.id)).map((column) => {
+                const value = item[column.id] || '-';
 
-                if (field === "SON DURUM") {
+                if (column.id === "SON DURUM") {
                   return (
-                    <TableCell key={field} className="whitespace-nowrap">
+                    <TableCell key={column.id} className="whitespace-nowrap">
                       <StatusBadge status={value.toString()} />
                     </TableCell>
                   );
@@ -112,12 +73,12 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                   "İHALE BİTİŞ TARİHİ",
                   "TİS BİTİŞ TARİHİ",
                   "Termin Tarihi"
-                ].includes(field);
+                ].includes(column.id);
 
                 if (isDateField) {
                   const showRed = isPastDeadline(value) && isNoAction(item);
                   return (
-                    <TableCell key={field} className="whitespace-nowrap">
+                    <TableCell key={column.id} className="whitespace-nowrap">
                       <span className={showRed ? "text-destructive font-semibold" : ""}>
                         {value?.toString() || '-'}
                       </span>
@@ -126,7 +87,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                 }
 
                 return (
-                  <TableCell key={field} className="whitespace-nowrap">
+                  <TableCell key={column.id} className="whitespace-nowrap">
                     {value?.toString() || '-'}
                   </TableCell>
                 );
