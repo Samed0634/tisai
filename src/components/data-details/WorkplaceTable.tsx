@@ -10,19 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { COLUMNS } from "@/constants/tableColumns";
 import { StatusBadge } from "./StatusBadge";
 
 interface WorkplaceItem {
   id: string;
-  name: string;
-  responsibleExpert?: string;
-  branch?: string;
-  sgkNo?: string;
-  employeeCount?: number;
-  memberCount?: number;
-  status?: string;
-  deadlineDate?: string;
   [key: string]: any;
 }
 
@@ -37,78 +28,30 @@ function isPastDeadline(deadlineDate: string | undefined) {
   if (!deadlineDate) return false;
   const now = new Date();
   const deadline = new Date(deadlineDate);
-  deadline.setHours(23, 59, 59, 999); // Deadline is inclusive of the whole date
+  deadline.setHours(23, 59, 59, 999);
   return deadline < now;
 }
 
+function isNoAction(item: WorkplaceItem) {
+  return !item.status || item.status === "" || item.status?.toLowerCase().includes("bekleniyor");
+}
+
 export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
-  visibleColumns,
-  sortKey,
   data,
+  sortKey,
   onUpdateClick,
 }) => {
-  // Function to map API fields to column IDs
-  const mapApiFieldToColumnId = (apiField: string): string => {
-    const mapping: Record<string, string> = {
-      "İşyeri Adı": "name",
-      "Bağlı Olduğu Şube": "branch",
-      "Sorumlu Uzman": "responsibleExpert",
-      "İl": "province",
-      "İşyeri Türü": "workplaceType",
-      "SGK No": "sgkNo",
-      "İşçi Sayısı": "employeeCount",
-      "Üye Sayısı": "memberCount",
-      "İşveren Sendikası": "employerUnion",
-      "İhale Adı": "tenderName",
-      "Yetki Belgesi Türü": "authorizationType",
-      "Grev Yasağı Durumu": "strikeStatus",
-      "İhale Başlangıç Tarihi": "tenderStartDate",
-      "İhale Bitiş Tarihi": "tenderEndDate",
-      "TİS Bitiş Tarihi": "tisEndDate",
-      "Yetki Tespit Tarihi": "authorizationDate",
-      "Yetki Belgesi Tebliğ Tarihi": "authorizationNoticeDate",
-      "Çağrı Tarihi": "callDate",
-      "Yer ve Gün Tespit Tarihi": "placeAndDateDetermination",
-      "Önceden Belirlenen İlk Oturum Tarihi": "predeterminedFirstSession",
-      "İlk Oturum Tarihi": "firstSessionDate",
-      "Uyuşmazlık Tarihi": "disputeDate",
-      "Arabulucu Ataması Son Tarih": "mediatorDeadline",
-      "Arabulucu Raporu Tebliğ Tarihi": "mediatorReportDate",
-      "Grev Kararı Tarihi": "strikeDecisionDate",
-      "Grev Oylaması Tarihi": "strikeVotingDate",
-      "YHK Gönderim Tarihi": "yhkSubmissionDate",
-      "YHK Hatırlatma": "yhkReminder",
-      "İmza Tarihi": "signDate",
-      "TİS Başlangıç Tarihi": "tisStartDate",
-      "Beklenen Adım": "expectedStep",
-      "Termin Tarihi": "deadlineDate",
-      "Termin Kuralı": "deadlineRule"
-    };
-    return mapping[apiField] || apiField;
-  };
-
   // Get all available fields from the first data item
-  const getAllFields = () => {
+  const getAllColumns = () => {
     if (data.length === 0) return [];
     const firstItem = data[0];
-    return Object.keys(firstItem).map((key) => {
-      const matchingColumn = COLUMNS.find((col) =>
-        col.id === mapApiFieldToColumnId(key) || col.title === key
-      );
-      return matchingColumn || { id: key, title: key };
-    });
+    return Object.keys(firstItem).map(key => ({
+      id: key,
+      title: key
+    }));
   };
 
-  const allColumns = getAllFields();
-  const displayColumns = visibleColumns.length > 0
-    ? COLUMNS.filter((col) => visibleColumns.includes(col.id))
-    : allColumns;
-
-  // Helper for detecting pending status (no action taken)
-  function isNoAction(item: WorkplaceItem) {
-    // You can expand this according to the actual "pending" statuses of your workflow.
-    return !item.status || item.status === "" || item.status?.toLowerCase().includes("bekleniyor");
-  }
+  const displayColumns = getAllColumns();
 
   return (
     <Table>
@@ -127,17 +70,9 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
       </TableHeader>
       <TableBody>
         {data.map((item) => (
-          <TableRow key={item.id || item.İşyeri_Adı || Math.random().toString()}>
+          <TableRow key={item.id || Math.random().toString()}>
             {displayColumns.map((column) => {
-              let value =
-                column.id === 'status'
-                  ? (item.status || '')
-                  : item[column.id] ||
-                    item[column.title] ||
-                    (Object.entries(item).find(([k]) =>
-                      mapApiFieldToColumnId(k) === column.id
-                    ) || [])[1] ||
-                    '-';
+              const value = item[column.id] || '-';
 
               if (column.id === 'status') {
                 return (
@@ -147,8 +82,8 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                 );
               }
 
-              // For "deadlineDate" (Termin Tarihi), check if overdue and pending action
-              if (column.id === "deadlineDate" && value && value !== "-") {
+              // Check for deadline dates
+              if (column.id === "Termin Tarihi" || column.id === "deadlineDate") {
                 const showRed = isPastDeadline(value) && isNoAction(item);
                 return (
                   <TableCell key={column.id}>
@@ -161,7 +96,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
 
               return (
                 <TableCell key={column.id}>
-                  {value}
+                  {value?.toString() || '-'}
                 </TableCell>
               );
             })}
