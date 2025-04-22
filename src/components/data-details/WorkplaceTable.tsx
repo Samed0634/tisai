@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,9 +19,9 @@ interface WorkplaceItem {
 interface WorkplaceTableProps {
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
+  visibleColumns?: string[];
 }
 
-// Order of columns as specified in the requirements
 const COLUMN_ORDER = [
   "ID",
   "İŞYERİ TÜRÜ",
@@ -61,7 +60,8 @@ const COLUMN_ORDER = [
   "TİS İMZA TARİHİ",
   "TİS BAŞLANGIÇ TARİHİ",
   "TİS BİTİŞ TARİHİ",
-  "SON DURUM"
+  "SON DURUM",
+  "İŞLEM"
 ];
 
 function isPastDeadline(deadlineDate: string | undefined) {
@@ -79,24 +79,42 @@ function isNoAction(item: WorkplaceItem) {
 export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   data,
   onUpdateClick,
+  visibleColumns = COLUMN_ORDER
 }) => {
+  const displayColumns = COLUMN_ORDER.filter(column => 
+    visibleColumns.includes(column)
+  );
+
   return (
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            {COLUMN_ORDER.map((header) => (
+            {displayColumns.map((header) => (
               <TableHead key={header} className="whitespace-nowrap">
                 {header}
               </TableHead>
             ))}
-            <TableHead className="text-right">İşlem</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.id || Math.random().toString()}>
-              {COLUMN_ORDER.map((field) => {
+              {displayColumns.map((field) => {
+                if (field === "İŞLEM") {
+                  return (
+                    <TableCell key={field} className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onUpdateClick(item)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  );
+                }
+
                 const value = item[field] || '-';
 
                 if (field === "SON DURUM") {
@@ -107,7 +125,6 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                   );
                 }
 
-                // Check for deadline dates
                 const isDateField = [
                   "İHALE BİTİŞ TARİHİ",
                   "TİS BİTİŞ TARİHİ",
@@ -131,15 +148,6 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                   </TableCell>
                 );
               })}
-              <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onUpdateClick(item)}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
