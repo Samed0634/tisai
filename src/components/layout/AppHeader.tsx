@@ -12,10 +12,10 @@ export const AppHeader = () => {
       <div className="flex items-center cursor-pointer" onClick={toggleSidebar}>
         <img 
           src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
-          alt="Toplu İş Sözleşmesi Otomasyonu Logo" 
+          alt="TISAI.v1 Logo" 
           className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
         />
-        <span className="font-bold text-lg ml-2 text-secondary-800">Toplu İş Sözleşmesi Otomasyonu</span>
+        <span className="font-bold text-lg ml-2 text-secondary-800">TISAI.v1</span>
       </div>
     </div>
   );
