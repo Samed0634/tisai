@@ -6,7 +6,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
+  TableHead,  
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -18,8 +18,6 @@ interface WorkplaceItem {
 }
 
 interface WorkplaceTableProps {
-  visibleColumns: string[];
-  sortKey: string;
   data: WorkplaceItem[];
   onUpdateClick: (company: WorkplaceItem) => void;
 }
@@ -38,31 +36,26 @@ function isNoAction(item: WorkplaceItem) {
 
 export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   data,
-  sortKey,
   onUpdateClick,
 }) => {
   // Get all available fields from the first data item
-  const getAllColumns = () => {
+  const getColumns = () => {
     if (data.length === 0) return [];
-    const firstItem = data[0];
-    return Object.keys(firstItem).map(key => ({
-      id: key,
-      title: key
+    return Object.keys(data[0]).map(key => ({
+      field: key,
+      header: key
     }));
   };
 
-  const displayColumns = getAllColumns();
+  const columns = getColumns();
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          {displayColumns.map((column) => (
-            <TableHead
-              key={column.id}
-              className={sortKey === column.id ? 'text-primary' : ''}
-            >
-              {column.title}
+          {columns.map((column) => (
+            <TableHead key={column.field}>
+              {column.header}
             </TableHead>
           ))}
           <TableHead className="text-right">İşlem</TableHead>
@@ -71,22 +64,22 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
       <TableBody>
         {data.map((item) => (
           <TableRow key={item.id || Math.random().toString()}>
-            {displayColumns.map((column) => {
-              const value = item[column.id] || '-';
+            {columns.map((column) => {
+              const value = item[column.field] || '-';
 
-              if (column.id === 'status') {
+              if (column.field === 'status') {
                 return (
-                  <TableCell key={column.id}>
+                  <TableCell key={column.field}>
                     <StatusBadge status={value} />
                   </TableCell>
                 );
               }
 
               // Check for deadline dates
-              if (column.id === "Termin Tarihi" || column.id === "deadlineDate") {
+              if (column.field === "Termin Tarihi" || column.field === "deadlineDate") {
                 const showRed = isPastDeadline(value) && isNoAction(item);
                 return (
-                  <TableCell key={column.id}>
+                  <TableCell key={column.field}>
                     <span className={showRed ? "text-destructive font-semibold" : ""}>
                       {value}
                     </span>
@@ -95,7 +88,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
               }
 
               return (
-                <TableCell key={column.id}>
+                <TableCell key={column.field}>
                   {value?.toString() || '-'}
                 </TableCell>
               );
@@ -115,3 +108,4 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
     </Table>
   );
 };
+
