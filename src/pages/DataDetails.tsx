@@ -138,8 +138,6 @@ const DataDetails = () => {
 
       <Card>
         <WorkplaceTable
-          visibleColumns={visibleColumns}
-          sortKey={sortKey}
           data={processedItems} 
           onUpdateClick={openUpdateDialog}
         />
