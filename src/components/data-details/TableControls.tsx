@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { COLUMNS, ColumnType } from "@/constants/tableColumns";
+import { COLUMNS } from "@/constants/tableColumns";
 
 interface TableControlsProps {
   visibleColumns: string[];
@@ -23,6 +23,9 @@ export const TableControls: React.FC<TableControlsProps> = ({
   handleSort,
   toggleColumn,
 }) => {
+  // Filter out fixed columns from sort options
+  const sortableColumns = COLUMNS.filter(col => !col.fixed && visibleColumns.includes(col.id));
+
   return (
     <div className="flex items-center gap-2">
       <DropdownMenu>
@@ -33,7 +36,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
-          {COLUMNS.filter(column => visibleColumns.includes(column.id)).map((column) => (
+          {sortableColumns.map((column) => (
             <DropdownMenuCheckboxItem
               key={column.id}
               checked={sortKey === column.id}
@@ -44,6 +47,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
@@ -56,9 +60,10 @@ export const TableControls: React.FC<TableControlsProps> = ({
               key={column.id}
               checked={visibleColumns.includes(column.id)}
               onCheckedChange={() => toggleColumn(column.id)}
-              disabled={column.fixed === true}
+              disabled={column.fixed}
             >
               {column.title}
+              {column.fixed && " (Sabit)"}
             </DropdownMenuCheckboxItem>
           ))}
         </DropdownMenuContent>

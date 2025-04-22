@@ -44,4 +44,5 @@ export const COLUMNS: ColumnType[] = [
   { id: 'TİS BAŞLANGIÇ TARİHİ', title: 'TİS BAŞLANGIÇ TARİHİ' },
   { id: 'TİS BİTİŞ TARİHİ', title: 'TİS BİTİŞ TARİHİ' },
   { id: 'SON DURUM', title: 'SON DURUM' },
+  { id: 'İŞLEM', title: 'İŞLEM', fixed: true }
 ];

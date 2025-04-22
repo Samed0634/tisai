@@ -1,12 +1,16 @@
-import { useState } from "react";
 
-const DEFAULT_VISIBLE_COLUMNS = ['id', 'name', 'branch', 'responsibleExpert', 'sgkNo', 'employeeCount', 'memberCount'];
+import { useState } from "react";
+import { COLUMNS } from "@/constants/tableColumns";
+
+const DEFAULT_VISIBLE_COLUMNS = COLUMNS.map(col => col.id);
 
 export const useColumnVisibility = () => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE_COLUMNS);
 
   const toggleColumn = (columnId: string) => {
-    if (columnId === 'status') return;
+    const column = COLUMNS.find(col => col.id === columnId);
+    if (column?.fixed) return; // Don't toggle fixed columns
+    
     setVisibleColumns(current =>
       current.includes(columnId)
         ? current.filter(id => id !== columnId)
