@@ -51,7 +51,7 @@ export const UserFooter = () => {
           </div>
         </div>
         <Button variant="ghost" size="icon" onClick={handleLogout}>
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4 rounded-lg" />
         </Button>
       </div>
     </SidebarFooter>;
