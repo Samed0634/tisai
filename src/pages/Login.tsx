@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -91,7 +92,7 @@ const Login = () => {
               className="h-16 w-16 object-contain rounded-full border-2 border-primary/20" 
             />
           </div>
-          <div className="text-center text-2xl font-bold text-primary mb-2">TISAI</div>
+          <div className="text-center text-2xl font-bold text-foreground mb-2">TISAI</div>
           <CardTitle className="text-sm font-normal text-center text-muted-foreground">
             Toplu İş Sözleşmesi Otomasyon Sistemi
           </CardTitle>
