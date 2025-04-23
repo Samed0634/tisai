@@ -42,7 +42,7 @@ export const SearchToolbar: React.FC<SearchToolbarProps> = ({
           <SelectValue placeholder="Sorumlu Uzman" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">Tüm Uzmanlar</SelectItem>
+          <SelectItem value="all">Tüm Uzmanlar</SelectItem>
           {experts.map((expert) => (
             <SelectItem key={expert} value={expert}>
               {expert}

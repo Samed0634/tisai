@@ -10,7 +10,6 @@ import { useTableSort } from "@/hooks/useTableSort";
 import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
 import { COLUMNS } from "@/constants/tableColumns";
 
-// Define the category titles map
 export const categoryTitles: Record<string, string> = {
   "authorization-requests": "Yetki Tespiti İstenecek İşyerleri",
   "authorization-notices": "Yetki Belgesi Tebliğ Yapılan İşyerleri",
@@ -50,11 +49,9 @@ const DataDetails = () => {
   const [processDate, setProcessDate] = useState("");
   const { toast } = useToast();
 
-  // New state for search and filter
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedExpert, setSelectedExpert] = useState("");
+  const [selectedExpert, setSelectedExpert] = useState("all");
 
-  // Get unique experts from items
   const experts = useMemo(() => {
     const uniqueExperts = new Set(
       items
@@ -64,7 +61,6 @@ const DataDetails = () => {
     return Array.from(uniqueExperts).sort();
   }, [items]);
 
-  // Filter items based on search query and selected expert
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
       const matchesSearch = searchQuery.toLowerCase().trim() === "" 
@@ -75,7 +71,7 @@ const DataDetails = () => {
           (item.branch?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
         );
 
-      const matchesExpert = selectedExpert === "" 
+      const matchesExpert = selectedExpert === "all" 
         ? true 
         : item.responsibleExpert === selectedExpert;
 
@@ -89,19 +85,15 @@ const DataDetails = () => {
     }
   }, [items]);
   
-  // Process the items to match the column IDs
   const processedItems = filteredItems.map((item) => {
-    // Ensure each item has a valid ID
     const processedItem: WorkplaceItem = {
       id: item.id || item["İşyeri Adı"] || String(Math.random()),
       name: item.name || item["İşyeri Adı"] || "Unnamed",
       ...item
     };
     
-    // Convert column names to match expected format if needed
     COLUMNS.forEach(column => {
       if (item[column.id] === undefined) {
-        // Try to find matching fields with different casing or formats
         const key = Object.keys(item).find(k => 
           k.replace(/\s+/g, '') === column.id.replace(/\s+/g, '')
         );

@@ -9,7 +9,7 @@ interface FilterDropdownProps {
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({ onChange }) => {
   return (
-    <Select onValueChange={onChange}>
+    <Select onValueChange={onChange} defaultValue="all">
       <SelectTrigger className="w-[180px]">
         <div className="flex items-center">
           <Filter className="mr-2 h-4 w-4" />
