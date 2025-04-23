@@ -1,29 +1,20 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Settings } from "lucide-react";
 import { DashboardItem } from "./dashboardTypes";
-
 interface DashboardHeaderProps {
   allDashboardData: DashboardItem[];
   selectedCards: string[];
   onToggleCard: (cardId: string) => void;
 }
-
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   allDashboardData,
   selectedCards,
-  onToggleCard,
+  onToggleCard
 }) => {
-  return (
-    <div className="flex items-center justify-between">
-      <h1 className="text-2xl font-bold tracking-tight">Gösterge Paneli</h1>
+  return <div className="flex items-center justify-between">
+      <h1 className="text-2xl font-bold tracking-tight text-center">Canlı Panel</h1>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
@@ -31,19 +22,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[300px] max-h-[400px] overflow-y-auto">
-          {allDashboardData.map((item) => (
-            <DropdownMenuCheckboxItem
-              key={item.id}
-              checked={selectedCards.includes(item.id)}
-              onCheckedChange={() => onToggleCard(item.id)}
-            >
+          {allDashboardData.map(item => <DropdownMenuCheckboxItem key={item.id} checked={selectedCards.includes(item.id)} onCheckedChange={() => onToggleCard(item.id)}>
               {item.title}
-            </DropdownMenuCheckboxItem>
-          ))}
+            </DropdownMenuCheckboxItem>)}
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
-  );
+    </div>;
 };
-
 export default DashboardHeader;
