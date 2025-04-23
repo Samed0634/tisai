@@ -24,7 +24,7 @@ const AppLayout = () => {
                 alt="Toplu İş Sözleşmesi Otomasyonu Logo" 
                 className="h-6 w-6 object-contain rounded-full border-2 border-primary/20" 
               />
-              <span className="font-bold text-xl text-secondary-800">Toplu İş Sözleşmesi Otomasyonu</span>
+              <span className="font-bold text-xl text-secondary-800">TISAI</span>
             </div>
           </SidebarHeader>
           
