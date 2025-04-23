@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -85,17 +84,12 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Card className="w-[350px]">
         <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-2">
-            <img 
-              src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
-              alt="TİS Takip Sistemi Logo" 
-              className="h-16 w-16 object-contain rounded-full border-2 border-primary/20" 
-            />
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl font-bold text-foreground">Hoş Geldiniz</h1>
+            <p className="text-sm text-muted-foreground">
+              Sisteme giriş yapmak için bilgilerinizi giriniz
+            </p>
           </div>
-          <div className="text-center text-2xl font-bold text-foreground mb-2">TISAI</div>
-          <CardTitle className="text-sm font-normal text-center text-muted-foreground">
-            Toplu İş Sözleşmesi Otomasyon Sistemi
-          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
