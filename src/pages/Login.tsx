@@ -96,9 +96,10 @@ const Login = () => {
               className="h-16 w-16 object-contain rounded-full border-2 border-primary/20" 
             />
           </div>
-          <CardTitle className="text-2xl font-bold text-center">TİS Takip Sistemi</CardTitle>
+          <div className="text-center text-sm font-medium text-muted-foreground mb-1">TISAI</div>
+          <CardTitle className="text-2xl font-bold text-center">Toplu İş Sözleşmesi Otomasyon Sistemi</CardTitle>
           <CardDescription className="text-center">
-            Hizmet İş Sendikası TİS Daire Başkanlığı
+            Hizmet İş Sendikası
           </CardDescription>
         </CardHeader>
         <CardContent>
