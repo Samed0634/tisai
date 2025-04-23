@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -7,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +23,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Check if user is already logged in
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -53,8 +51,6 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Sign in without additional captcha verification
-      // We'll remove the captcha logic since it requires factorId and code that we don't have
       const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
@@ -69,9 +65,8 @@ const Login = () => {
         description: "Hoş geldiniz.",
       });
       
-      // Force navigation to dashboard after successful login
       setTimeout(() => {
-        window.location.href = "/"; // Use direct location change to force a full refresh
+        window.location.href = "/";
       }, 500);
     } catch (error: any) {
       toast({
@@ -96,11 +91,10 @@ const Login = () => {
               className="h-16 w-16 object-contain rounded-full border-2 border-primary/20" 
             />
           </div>
-          <div className="text-center text-sm font-medium text-muted-foreground mb-1">TISAI</div>
-          <CardTitle className="text-2xl font-bold text-center">Toplu İş Sözleşmesi Otomasyon Sistemi</CardTitle>
-          <CardDescription className="text-center">
-            Hizmet İş Sendikası
-          </CardDescription>
+          <div className="text-center text-2xl font-bold text-primary mb-2">TISAI</div>
+          <CardTitle className="text-sm font-normal text-center text-muted-foreground">
+            Toplu İş Sözleşmesi Otomasyon Sistemi
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
