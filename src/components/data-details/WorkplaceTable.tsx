@@ -49,10 +49,10 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="text-[#ea384c]">İşlem</TableHead>
             {visibleColumnDefinitions.map(column => (
               <TableHead key={column.id}>{column.title}</TableHead>
             ))}
-            <TableHead className="text-right">İşlem</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -65,16 +65,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
           ) : (
             data.map((item) => (
               <TableRow key={item.id} className="hover:bg-muted/50">
-                {visibleColumnDefinitions.map(column => (
-                  <TableCell key={column.id}>
-                    {column.id === 'SON DURUM' ? (
-                      <StatusBadge status={item[column.id] || 'Bekliyor'} />
-                    ) : (
-                      item[column.id]
-                    )}
-                  </TableCell>
-                ))}
-                <TableCell className="text-right">
+                <TableCell>
                   <Button
                     variant="outline"
                     size="icon"
@@ -84,6 +75,15 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                     <Edit className="h-4 w-4" />
                   </Button>
                 </TableCell>
+                {visibleColumnDefinitions.map(column => (
+                  <TableCell key={column.id}>
+                    {column.id === 'SON DURUM' ? (
+                      <StatusBadge status={item[column.id] || 'Bekliyor'} />
+                    ) : (
+                      item[column.id]
+                    )}
+                  </TableCell>
+                ))}
               </TableRow>
             ))
           )}
