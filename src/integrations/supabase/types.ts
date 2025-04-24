@@ -28,7 +28,7 @@ export type Database = {
           "İŞYERİ ADI": string | null
           "İŞYERİ TÜRÜ": string | null
           "İŞYERİNİN BULUNDUĞU İL": string | null
-          "MÜZAKERE SÜRESİ DOLAN İŞYERLERİ": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
@@ -61,7 +61,7 @@ export type Database = {
           "İŞYERİ ADI"?: string | null
           "İŞYERİ TÜRÜ"?: string | null
           "İŞYERİNİN BULUNDUĞU İL"?: string | null
-          "MÜZAKERE SÜRESİ DOLAN İŞYERLERİ"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
@@ -94,7 +94,7 @@ export type Database = {
           "İŞYERİ ADI"?: string | null
           "İŞYERİ TÜRÜ"?: string | null
           "İŞYERİNİN BULUNDUĞU İL"?: string | null
-          "MÜZAKERE SÜRESİ DOLAN İŞYERLERİ"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
@@ -113,7 +113,7 @@ export type Database = {
       }
     }
     Views: {
-      yetki_tespit_istenecek_view: {
+      çağrı_yapılacak_view: {
         Row: {
           "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
           "BAĞLI OLDUĞU ŞUBE": string | null
@@ -132,7 +132,7 @@ export type Database = {
           "İŞYERİ ADI": string | null
           "İŞYERİ TÜRÜ": string | null
           "İŞYERİNİN BULUNDUĞU İL": string | null
-          "MÜZAKERE SÜRESİ DOLAN İŞYERLERİ": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
@@ -165,7 +165,7 @@ export type Database = {
           "İŞYERİ ADI"?: string | null
           "İŞYERİ TÜRÜ"?: string | null
           "İŞYERİNİN BULUNDUĞU İL"?: string | null
-          "MÜZAKERE SÜRESİ DOLAN İŞYERLERİ"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
@@ -198,7 +198,1231 @@ export type Database = {
           "İŞYERİ ADI"?: string | null
           "İŞYERİ TÜRÜ"?: string | null
           "İŞYERİNİN BULUNDUĞU İL"?: string | null
-          "MÜZAKERE SÜRESİ DOLAN İŞYERLERİ"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      grev_kararı_alınması_gereken_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      grev_oylaması_yapılması_gereken_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      grev_yasağı_olan_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      ilk_oturum_tutulması_gereken_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      imzalanan_tisler_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      müzakere_süresi_dolan_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      önceden_belirlenen_ilk_oturum_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      uyuşmazlık_bildirimi_yapılması_gereken_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      yer_ve_gün_tespit_tarihli_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      yetki_belgesi_tebliğ_yapılan_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      yetki_tespit_istenecek_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      yhk_gönderim_gereken_view: {
+        Row: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
+          "BAĞLI OLDUĞU ŞUBE": string | null
+          "ÇAĞRI TARİHİ": string | null
+          "FİİLİ GREV KARARI TARİHİ": string | null
+          "GREV KARARI TARİHİ": string | null
+          "GREV OYLAMASI TARİHİ": string | null
+          "GREV YASAĞI DURUMU": string | null
+          ID: number | null
+          "İHALE ADI": string | null
+          "İHALE BAŞLANGIÇ TARİHİ": string | null
+          "İHALE BİTİŞ TARİHİ": string | null
+          "İLK OTURUM TARİHİ": string | null
+          "İŞÇİ SAYISI": number | null
+          "İŞVEREN SENDİKASI": string | null
+          "İŞYERİ ADI": string | null
+          "İŞYERİ TÜRÜ": string | null
+          "İŞYERİNİN BULUNDUĞU İL": string | null
+          "MÜZAKERE SÜRESİ SON TARİH": string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
+          "SGK NO": string | null
+          "SORUMLU UZMAN": string | null
+          "TİS BAŞLANGIÇ TARİHİ": string | null
+          "TİS BİTİŞ TARİHİ": string | null
+          "TİS GELİŞ TARİHİ": string | null
+          "TİS İMZA TARİHİ": string | null
+          "ÜYE SAYISI": number | null
+          "UYUŞMAZLIK TARİHİ": string | null
+          "YER VE GÜN TESPİT TARİHİ": string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ": string | null
+          "YETKİ TESPİT İSTEM TARİHİ": string | null
+          "YHK GÖNDERİM TARİHİ": string | null
+        }
+        Insert: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
+          "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
+          "SGK NO"?: string | null
+          "SORUMLU UZMAN"?: string | null
+          "TİS BAŞLANGIÇ TARİHİ"?: string | null
+          "TİS BİTİŞ TARİHİ"?: string | null
+          "TİS GELİŞ TARİHİ"?: string | null
+          "TİS İMZA TARİHİ"?: string | null
+          "ÜYE SAYISI"?: number | null
+          "UYUŞMAZLIK TARİHİ"?: string | null
+          "YER VE GÜN TESPİT TARİHİ"?: string | null
+          "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
+          "YETKİ TESPİT İSTEM TARİHİ"?: string | null
+          "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Update: {
+          "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
+          "BAĞLI OLDUĞU ŞUBE"?: string | null
+          "ÇAĞRI TARİHİ"?: string | null
+          "FİİLİ GREV KARARI TARİHİ"?: string | null
+          "GREV KARARI TARİHİ"?: string | null
+          "GREV OYLAMASI TARİHİ"?: string | null
+          "GREV YASAĞI DURUMU"?: string | null
+          ID?: number | null
+          "İHALE ADI"?: string | null
+          "İHALE BAŞLANGIÇ TARİHİ"?: string | null
+          "İHALE BİTİŞ TARİHİ"?: string | null
+          "İLK OTURUM TARİHİ"?: string | null
+          "İŞÇİ SAYISI"?: number | null
+          "İŞVEREN SENDİKASI"?: string | null
+          "İŞYERİ ADI"?: string | null
+          "İŞYERİ TÜRÜ"?: string | null
+          "İŞYERİNİN BULUNDUĞU İL"?: string | null
+          "MÜZAKERE SÜRESİ SON TARİH"?: string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null

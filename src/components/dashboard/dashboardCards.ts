@@ -4,17 +4,19 @@ import {
   FileCheck,
   MessageSquare,
   Calendar,
+  Clock,
+  FileText,
   AlertTriangle,
   Gavel,
   Scale,
-  FileText
+  Ban
 } from "lucide-react";
 import React from "react";
 import type { DashboardItem } from "./dashboardTypes";
 
 export const getDashboardData = (): DashboardItem[] => [
   { 
-    id: "authorization-requests", 
+    id: "yetki-tespit-istenecek", 
     title: "Yetki Tespiti İstenecek İşyerleri", 
     value: 0,
     icon: React.createElement(Building, { className: "h-5 w-5" }),
@@ -22,7 +24,7 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "yetkiTespitIstenenListesi"
   },
   { 
-    id: "authorization-notices", 
+    id: "yetki-belgesi-teblig", 
     title: "Yetki Belgesi Tebliğ Yapılan İşyerleri", 
     value: 0,
     icon: React.createElement(FileCheck, { className: "h-5 w-5" }),
@@ -30,7 +32,7 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "yetkiBelgesiTebligYapilanListesi"
   },
   { 
-    id: "call-required", 
+    id: "cagri-yapilacak", 
     title: "Çağrı Yapılacak İşyerleri", 
     value: 0,
     icon: React.createElement(MessageSquare, { className: "h-5 w-5" }),
@@ -38,7 +40,7 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "cagriYapilacakListesi"
   },
   { 
-    id: "place-date-determination", 
+    id: "yer-gun-tespit-tarihli", 
     title: "Yer ve Gün Tespit Tarihli İşyerleri", 
     value: 0,
     icon: React.createElement(Calendar, { className: "h-5 w-5" }),
@@ -46,15 +48,15 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "yerVeGunTespitListesi"
   },
   { 
-    id: "pre-determined-first-session", 
-    title: "Önceden Belirlenen İlk Oturum Tarihi İşyerleri", 
+    id: "onceden-belirlenen-ilk-oturum", 
+    title: "Önceden Belirlenen İlk Oturum Tarihli İşyerleri", 
     value: 0,
     icon: React.createElement(Calendar, { className: "h-5 w-5" }),
     color: "#D3E4FD",
     dataSource: "oncedenBelirlenenIlkOturumListesi"
   },
   { 
-    id: "first-session", 
+    id: "ilk-oturum-tutulmasi-gereken", 
     title: "İlk Oturum Tutulması Gereken İşyerleri", 
     value: 0,
     icon: React.createElement(Calendar, { className: "h-5 w-5" }),
@@ -62,7 +64,15 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "ilkOturumGerekenListesi"
   },
   { 
-    id: "dispute-notices", 
+    id: "muzakere-suresi-dolan", 
+    title: "Müzakere Süresi Dolan İşyerleri", 
+    value: 0,
+    icon: React.createElement(Clock, { className: "h-5 w-5" }),
+    color: "#ea384c",
+    dataSource: "muzakereSuresiDolanListesi"
+  },
+  { 
+    id: "uyusmazlik-bildirimi", 
     title: "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri", 
     value: 0,
     icon: React.createElement(AlertTriangle, { className: "h-5 w-5" }),
@@ -70,15 +80,7 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "uyusmazlikGerekenListesi"
   },
   { 
-    id: "mediator-appointment-deadline", 
-    title: "Arabulucu Ataması Son Tarih", 
-    value: 0,
-    icon: React.createElement(Calendar, { className: "h-5 w-5" }),
-    color: "#D3E4FD",
-    dataSource: "arabulucuAtamasiSonTarihListesi"
-  },
-  { 
-    id: "strike-decisions", 
+    id: "grev-karari-alinmasi", 
     title: "Grev Kararı Alınması Gereken İşyerleri", 
     value: 0,
     icon: React.createElement(Gavel, { className: "h-5 w-5" }),
@@ -86,7 +88,7 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "grevKarariAlinmasiGerekenListesi"
   },
   { 
-    id: "strike-voting", 
+    id: "grev-oylamasi-yapilmasi", 
     title: "Grev Oylaması Yapılması Gereken İşyerleri", 
     value: 0,
     icon: React.createElement(Gavel, { className: "h-5 w-5" }),
@@ -94,7 +96,7 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "grevOylamasiYapilmasiGerekenListesi"
   },
   { 
-    id: "yhk-submissions", 
+    id: "yhk-gonderilmesi", 
     title: "YHK'ya Gönderilmesi Gereken İşyerleri", 
     value: 0,
     icon: React.createElement(Scale, { className: "h-5 w-5" }),
@@ -102,15 +104,7 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "yhkGonderimGerekenListesi"
   },
   { 
-    id: "yhk-reminder", 
-    title: "YHK'daki TİS Hatırlatması", 
-    value: 0,
-    icon: React.createElement(Scale, { className: "h-5 w-5" }),
-    color: "#D3E4FD",
-    dataSource: "yhkHatirlatmasiListesi"
-  },
-  { 
-    id: "signed-tis", 
+    id: "imzalanan-tisler", 
     title: "İmzalanan TİS'ler", 
     value: 0,
     icon: React.createElement(FileText, { className: "h-5 w-5" }),
@@ -118,20 +112,11 @@ export const getDashboardData = (): DashboardItem[] => [
     dataSource: "imzalananTislerListesi"
   },
   { 
-    id: "expiring-tis", 
-    title: "Sona Erecek TİS'ler", 
-    value: 0,
-    icon: React.createElement(FileText, { className: "h-5 w-5" }),
-    color: "#FEF7CD",
-    dataSource: "sonaErecekTislerListesi"
-  },
-  { 
-    id: "strike-ban", 
+    id: "grev-yasagi-olan", 
     title: "Grev Yasağı Olan İşyerleri", 
     value: 0,
-    icon: React.createElement(Gavel, { className: "h-5 w-5" }),
+    icon: React.createElement(Ban, { className: "h-5 w-5" }),
     color: "#D3E4FD",
     dataSource: "grevYasagiOlanListesi"
   }
 ];
-
