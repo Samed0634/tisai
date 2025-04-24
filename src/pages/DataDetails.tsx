@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -108,7 +109,7 @@ const DataDetails = () => {
   });
   
   const { visibleColumns, toggleColumn } = useColumnVisibility();
-  const { sortKey, sortOrder, handleSort, sortedData } = useTableSort(processedItems);
+  const { sortedData } = useTableSort(processedItems);
 
   const title = categoryTitles[type as keyof typeof categoryTitles] || "Detaylar";
 
@@ -144,8 +145,6 @@ const DataDetails = () => {
         <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
         <TableControls
           visibleColumns={visibleColumns}
-          sortKey={sortKey}
-          handleSort={handleSort}
           toggleColumn={toggleColumn}
         />
       </div>

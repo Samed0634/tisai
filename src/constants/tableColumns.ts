@@ -2,6 +2,7 @@
 export type ColumnType = {
   id: string;
   title: string;
+  fixed?: boolean;
 };
 
 export const COLUMNS: ColumnType[] = [
