@@ -1,24 +1,8 @@
 
 import React from "react";
-import RecentActivities from "./RecentActivities";
-import UpcomingMeetings from "./UpcomingMeetings";
-import { RecentActivity, UpcomingMeeting } from "./dashboardTypes";
 
-interface DashboardAnalyticsProps {
-  activities: RecentActivity[];
-  meetings: UpcomingMeeting[];
-}
-
-const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
-  activities,
-  meetings,
-}) => {
-  return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <RecentActivities activities={activities} />
-      <UpcomingMeetings meetings={meetings} />
-    </div>
-  );
+const DashboardAnalytics: React.FC = () => {
+  return null; // Removing all dashboard analytics components
 };
 
 export default DashboardAnalytics;

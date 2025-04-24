@@ -2,19 +2,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
-import { recentActivities } from "@/components/dashboard/recentActivities";
-import { upcomingMeetings } from "@/components/dashboard/upcomingMeetings";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardGrid from "@/components/dashboard/DashboardGrid";
-import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 import { useDashboardData } from "@/hooks/useDashboardData";
-
-const enhancedRecentActivities = recentActivities.map(activity => ({
-  ...activity,
-  category: activity.category || "default"
-}));
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -73,11 +65,6 @@ const Dashboard = () => {
       <DashboardGrid
         items={filteredDashboardData}
         onCardClick={handleCardClick}
-      />
-
-      <DashboardAnalytics
-        activities={enhancedRecentActivities}
-        meetings={upcomingMeetings}
       />
 
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
