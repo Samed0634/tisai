@@ -30,7 +30,7 @@ export const SearchToolbar: React.FC<SearchToolbarProps> = ({
       <div className="relative flex-1 max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="İşyeri adı, uzman veya şube ara..."
+          placeholder="İşyeri veya uzman ara..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10"
@@ -42,7 +42,6 @@ export const SearchToolbar: React.FC<SearchToolbarProps> = ({
           <SelectValue placeholder="Sorumlu Uzman" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tüm Uzmanlar</SelectItem>
           {experts.map((expert) => (
             <SelectItem key={expert} value={expert}>
               {expert}
