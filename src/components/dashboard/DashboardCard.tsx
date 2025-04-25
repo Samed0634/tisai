@@ -2,11 +2,12 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
 
 interface DashboardCardProps {
   title: string;
   value: number;
-  icon: React.ReactNode;
+  icon: LucideIcon;
   onClick: () => void;
   color: string;
   className?: string;
@@ -15,7 +16,7 @@ interface DashboardCardProps {
 const DashboardCard: React.FC<DashboardCardProps> = ({ 
   title, 
   value, 
-  icon, 
+  icon: Icon, 
   onClick,
   color,
   className
@@ -42,7 +43,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
           "transition-all duration-300 ease-in-out",
           "group-hover:scale-110 group-hover:bg-primary/15 group-hover:rotate-[-5deg]"
         )}>
-          {icon}
+          <Icon className="h-5 w-5" />
         </div>
       </CardHeader>
       <CardContent>

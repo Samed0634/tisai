@@ -1,10 +1,11 @@
-import React from "react";
+
+import { LucideIcon } from "lucide-react";
 
 export interface DashboardItem {
   id: string;
   title: string;
   value: number;
-  icon: React.ReactNode;
+  icon: LucideIcon;
   color: string;
   items?: any[];
   dataSource: string;
