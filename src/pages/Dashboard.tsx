@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -36,7 +35,6 @@ const Dashboard = () => {
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
     
-    // For the 'Grev Karari' card, show editable table instead of navigating
     if (categoryId === 'grevKarari') {
       setSelectedCategory(categoryId);
       setShowEditableTable(true);

@@ -2,7 +2,7 @@
 export type ColumnType = {
   id: string;
   title: string;
-  fixed?: boolean;
+  editable?: boolean;
 };
 
 export const COLUMNS: ColumnType[] = [
@@ -26,10 +26,10 @@ export const COLUMNS: ColumnType[] = [
   { id: 'YER VE GÜN TESPİT TARİHİ', title: 'YER VE GÜN TESPİT TARİHİ' },
   { id: 'ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ', title: 'ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ' },
   { id: 'İLK OTURUM TARİHİ', title: 'İLK OTURUM TARİHİ' },
-  { id: 'MÜZAKERE SÜRESİ DOLAN İŞYERLERİ', title: 'MÜZAKERE SÜRESİ DOLAN İŞYERLERİ' },
+  { id: 'MÜZAKERE SÜRESİ SON TARİH', title: 'MÜZAKERE SÜRESİ DOLAN İŞYERLERİ' },
   { id: 'UYUŞMAZLIK TARİHİ', title: 'UYUŞMAZLIK TARİHİ' },
   { id: 'ARABULUCU RAPORU TEBLİĞ TARİHİ', title: 'ARABULUCU RAPORU TEBLİĞ TARİHİ' },
-  { id: 'GREV KARARI TARİHİ', title: 'GREV KARARI TARİHİ' },
+  { id: 'GREV KARARI TARİHİ', title: 'GREV KARARI TARİHİ', editable: true },
   { id: 'FİİLİ GREV KARARI TARİHİ', title: 'FİİLİ GREV KARARI TARİHİ' },
   { id: 'GREV OYLAMASI TARİHİ', title: 'GREV OYLAMASI TARİHİ' },
   { id: 'YHK GÖNDERİM TARİHİ', title: 'YHK GÖNDERİM TARİHİ' },
