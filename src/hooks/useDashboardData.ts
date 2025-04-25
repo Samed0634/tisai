@@ -9,8 +9,26 @@ const fetchDashboardData = async () => {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
-    console.log("Dashboard data loaded:", Object.keys(data));
-    return data;
+    
+    // Transform the response into the expected format for dashboard cards
+    const transformedData = {
+      cagriYapilacakListesi: data.çağrı_yapılacak_view || [],
+      yetkiTespitIstenenListesi: [],
+      yetkiBelgesiTebligYapilanListesi: [],
+      yerVeGunTespitListesi: [],
+      oncedenBelirlenenIlkOturumListesi: [],
+      ilkOturumGerekenListesi: [],
+      muzakereSuresiDolanListesi: [],
+      uyusmazlikGerekenListesi: [],
+      grevKarariAlinmasiGerekenListesi: [],
+      grevOylamasiYapilmasiGerekenListesi: [],
+      yhkGonderimGerekenListesi: [],
+      imzalananTislerListesi: [],
+      grevYasagiOlanListesi: []
+    };
+
+    console.log("Dashboard data loaded:", Object.keys(transformedData));
+    return transformedData;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
     throw error;
@@ -37,3 +55,4 @@ export const useDashboardData = () => {
     }
   });
 };
+
