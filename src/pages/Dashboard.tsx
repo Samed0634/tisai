@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardGrid from "@/components/dashboard/DashboardGrid";
+import { EditableWorkplaceTable } from "@/components/dashboard/EditableWorkplaceTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
 const Dashboard = () => {
@@ -15,8 +17,10 @@ const Dashboard = () => {
     staticDashboardData.map(item => item.id)
   );
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [showEditableTable, setShowEditableTable] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const { data: n8nDashboardData, isLoading } = useDashboardData();
+  const { data: n8nDashboardData, isLoading, refetch } = useDashboardData();
 
   const getListItems = (listName: string) => {
     if (!n8nDashboardData) return [];
@@ -31,7 +35,12 @@ const Dashboard = () => {
 
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
-    if (category?.items) {
+    
+    // For the 'Grev Karari' card, show editable table instead of navigating
+    if (categoryId === 'grevKarari') {
+      setSelectedCategory(categoryId);
+      setShowEditableTable(true);
+    } else if (category?.items) {
       navigate(`/details/${categoryId}`, { state: { items: category.items } });
     } else {
       console.log("No items found for this category:", categoryId);
@@ -54,6 +63,8 @@ const Dashboard = () => {
     return <div>Yükleniyor...</div>;
   }
 
+  const grevKarariData = getListItems('grevKarariAlinmasiGerekenListesi');
+
   return (
     <div className="space-y-6">
       <DashboardHeader
@@ -62,10 +73,26 @@ const Dashboard = () => {
         onToggleCard={toggleCard}
       />
 
-      <DashboardGrid
-        items={filteredDashboardData}
-        onCardClick={handleCardClick}
-      />
+      {showEditableTable && selectedCategory === 'grevKarari' ? (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Grev Kararı Alınması Gereken İşyerleri</h2>
+            <Button variant="outline" onClick={() => setShowEditableTable(false)}>
+              Gösterge Paneline Dön
+            </Button>
+          </div>
+          <EditableWorkplaceTable 
+            data={grevKarariData}
+            isLoading={isLoading}
+            refetch={refetch}
+          />
+        </div>
+      ) : (
+        <DashboardGrid
+          items={filteredDashboardData}
+          onCardClick={handleCardClick}
+        />
+      )}
 
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden">

@@ -1,18 +1,29 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const fetchDashboardData = async () => {
   try {
+    // Fetch data from Supabase views
+    const { data: grevKarariData, error: grevKarariError } = await supabase
+      .from('grev_kararı_alınması_gereken_view')
+      .select('*');
+
+    if (grevKarariError) {
+      throw new Error(`Error fetching grev karari data: ${grevKarariError.message}`);
+    }
+
+    // Continue with existing API for other data
     const response = await fetch('https://primary-production-dcf9.up.railway.app/webhook/terminsorgu');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const data = await response.json();
+    const apiData = await response.json();
     
     // Transform the response into the expected format for dashboard cards
     const transformedData = {
-      cagriYapilacakListesi: data.çağrı_yapılacak_view || [],
+      cagriYapilacakListesi: apiData.çağrı_yapılacak_view || [],
       yetkiTespitIstenenListesi: [],
       yetkiBelgesiTebligYapilanListesi: [],
       yerVeGunTespitListesi: [],
@@ -20,7 +31,7 @@ const fetchDashboardData = async () => {
       ilkOturumGerekenListesi: [],
       muzakereSuresiDolanListesi: [],
       uyusmazlikGerekenListesi: [],
-      grevKarariAlinmasiGerekenListesi: [],
+      grevKarariAlinmasiGerekenListesi: grevKarariData || [],
       grevOylamasiYapilmasiGerekenListesi: [],
       yhkGonderimGerekenListesi: [],
       imzalananTislerListesi: [],
@@ -55,4 +66,3 @@ export const useDashboardData = () => {
     }
   });
 };
-
