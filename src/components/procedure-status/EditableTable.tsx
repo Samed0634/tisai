@@ -1,23 +1,16 @@
+
 import { useState } from "react";
-import { Filter, Save, Edit } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Workplace } from "@/types/workplace";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { TableHeader } from "./TableHeader";
+import { EditableCell } from "./EditableCell";
 
 interface EditableTableProps {
   data: Workplace[];
@@ -82,11 +75,9 @@ export const EditableTable = ({
 
   const toggleColumn = (column: string) => {
     if (visibleColumns.includes(column)) {
-      const newColumns = visibleColumns.filter(col => col !== column);
-      setVisibleColumns(newColumns);
+      setVisibleColumns(visibleColumns.filter(col => col !== column));
     } else {
-      const newColumns = [...visibleColumns, column];
-      setVisibleColumns(newColumns);
+      setVisibleColumns([...visibleColumns, column]);
     }
   };
 
@@ -106,50 +97,15 @@ export const EditableTable = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Prosedür Durumu</h1>
-        <div className="flex gap-2">
-          <Button
-            variant={isEditing ? "outline" : "default"}
-            size="sm"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            {isEditing ? "Düzenlemeyi İptal Et" : "Düzenle"}
-          </Button>
-
-          {isEditing && Object.keys(pendingChanges).length > 0 && (
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleSave}
-            >
-              <Save className="mr-2 h-4 w-4" />
-              Kaydet
-            </Button>
-          )}
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Sütunları Filtrele
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px] max-h-[400px] overflow-y-auto">
-              {allColumns.map(column => (
-                <DropdownMenuCheckboxItem
-                  key={column}
-                  checked={visibleColumns.includes(column)}
-                  onCheckedChange={() => toggleColumn(column)}
-                >
-                  {column}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      <TableHeader
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        hasPendingChanges={Object.keys(pendingChanges).length > 0}
+        onSave={handleSave}
+        visibleColumns={visibleColumns}
+        allColumns={allColumns}
+        toggleColumn={toggleColumn}
+      />
 
       <div className="border rounded-md">
         <Table>
@@ -164,34 +120,18 @@ export const EditableTable = ({
             {data.map(workplace => (
               <TableRow key={workplace.ID}>
                 {visibleColumns.map(column => (
-                  <TableCell
-                    key={column}
+                  <EditableCell
+                    key={`${workplace.ID}-${column}`}
+                    isEditing={editingCell?.id === workplace.ID && editingCell.column === column}
+                    column={column}
+                    value={editingCell?.id === workplace.ID && editingCell.column === column
+                      ? editValue
+                      : getCellValue(workplace, column)}
+                    onChange={setEditValue}
+                    onBlur={() => handleCellChange(workplace)}
+                    isPending={pendingChanges[workplace.ID]?.[column] !== undefined}
                     onClick={() => handleCellClick(workplace, column)}
-                    className={`cursor-pointer hover:bg-muted/50 ${
-                      pendingChanges[workplace.ID]?.[column] !== undefined
-                        ? "bg-blue-50 dark:bg-blue-950/20"
-                        : ""
-                    }`}
-                  >
-                    {editingCell?.id === workplace.ID && editingCell.column === column ? (
-                      <Input
-                        type={column.includes("TARİHİ") ? "date" : "text"}
-                        value={editValue}
-                        onChange={e => setEditValue(e.target.value)}
-                        onBlur={() => handleCellChange(workplace)}
-                        onKeyDown={e => {
-                          if (e.key === "Enter") {
-                            handleCellChange(workplace);
-                          }
-                        }}
-                        autoFocus
-                      />
-                    ) : (
-                      column.includes("TARİHİ") && getCellValue(workplace, column)
-                        ? new Date(getCellValue(workplace, column)).toLocaleDateString("tr-TR")
-                        : getCellValue(workplace, column)
-                    )}
-                  </TableCell>
+                  />
                 ))}
               </TableRow>
             ))}
