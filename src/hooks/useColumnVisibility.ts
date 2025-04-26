@@ -2,7 +2,13 @@
 import { useState } from "react";
 import { COLUMNS } from "@/constants/tableColumns";
 
-const DEFAULT_VISIBLE_COLUMNS = COLUMNS.map(col => col.id);
+const DEFAULT_VISIBLE_COLUMNS = [
+  'SORUMLU UZMAN', 
+  'BAĞLI OLDUĞU ŞUBE', 
+  'İŞYERİ ADI', 
+  'ARABULUCU RAPORU TEBLİĞ TARİHİ', 
+  'GREV KARARI TARİHİ'
+];
 
 export const useColumnVisibility = () => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE_COLUMNS);
