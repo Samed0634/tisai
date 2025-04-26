@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Workplace } from "@/types/workplace";
-import { TableHeader } from "./TableHeader";
+import { TableHeader as TableHeaderComponent } from "./TableHeader";
 import { EditableCell } from "./EditableCell";
 
 interface EditableTableProps {
@@ -97,7 +97,7 @@ export const EditableTable = ({
 
   return (
     <div className="space-y-4">
-      <TableHeader
+      <TableHeaderComponent
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         hasPendingChanges={Object.keys(pendingChanges).length > 0}
