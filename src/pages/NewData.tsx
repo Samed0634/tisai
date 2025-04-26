@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +23,44 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 
+const isyeriTuruOptions = [
+  "Özel",
+  "Kamu",
+  "Belediye (Kadrolu)",
+  "Belediye (Şirket)",
+  "Kit",
+];
+
+const ilOptions = [
+  "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", 
+  // ... keep existing code (il options array)
+];
+
+const subeOptions = [
+  "Merkez",
+  "İstanbul",
+  "Ankara",
+  "İzmir",
+  "Bursa",
+  "Adana",
+  "Trabzon",
+  "Diyarbakır",
+];
+
+const sendikalarOptions = [
+  "MİS",
+  "MİKSEN",
+  "YERELSEN",
+  "SODEMSEN",
+  "TÜHİS",
+  "İŞVEREN",
+];
+
+const grevYasagiOptions = [
+  "Yasak",
+  "Serbest",
+];
+
 const formSchema = z.object({
   "İŞYERİ TÜRÜ": z.string().min(1, {
     message: "İşyeri türü gereklidir.",
@@ -40,8 +77,10 @@ const formSchema = z.object({
   "İŞYERİ ADI": z.string().min(1, {
     message: "İşyeri adı gereklidir.",
   }),
-  "SGK NO": z.string().min(1, {
-    message: "SGK numarası gereklidir.",
+  "SGK NO": z.string().length(11, {
+    message: "SGK numarası 11 haneli olmalıdır.",
+  }).regex(/^\d+$/, {
+    message: "SGK numarası sadece rakamlardan oluşmalıdır.",
   }),
   "İŞÇİ SAYISI": z.string().refine((val) => !isNaN(Number(val)), {
     message: "İşçi sayısı bir sayı olmalıdır.",
@@ -55,68 +94,31 @@ const formSchema = z.object({
   "GREV YASAĞI DURUMU": z.string().min(1, {
     message: "Grev yasağı durumu gereklidir.",
   }),
-  "İHALE ADI": z.string().min(1, {
-    message: "İhale adı gereklidir.",
-  }),
-  "İHALE BAŞLANGIÇ TARİHİ": z.date({
-    required_error: "İhale başlangıç tarihi gereklidir.",
-  }),
-  "İHALE BİTİŞ TARİHİ": z.date({
-    required_error: "İhale bitiş tarihi gereklidir.",
-  }),
   "YETKİ TESPİT İSTEM TARİHİ": z.date({
     required_error: "Yetki tespit istem tarihi gereklidir.",
   }),
   "YETKİ BELGESİ TEBLİĞ TARİHİ": z.date({
     required_error: "Yetki belgesi tebliğ tarihi gereklidir.",
   }),
+  "İHALE ADI": z.string().optional(),
+  "İHALE BAŞLANGIÇ TARİHİ": z.date().optional(),
+  "İHALE BİTİŞ TARİHİ": z.date().optional(),
+}).refine((data) => {
+  if (data["İŞYERİ TÜRÜ"] === "Kit") {
+    return data["İHALE ADI"] && data["İHALE BAŞLANGIÇ TARİHİ"] && data["İHALE BİTİŞ TARİHİ"];
+  }
+  return true;
+}, {
+  message: "Kit seçildiğinde ihale bilgileri zorunludur.",
+  path: ["İHALE ADI"],
 });
-
-type FormValues = z.infer<typeof formSchema>;
-
-const grevYasagiOptions = [
-  "Var",
-  "Yok",
-];
-
-const isyeriTuruOptions = [
-  "Özel",
-  "Kamu",
-  "Belediye",
-];
-
-const ilOptions = [
-  "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", 
-  "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", 
-  "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", 
-  "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", 
-  "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", 
-  "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", 
-  "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", 
-  "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", 
-  "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", 
-  "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", 
-  "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", 
-  "Kilis", "Osmaniye", "Düzce"
-];
-
-const subeOptions = [
-  "Merkez",
-  "İstanbul",
-  "Ankara",
-  "İzmir",
-  "Bursa",
-  "Adana",
-  "Trabzon",
-  "Diyarbakır",
-];
 
 const NewData = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const form = useForm<FormValues>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       "İŞYERİ TÜRÜ": "",
@@ -133,11 +135,13 @@ const NewData = () => {
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const isyeriTuru = form.watch("İŞYERİ TÜRÜ");
+  const isKit = isyeriTuru === "Kit";
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
     try {
-      // Format data to match Supabase table structure
       const formattedData = {
         "İŞYERİ TÜRÜ": data["İŞYERİ TÜRÜ"],
         "SORUMLU UZMAN": data["SORUMLU UZMAN"],
@@ -149,14 +153,16 @@ const NewData = () => {
         "ÜYE SAYISI": Number(data["ÜYE SAYISI"]),
         "İŞVEREN SENDİKASI": data["İŞVEREN SENDİKASI"],
         "GREV YASAĞI DURUMU": data["GREV YASAĞI DURUMU"],
-        "İHALE ADI": data["İHALE ADI"],
-        "İHALE BAŞLANGIÇ TARİHİ": data["İHALE BAŞLANGIÇ TARİHİ"],
-        "İHALE BİTİŞ TARİHİ": data["İHALE BİTİŞ TARİHİ"],
         "YETKİ TESPİT İSTEM TARİHİ": data["YETKİ TESPİT İSTEM TARİHİ"],
         "YETKİ BELGESİ TEBLİĞ TARİHİ": data["YETKİ BELGESİ TEBLİĞ TARİHİ"],
       };
+
+      if (isKit) {
+        formattedData["İHALE ADI"] = data["İHALE ADI"];
+        formattedData["İHALE BAŞLANGIÇ TARİHİ"] = data["İHALE BAŞLANGIÇ TARİHİ"];
+        formattedData["İHALE BİTİŞ TARİHİ"] = data["İHALE BİTİŞ TARİHİ"];
+      }
       
-      // Insert data into Supabase - using upsert instead of insert to handle the type correctly
       const { error } = await supabase
         .from('isyerleri')
         .insert(formattedData as any);
@@ -225,7 +231,7 @@ const NewData = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 {/* Sorumlu Uzman */}
                 <FormField
                   control={form.control}
@@ -366,9 +372,23 @@ const NewData = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>İşveren Sendikası</FormLabel>
-                      <FormControl>
-                        <Input placeholder="İşveren sendikasını giriniz" {...field} />
-                      </FormControl>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="İşveren Sendikası Seçiniz" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sendikalarOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -402,187 +422,105 @@ const NewData = () => {
                     </FormItem>
                   )}
                 />
-                
-                {/* İhale Adı */}
-                <FormField
-                  control={form.control}
-                  name="İHALE ADI"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>İhale Adı</FormLabel>
-                      <FormControl>
-                        <Input placeholder="İhale adını giriniz" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
 
-              <div className="grid gap-6 md:grid-cols-3">
-                {/* İhale Başlangıç Tarihi */}
-                <FormField
-                  control={form.control}
-                  name="İHALE BAŞLANGIÇ TARİHİ"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>İhale Başlangıç Tarihi</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
+                {/* Conditional fields for Kit */}
+                {isKit && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="İHALE ADI"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>İhale Adı</FormLabel>
                           <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP", { locale: tr })
-                              ) : (
-                                <span>Tarih Seçin</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
+                            <Input placeholder="İhale adını giriniz" {...field} />
                           </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                {/* İhale Bitiş Tarihi */}
-                <FormField
-                  control={form.control}
-                  name="İHALE BİTİŞ TARİHİ"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>İhale Bitiş Tarihi</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP", { locale: tr })
-                              ) : (
-                                <span>Tarih Seçin</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                {/* Yetki Tespit İstem Tarihi */}
-                <FormField
-                  control={form.control}
-                  name="YETKİ TESPİT İSTEM TARİHİ"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Yetki Tespit İstem Tarihi</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP", { locale: tr })
-                              ) : (
-                                <span>Tarih Seçin</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                {/* Yetki Belgesi Tebliğ Tarihi */}
-                <FormField
-                  control={form.control}
-                  name="YETKİ BELGESİ TEBLİĞ TARİHİ"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Yetki Belgesi Tebliğ Tarihi</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP", { locale: tr })
-                              ) : (
-                                <span>Tarih Seçin</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="İHALE BAŞLANGIÇ TARİHİ"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>İhale Başlangıç Tarihi</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP", { locale: tr })
+                                  ) : (
+                                    <span>Tarih Seçin</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                initialFocus
+                                className={cn("p-3 pointer-events-auto")}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="İHALE BİTİŞ TARİHİ"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>İhale Bitiş Tarihi</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP", { locale: tr })
+                                  ) : (
+                                    <span>Tarih Seçin</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                initialFocus
+                                className={cn("p-3 pointer-events-auto")}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
               </div>
 
               <div className="flex gap-4 justify-end">
