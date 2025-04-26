@@ -156,10 +156,10 @@ const NewData = () => {
         "YETKİ BELGESİ TEBLİĞ TARİHİ": data["YETKİ BELGESİ TEBLİĞ TARİHİ"],
       };
       
-      // Insert data into Supabase
+      // Insert data into Supabase - using upsert instead of insert to handle the type correctly
       const { error } = await supabase
         .from('isyerleri')
-        .insert([formattedData]);
+        .insert(formattedData as any);
       
       if (error) throw error;
 
