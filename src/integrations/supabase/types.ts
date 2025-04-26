@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      "İşlem Geçmişi": {
+        Row: {
+          id: number
+          "İşlem Adı": string | null
+          "İşlem Yapan Kullanıcı": string | null
+          Saat: string | null
+          Tarih: string | null
+        }
+        Insert: {
+          id?: number
+          "İşlem Adı"?: string | null
+          "İşlem Yapan Kullanıcı"?: string | null
+          Saat?: string | null
+          Tarih?: string | null
+        }
+        Update: {
+          id?: number
+          "İşlem Adı"?: string | null
+          "İşlem Yapan Kullanıcı"?: string | null
+          Saat?: string | null
+          Tarih?: string | null
+        }
+        Relationships: []
+      }
       isyerleri: {
         Row: {
           "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null

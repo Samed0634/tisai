@@ -15,13 +15,7 @@ import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const isyeriTuruOptions = [
   "Özel",
@@ -33,7 +27,16 @@ const isyeriTuruOptions = [
 
 const ilOptions = [
   "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", 
-  // ... keep existing code (il options array)
+  "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", 
+  "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", 
+  "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", 
+  "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", 
+  "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", 
+  "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", 
+  "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat", 
+  "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", 
+  "Bayburt", "Karaman", "Kırıkkale", "Batman", "Şırnak", "Bartın", "Ardahan", 
+  "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"
 ];
 
 const subeOptions = [
@@ -155,7 +158,7 @@ const NewData = () => {
         "GREV YASAĞI DURUMU": data["GREV YASAĞI DURUMU"],
         "YETKİ TESPİT İSTEM TARİHİ": data["YETKİ TESPİT İSTEM TARİHİ"],
         "YETKİ BELGESİ TEBLİĞ TARİHİ": data["YETKİ BELGESİ TEBLİĞ TARİHİ"],
-      };
+      } as any;
 
       if (isKit) {
         formattedData["İHALE ADI"] = data["İHALE ADI"];
@@ -165,7 +168,7 @@ const NewData = () => {
       
       const { error } = await supabase
         .from('isyerleri')
-        .insert(formattedData as any);
+        .insert(formattedData);
       
       if (error) throw error;
 
@@ -414,7 +417,7 @@ const NewData = () => {
                           {grevYasagiOptions.map((option) => (
                             <SelectItem key={option} value={option}>
                               {option}
-                            </SelectItem>
+                            SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
