@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Filter, Save, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -137,7 +136,7 @@ export const EditableTable = ({
                 Sütunları Filtrele
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px]">
+            <DropdownMenuContent align="end" className="w-[200px] max-h-[400px] overflow-y-auto">
               {allColumns.map(column => (
                 <DropdownMenuCheckboxItem
                   key={column}
@@ -202,4 +201,3 @@ export const EditableTable = ({
     </div>
   );
 };
-
