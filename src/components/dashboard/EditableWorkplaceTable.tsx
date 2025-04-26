@@ -1,6 +1,5 @@
-
-import React, { useState, useEffect } from "react";
-import { Edit, Check, X, Settings } from "lucide-react";
+import React, { useState } from "react";
+import { Edit, Check, X, Settings, MoveHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -103,7 +102,11 @@ export const EditableWorkplaceTable: React.FC<EditableWorkplaceTableProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center gap-2">
+          <MoveHorizontal className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Yatay kaydırma yapabilirsiniz</span>
+        </div>
         <TableControls 
           visibleColumns={visibleColumns}
           toggleColumn={toggleColumn}
@@ -114,9 +117,19 @@ export const EditableWorkplaceTable: React.FC<EditableWorkplaceTableProps> = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-[#ea384c]">İşlem</TableHead>
+              <TableHead className="text-[#ea384c] sticky left-0 bg-background z-20">İşlem</TableHead>
               {visibleColumnDefinitions.map(column => (
-                <TableHead key={column.id}>{column.title}</TableHead>
+                <TableHead 
+                  key={column.id}
+                  className={cn(
+                    column.fixed && "sticky bg-background z-20",
+                    column.id === 'SORUMLU UZMAN' && "left-[100px]",
+                    column.id === 'BAĞLI OLDUĞU ŞUBE' && "left-[250px]",
+                    column.id === 'İŞYERİ ADI' && "left-[400px]"
+                  )}
+                >
+                  {column.title}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -130,7 +143,7 @@ export const EditableWorkplaceTable: React.FC<EditableWorkplaceTableProps> = ({
             ) : (
               data.map((item) => (
                 <TableRow key={item.ID} className="hover:bg-muted/50">
-                  <TableCell>
+                  <TableCell className="sticky left-0 bg-background z-20">
                     {editingId === item.ID ? (
                       <div className="flex space-x-2">
                         <Button
@@ -163,7 +176,15 @@ export const EditableWorkplaceTable: React.FC<EditableWorkplaceTableProps> = ({
                   </TableCell>
                   
                   {visibleColumnDefinitions.map(column => (
-                    <TableCell key={`${item.ID}-${column.id}`}>
+                    <TableCell 
+                      key={`${item.ID}-${column.id}`}
+                      className={cn(
+                        column.fixed && "sticky bg-background z-20",
+                        column.id === 'SORUMLU UZMAN' && "left-[100px]",
+                        column.id === 'BAĞLI OLDUĞU ŞUBE' && "left-[250px]",
+                        column.id === 'İŞYERİ ADI' && "left-[400px]"
+                      )}
+                    >
                       {editingId === item.ID && editData && column.editable ? (
                         <Input 
                           type="date"
