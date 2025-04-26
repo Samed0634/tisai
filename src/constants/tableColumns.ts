@@ -1,3 +1,4 @@
+
 export type ColumnType = {
   id: string;
   title: string;
@@ -8,9 +9,9 @@ export type ColumnType = {
 export const COLUMNS: ColumnType[] = [
   { id: 'ID', title: 'ID', fixed: true },
   { id: 'İŞYERİ TÜRÜ', title: 'İŞYERİ TÜRÜ' },
-  { id: 'SORUMLU UZMAN', title: 'SORUMLU UZMAN', fixed: true },
+  { id: 'SORUMLU UZMAN', title: 'SORUMLU UZMAN' },
   { id: 'İŞYERİNİN BULUNDUĞU İL', title: 'İŞYERİNİN BULUNDUĞU İL' },
-  { id: 'BAĞLI OLDUĞU ŞUBE', title: 'BAĞLI OLDUĞU ŞUBE', fixed: true },
+  { id: 'BAĞLI OLDUĞU ŞUBE', title: 'BAĞLI OLDUĞU ŞUBE' },
   { id: 'İŞYERİ ADI', title: 'İŞYERİ ADI', fixed: true },
   { id: 'SGK NO', title: 'SGK NO' },
   { id: 'İŞÇİ SAYISI', title: 'İŞÇİ SAYISI' },
@@ -38,3 +39,4 @@ export const COLUMNS: ColumnType[] = [
   { id: 'TİS BAŞLANGIÇ TARİHİ', title: 'TİS BAŞLANGIÇ TARİHİ' },
   { id: 'TİS BİTİŞ TARİHİ', title: 'TİS BİTİŞ TARİHİ' }
 ];
+
