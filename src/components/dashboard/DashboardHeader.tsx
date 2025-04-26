@@ -14,7 +14,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onToggleCard
 }) => {
   return <div className="flex items-center justify-between">
-      <h1 className="text-2xl font-bold tracking-tight text-center">Gösterge Paneli</h1>
+      
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
