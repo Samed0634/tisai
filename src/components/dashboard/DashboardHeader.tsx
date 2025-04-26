@@ -13,6 +13,20 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   selectedCards,
   onToggleCard
 }) => {
-  return;
+  return <div className="flex items-center justify-between">
+      
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Settings className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[300px] max-h-[400px] overflow-y-auto">
+          {allDashboardData.map(item => <DropdownMenuCheckboxItem key={item.id} checked={selectedCards.includes(item.id)} onCheckedChange={() => onToggleCard(item.id)}>
+              {item.title}
+            </DropdownMenuCheckboxItem>)}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>;
 };
 export default DashboardHeader;
