@@ -17,7 +17,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { TableControls } from "@/components/data-details/TableControls";
 import { useColumnVisibility } from "@/hooks/useColumnVisibility";
 import { COLUMNS } from "@/constants/tableColumns";
-import { cn } from "@/lib/utils";
 
 interface WorkplaceItem {
   ID: number;
