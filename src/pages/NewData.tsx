@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,41 +15,101 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 const formSchema = z.object({
-  companyName: z.string().min(1, {
+  "İŞYERİ TÜRÜ": z.string().min(1, {
+    message: "İşyeri türü gereklidir.",
+  }),
+  "SORUMLU UZMAN": z.string().min(1, {
+    message: "Sorumlu uzman gereklidir.",
+  }),
+  "İŞYERİNİN BULUNDUĞU İL": z.string().min(1, {
+    message: "İşyerinin bulunduğu il gereklidir.",
+  }),
+  "BAĞLI OLDUĞU ŞUBE": z.string().min(1, {
+    message: "Bağlı olduğu şube gereklidir.",
+  }),
+  "İŞYERİ ADI": z.string().min(1, {
     message: "İşyeri adı gereklidir.",
   }),
-  sgkNo: z.string().min(11, {
-    message: "SGK numarası en az 11 karakter olmalıdır.",
+  "SGK NO": z.string().min(1, {
+    message: "SGK numarası gereklidir.",
   }),
-  employeeCount: z.string().refine((val) => !isNaN(Number(val)), {
+  "İŞÇİ SAYISI": z.string().refine((val) => !isNaN(Number(val)), {
     message: "İşçi sayısı bir sayı olmalıdır.",
   }),
-  memberCount: z.string().refine((val) => !isNaN(Number(val)), {
+  "ÜYE SAYISI": z.string().refine((val) => !isNaN(Number(val)), {
     message: "Üye sayısı bir sayı olmalıdır.",
   }),
-  authDate: z.date({
+  "İŞVEREN SENDİKASI": z.string().min(1, {
+    message: "İşveren sendikası gereklidir.",
+  }),
+  "GREV YASAĞI DURUMU": z.string().min(1, {
+    message: "Grev yasağı durumu gereklidir.",
+  }),
+  "İHALE ADI": z.string().min(1, {
+    message: "İhale adı gereklidir.",
+  }),
+  "İHALE BAŞLANGIÇ TARİHİ": z.date({
+    required_error: "İhale başlangıç tarihi gereklidir.",
+  }),
+  "İHALE BİTİŞ TARİHİ": z.date({
+    required_error: "İhale bitiş tarihi gereklidir.",
+  }),
+  "YETKİ TESPİT İSTEM TARİHİ": z.date({
+    required_error: "Yetki tespit istem tarihi gereklidir.",
+  }),
+  "YETKİ BELGESİ TEBLİĞ TARİHİ": z.date({
     required_error: "Yetki belgesi tebliğ tarihi gereklidir.",
-  }),
-  callDate: z.date({
-    required_error: "Çağrı tarihi gereklidir.",
-  }),
-  sessionDate: z.date({
-    required_error: "İlk oturum tarihi gereklidir.",
-  }),
-  address: z.string().min(1, {
-    message: "Adres gereklidir.",
-  }),
-  contactPerson: z.string().min(1, {
-    message: "İletişim kurulacak kişi gereklidir.",
-  }),
-  contactPhone: z.string().min(10, {
-    message: "Telefon numarası en az 10 karakter olmalıdır.",
   }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const grevYasagiOptions = [
+  "Var",
+  "Yok",
+];
+
+const isyeriTuruOptions = [
+  "Özel",
+  "Kamu",
+  "Belediye",
+];
+
+const ilOptions = [
+  "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", 
+  "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", 
+  "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", 
+  "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", 
+  "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", 
+  "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", 
+  "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", 
+  "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", 
+  "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", 
+  "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", 
+  "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", 
+  "Kilis", "Osmaniye", "Düzce"
+];
+
+const subeOptions = [
+  "Merkez",
+  "İstanbul",
+  "Ankara",
+  "İzmir",
+  "Bursa",
+  "Adana",
+  "Trabzon",
+  "Diyarbakır",
+];
 
 const NewData = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -59,13 +119,17 @@ const NewData = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      companyName: "",
-      sgkNo: "",
-      employeeCount: "",
-      memberCount: "",
-      address: "",
-      contactPerson: "",
-      contactPhone: "",
+      "İŞYERİ TÜRÜ": "",
+      "SORUMLU UZMAN": "",
+      "İŞYERİNİN BULUNDUĞU İL": "",
+      "BAĞLI OLDUĞU ŞUBE": "",
+      "İŞYERİ ADI": "",
+      "SGK NO": "",
+      "İŞÇİ SAYISI": "",
+      "ÜYE SAYISI": "",
+      "İŞVEREN SENDİKASI": "",
+      "GREV YASAĞI DURUMU": "",
+      "İHALE ADI": "",
     },
   });
 
@@ -73,18 +137,41 @@ const NewData = () => {
     setIsSubmitting(true);
     
     try {
-      // Burada n8n HTTP webhook'a istek yapılacak
-      // Örnek olarak direkt başarılı kabul edelim
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Format data to match Supabase table structure
+      const formattedData = {
+        "İŞYERİ TÜRÜ": data["İŞYERİ TÜRÜ"],
+        "SORUMLU UZMAN": data["SORUMLU UZMAN"],
+        "İŞYERİNİN BULUNDUĞU İL": data["İŞYERİNİN BULUNDUĞU İL"],
+        "BAĞLI OLDUĞU ŞUBE": data["BAĞLI OLDUĞU ŞUBE"],
+        "İŞYERİ ADI": data["İŞYERİ ADI"],
+        "SGK NO": data["SGK NO"],
+        "İŞÇİ SAYISI": Number(data["İŞÇİ SAYISI"]),
+        "ÜYE SAYISI": Number(data["ÜYE SAYISI"]),
+        "İŞVEREN SENDİKASI": data["İŞVEREN SENDİKASI"],
+        "GREV YASAĞI DURUMU": data["GREV YASAĞI DURUMU"],
+        "İHALE ADI": data["İHALE ADI"],
+        "İHALE BAŞLANGIÇ TARİHİ": data["İHALE BAŞLANGIÇ TARİHİ"],
+        "İHALE BİTİŞ TARİHİ": data["İHALE BİTİŞ TARİHİ"],
+        "YETKİ TESPİT İSTEM TARİHİ": data["YETKİ TESPİT İSTEM TARİHİ"],
+        "YETKİ BELGESİ TEBLİĞ TARİHİ": data["YETKİ BELGESİ TEBLİĞ TARİHİ"],
+      };
+      
+      // Insert data into Supabase
+      const { error } = await supabase
+        .from('isyerleri')
+        .insert([formattedData]);
+      
+      if (error) throw error;
 
       toast({
         title: "Veri başarıyla kaydedildi",
-        description: `${data.companyName} için yeni veri girişi tamamlandı.`,
+        description: `${data["İŞYERİ ADI"]} için yeni veri girişi tamamlandı.`,
       });
       
       form.reset();
-      navigate("/");
+      navigate("/procedure-status");
     } catch (error) {
+      console.error("Error submitting data:", error);
       toast({
         title: "Hata",
         description: "Veri girişi sırasında bir hata oluştu.",
@@ -110,9 +197,112 @@ const NewData = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
+                {/* İşyeri türü */}
                 <FormField
                   control={form.control}
-                  name="companyName"
+                  name="İŞYERİ TÜRÜ"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>İşyeri Türü</FormLabel>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="İşyeri Türü Seçiniz" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {isyeriTuruOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                {/* Sorumlu Uzman */}
+                <FormField
+                  control={form.control}
+                  name="SORUMLU UZMAN"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sorumlu Uzman</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Sorumlu uzman adını giriniz" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                {/* İşyerinin Bulunduğu İl */}
+                <FormField
+                  control={form.control}
+                  name="İŞYERİNİN BULUNDUĞU İL"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>İşyerinin Bulunduğu İl</FormLabel>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="İl Seçiniz" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-[400px] overflow-y-auto">
+                          {ilOptions.map((il) => (
+                            <SelectItem key={il} value={il}>
+                              {il}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                {/* Bağlı Olduğu Şube */}
+                <FormField
+                  control={form.control}
+                  name="BAĞLI OLDUĞU ŞUBE"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bağlı Olduğu Şube</FormLabel>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Şube Seçiniz" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {subeOptions.map((sube) => (
+                            <SelectItem key={sube} value={sube}>
+                              {sube}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                {/* İşyeri Adı */}
+                <FormField
+                  control={form.control}
+                  name="İŞYERİ ADI"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>İşyeri Adı</FormLabel>
@@ -124,9 +314,10 @@ const NewData = () => {
                   )}
                 />
                 
+                {/* SGK No */}
                 <FormField
                   control={form.control}
-                  name="sgkNo"
+                  name="SGK NO"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>SGK Numarası</FormLabel>
@@ -138,9 +329,10 @@ const NewData = () => {
                   )}
                 />
                 
+                {/* İşçi Sayısı */}
                 <FormField
                   control={form.control}
-                  name="employeeCount"
+                  name="İŞÇİ SAYISI"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>İşçi Sayısı</FormLabel>
@@ -152,9 +344,10 @@ const NewData = () => {
                   )}
                 />
                 
+                {/* Üye Sayısı */}
                 <FormField
                   control={form.control}
-                  name="memberCount"
+                  name="ÜYE SAYISI"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Üye Sayısı</FormLabel>
@@ -166,42 +359,59 @@ const NewData = () => {
                   )}
                 />
                 
+                {/* İşveren Sendikası */}
                 <FormField
                   control={form.control}
-                  name="address"
+                  name="İŞVEREN SENDİKASI"
                   render={({ field }) => (
-                    <FormItem className="md:col-span-2">
-                      <FormLabel>Adres</FormLabel>
+                    <FormItem>
+                      <FormLabel>İşveren Sendikası</FormLabel>
                       <FormControl>
-                        <Input placeholder="İşyeri adresini giriniz" {...field} />
+                        <Input placeholder="İşveren sendikasını giriniz" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
+                
+                {/* Grev Yasağı Durumu */}
                 <FormField
                   control={form.control}
-                  name="contactPerson"
+                  name="GREV YASAĞI DURUMU"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>İletişim Kurulacak Kişi</FormLabel>
-                      <FormControl>
-                        <Input placeholder="İletişim kurulacak kişi" {...field} />
-                      </FormControl>
+                      <FormLabel>Grev Yasağı Durumu</FormLabel>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Grev Yasağı Durumu Seçiniz" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {grevYasagiOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
+                
+                {/* İhale Adı */}
                 <FormField
                   control={form.control}
-                  name="contactPhone"
+                  name="İHALE ADI"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>İletişim Telefonu</FormLabel>
+                      <FormLabel>İhale Adı</FormLabel>
                       <FormControl>
-                        <Input placeholder="İletişim telefonu" {...field} />
+                        <Input placeholder="İhale adını giriniz" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -210,9 +420,133 @@ const NewData = () => {
               </div>
 
               <div className="grid gap-6 md:grid-cols-3">
+                {/* İhale Başlangıç Tarihi */}
                 <FormField
                   control={form.control}
-                  name="authDate"
+                  name="İHALE BAŞLANGIÇ TARİHİ"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>İhale Başlangıç Tarihi</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP", { locale: tr })
+                              ) : (
+                                <span>Tarih Seçin</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                {/* İhale Bitiş Tarihi */}
+                <FormField
+                  control={form.control}
+                  name="İHALE BİTİŞ TARİHİ"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>İhale Bitiş Tarihi</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP", { locale: tr })
+                              ) : (
+                                <span>Tarih Seçin</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                {/* Yetki Tespit İstem Tarihi */}
+                <FormField
+                  control={form.control}
+                  name="YETKİ TESPİT İSTEM TARİHİ"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Yetki Tespit İstem Tarihi</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP", { locale: tr })
+                              ) : (
+                                <span>Tarih Seçin</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                {/* Yetki Belgesi Tebliğ Tarihi */}
+                <FormField
+                  control={form.control}
+                  name="YETKİ BELGESİ TEBLİĞ TARİHİ"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Yetki Belgesi Tebliğ Tarihi</FormLabel>
@@ -240,88 +574,8 @@ const NewData = () => {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
                             initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="callDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Çağrı Tarihi</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP", { locale: tr })
-                              ) : (
-                                <span>Tarih Seçin</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="sessionDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>İlk Oturum Tarihi</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP", { locale: tr })
-                              ) : (
-                                <span>Tarih Seçin</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
                           />
                         </PopoverContent>
                       </Popover>
@@ -332,7 +586,7 @@ const NewData = () => {
               </div>
 
               <div className="flex gap-4 justify-end">
-                <Button type="button" variant="outline" onClick={() => navigate("/actions")}>
+                <Button type="button" variant="outline" onClick={() => navigate("/")}>
                   İptal
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
