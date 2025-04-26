@@ -19,6 +19,7 @@ import { YhkGonderimTable } from "@/components/dashboard/YhkGonderimTable";
 import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTable";
 import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const staticDashboardData = getDashboardData();
@@ -31,15 +32,18 @@ const Dashboard = () => {
     isLoading,
     refetch
   } = useDashboardData();
+
   const getListItems = (listName: string) => {
     if (!n8nDashboardData) return [];
     return n8nDashboardData[listName] as any[] || [];
   };
+
   const allDashboardData = staticDashboardData.map(item => ({
     ...item,
     value: getListItems(item.dataSource).length,
     items: getListItems(item.dataSource)
   }));
+
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
     if (categoryId === 'grevKarari' || categoryId === 'grevOylamasi' || categoryId === 'cagri' || categoryId === 'yetkiTespit' || categoryId === 'yetkiBelgesi' || categoryId === 'yerGunTespit' || categoryId === 'ilkOturum' || categoryId === 'muzakereSuresi' || categoryId === 'uyusmazlik' || categoryId === 'yhk' || categoryId === 'imzalananTisler' || categoryId === 'grevYasagi') {
@@ -55,13 +59,17 @@ const Dashboard = () => {
       console.log("No items found for this category:", categoryId);
     }
   };
+
   const toggleCard = (cardId: string) => {
     setSelectedCards(current => current.includes(cardId) ? current.filter(id => id !== cardId) : [...current, cardId]);
   };
+
   const filteredDashboardData = allDashboardData.filter(item => selectedCards.includes(item.id));
+
   if (isLoading) {
     return <div>Yükleniyor...</div>;
   }
+
   const grevKarariData = getListItems('grevKarariAlinmasiGerekenListesi');
   const grevOylamasiData = getListItems('grevOylamasiYapilmasiGerekenListesi');
   const cagriYapilacakData = getListItems('cagriYapilacakListesi');
@@ -74,6 +82,7 @@ const Dashboard = () => {
   const yhkGonderimData = getListItems('yhkGonderimGerekenListesi');
   const imzalananTislerData = getListItems('imzalananTislerListesi');
   const grevYasagiData = getListItems('grevYasagiOlanListesi');
+
   const getTableTitle = () => {
     switch (selectedCategory) {
       case 'grevKarari':
@@ -104,6 +113,7 @@ const Dashboard = () => {
         return "";
     }
   };
+
   return <div className="space-y-6">
       <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
 
@@ -150,4 +160,5 @@ const Dashboard = () => {
       </Dialog>
     </div>;
 };
+
 export default Dashboard;
