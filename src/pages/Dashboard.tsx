@@ -9,6 +9,16 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardGrid from "@/components/dashboard/DashboardGrid";
 import { EditableWorkplaceTable } from "@/components/dashboard/EditableWorkplaceTable";
 import { GrevOylamasiTable } from "@/components/dashboard/GrevOylamasiTable";
+import { CagriYapilacakTable } from "@/components/dashboard/CagriYapilacakTable";
+import { YetkiTespitTable } from "@/components/dashboard/YetkiTespitTable";
+import { YetkiBelgesiTable } from "@/components/dashboard/YetkiBelgesiTable";
+import { YerGunTespitTable } from "@/components/dashboard/YerGunTespitTable";
+import { IlkOturumTable } from "@/components/dashboard/IlkOturumTable";
+import { MuzakereSuresiTable } from "@/components/dashboard/MuzakereSuresiTable";
+import { UyusmazlikTable } from "@/components/dashboard/UyusmazlikTable";
+import { YhkGonderimTable } from "@/components/dashboard/YhkGonderimTable";
+import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTable";
+import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
 const Dashboard = () => {
@@ -37,10 +47,20 @@ const Dashboard = () => {
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
     
-    if (categoryId === 'grevKarari') {
-      setSelectedCategory(categoryId);
-      setShowEditableTable(true);
-    } else if (categoryId === 'grevOylamasi') {
+    if (
+      categoryId === 'grevKarari' || 
+      categoryId === 'grevOylamasi' || 
+      categoryId === 'cagri' || 
+      categoryId === 'yetkiTespit' ||
+      categoryId === 'yetkiBelgesi' ||
+      categoryId === 'yerGunTespit' ||
+      categoryId === 'ilkOturum' ||
+      categoryId === 'muzakereSuresi' ||
+      categoryId === 'uyusmazlik' ||
+      categoryId === 'yhk' ||
+      categoryId === 'imzalananTisler' ||
+      categoryId === 'grevYasagi'
+    ) {
       setSelectedCategory(categoryId);
       setShowEditableTable(true);
     } else if (category?.items) {
@@ -68,14 +88,33 @@ const Dashboard = () => {
 
   const grevKarariData = getListItems('grevKarariAlinmasiGerekenListesi');
   const grevOylamasiData = getListItems('grevOylamasiYapilmasiGerekenListesi');
+  const cagriYapilacakData = getListItems('cagriYapilacakListesi');
+  const yetkiTespitData = getListItems('yetkiTespitIstenenListesi');
+  const yetkiBelgesiData = getListItems('yetkiBelgesiTebligYapilanListesi');
+  const yerGunTespitData = getListItems('yerVeGunTespitListesi');
+  const ilkOturumData = getListItems('ilkOturumGerekenListesi');
+  const muzakereSuresiData = getListItems('muzakereSuresiDolanListesi');
+  const uyusmazlikData = getListItems('uyusmazlikGerekenListesi');
+  const yhkGonderimData = getListItems('yhkGonderimGerekenListesi');
+  const imzalananTislerData = getListItems('imzalananTislerListesi');
+  const grevYasagiData = getListItems('grevYasagiOlanListesi');
 
   const getTableTitle = () => {
-    if (selectedCategory === 'grevKarari') {
-      return "Grev Kararı Alınması Gereken İşyerleri";
-    } else if (selectedCategory === 'grevOylamasi') {
-      return "Grev Oylaması Yapılması Gereken İşyerleri";
+    switch (selectedCategory) {
+      case 'grevKarari': return "Grev Kararı Alınması Gereken İşyerleri";
+      case 'grevOylamasi': return "Grev Oylaması Yapılması Gereken İşyerleri";
+      case 'cagri': return "Çağrı Yapılacak İşyerleri";
+      case 'yetkiTespit': return "Yetki Tespiti İstenen İşyerleri";
+      case 'yetkiBelgesi': return "Yetki Belgesi Tebliğ Yapılan İşyerleri";
+      case 'yerGunTespit': return "Yer ve Gün Tespiti Yapılan İşyerleri";
+      case 'ilkOturum': return "İlk Oturum Gereken İşyerleri";
+      case 'muzakereSuresi': return "Müzakere Süresi Dolan İşyerleri";
+      case 'uyusmazlik': return "Uyuşmazlık Gereken İşyerleri";
+      case 'yhk': return "YHK Gönderim Gereken İşyerleri";
+      case 'imzalananTisler': return "İmzalanan Tisler";
+      case 'grevYasagi': return "Grev Yasağı Olan İşyerleri";
+      default: return "";
     }
-    return "";
   };
 
   return (
@@ -106,6 +145,86 @@ const Dashboard = () => {
           {selectedCategory === 'grevOylamasi' && (
             <GrevOylamasiTable 
               data={grevOylamasiData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'cagri' && (
+            <CagriYapilacakTable 
+              data={cagriYapilacakData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'yetkiTespit' && (
+            <YetkiTespitTable 
+              data={yetkiTespitData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'yetkiBelgesi' && (
+            <YetkiBelgesiTable 
+              data={yetkiBelgesiData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'yerGunTespit' && (
+            <YerGunTespitTable 
+              data={yerGunTespitData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'ilkOturum' && (
+            <IlkOturumTable 
+              data={ilkOturumData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'muzakereSuresi' && (
+            <MuzakereSuresiTable 
+              data={muzakereSuresiData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'uyusmazlik' && (
+            <UyusmazlikTable 
+              data={uyusmazlikData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'yhk' && (
+            <YhkGonderimTable 
+              data={yhkGonderimData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'imzalananTisler' && (
+            <ImzalananTislerTable 
+              data={imzalananTislerData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+
+          {selectedCategory === 'grevYasagi' && (
+            <GrevYasakTable 
+              data={grevYasagiData}
               isLoading={isLoading}
               refetch={refetch}
             />
