@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -7,6 +8,7 @@ import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardGrid from "@/components/dashboard/DashboardGrid";
 import { EditableWorkplaceTable } from "@/components/dashboard/EditableWorkplaceTable";
+import { GrevOylamasiTable } from "@/components/dashboard/GrevOylamasiTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
 const Dashboard = () => {
@@ -38,6 +40,9 @@ const Dashboard = () => {
     if (categoryId === 'grevKarari') {
       setSelectedCategory(categoryId);
       setShowEditableTable(true);
+    } else if (categoryId === 'grevOylamasi') {
+      setSelectedCategory(categoryId);
+      setShowEditableTable(true);
     } else if (category?.items) {
       navigate(`/details/${categoryId}`, { state: { items: category.items } });
     } else {
@@ -62,6 +67,16 @@ const Dashboard = () => {
   }
 
   const grevKarariData = getListItems('grevKarariAlinmasiGerekenListesi');
+  const grevOylamasiData = getListItems('grevOylamasiYapilmasiGerekenListesi');
+
+  const getTableTitle = () => {
+    if (selectedCategory === 'grevKarari') {
+      return "Grev Kararı Alınması Gereken İşyerleri";
+    } else if (selectedCategory === 'grevOylamasi') {
+      return "Grev Oylaması Yapılması Gereken İşyerleri";
+    }
+    return "";
+  };
 
   return (
     <div className="space-y-6">
@@ -71,19 +86,30 @@ const Dashboard = () => {
         onToggleCard={toggleCard}
       />
 
-      {showEditableTable && selectedCategory === 'grevKarari' ? (
+      {showEditableTable ? (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Grev Kararı Alınması Gereken İşyerleri</h2>
+            <h2 className="text-2xl font-bold">{getTableTitle()}</h2>
             <Button variant="outline" onClick={() => setShowEditableTable(false)}>
               Gösterge Paneline Dön
             </Button>
           </div>
-          <EditableWorkplaceTable 
-            data={grevKarariData}
-            isLoading={isLoading}
-            refetch={refetch}
-          />
+          
+          {selectedCategory === 'grevKarari' && (
+            <EditableWorkplaceTable 
+              data={grevKarariData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
+          
+          {selectedCategory === 'grevOylamasi' && (
+            <GrevOylamasiTable 
+              data={grevOylamasiData}
+              isLoading={isLoading}
+              refetch={refetch}
+            />
+          )}
         </div>
       ) : (
         <DashboardGrid

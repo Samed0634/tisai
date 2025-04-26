@@ -13,6 +13,15 @@ const fetchDashboardData = async () => {
     if (grevKarariError) {
       throw new Error(`Error fetching grev karari data: ${grevKarariError.message}`);
     }
+    
+    // Fetch data for grev oylaması
+    const { data: grevOylamasiData, error: grevOylamasiError } = await supabase
+      .from('grev_oylaması_yapılması_gereken_view')
+      .select('*');
+    
+    if (grevOylamasiError) {
+      throw new Error(`Error fetching grev oylaması data: ${grevOylamasiError.message}`);
+    }
 
     // Continue with existing API for other data
     const response = await fetch('https://primary-production-dcf9.up.railway.app/webhook/terminsorgu');
@@ -32,7 +41,7 @@ const fetchDashboardData = async () => {
       muzakereSuresiDolanListesi: [],
       uyusmazlikGerekenListesi: [],
       grevKarariAlinmasiGerekenListesi: grevKarariData || [],
-      grevOylamasiYapilmasiGerekenListesi: [],
+      grevOylamasiYapilmasiGerekenListesi: grevOylamasiData || [],
       yhkGonderimGerekenListesi: [],
       imzalananTislerListesi: [],
       grevYasagiOlanListesi: []

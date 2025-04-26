@@ -30,13 +30,12 @@ export const COLUMNS: ColumnType[] = [
   { id: 'MÜZAKERE SÜRESİ SON TARİH', title: 'MÜZAKERE SÜRESİ DOLAN İŞYERLERİ' },
   { id: 'UYUŞMAZLIK TARİHİ', title: 'UYUŞMAZLIK TARİHİ' },
   { id: 'ARABULUCU RAPORU TEBLİĞ TARİHİ', title: 'ARABULUCU RAPORU TEBLİĞ TARİHİ' },
-  { id: 'GREV KARARI TARİHİ', title: 'GREV KARARI TARİHİ', editable: true },
+  { id: 'GREV KARARI TARİHİ', title: 'GREV KARARI TARİHİ' },
   { id: 'FİİLİ GREV KARARI TARİHİ', title: 'FİİLİ GREV KARARI TARİHİ' },
-  { id: 'GREV OYLAMASI TARİHİ', title: 'GREV OYLAMASI TARİHİ' },
+  { id: 'GREV OYLAMASI TARİHİ', title: 'GREV OYLAMASI TARİHİ', editable: true },
   { id: 'YHK GÖNDERİM TARİHİ', title: 'YHK GÖNDERİM TARİHİ' },
   { id: 'TİS GELİŞ TARİHİ', title: 'TİS GELİŞ TARİHİ' },
   { id: 'TİS İMZA TARİHİ', title: 'TİS İMZA TARİHİ' },
   { id: 'TİS BAŞLANGIÇ TARİHİ', title: 'TİS BAŞLANGIÇ TARİHİ' },
   { id: 'TİS BİTİŞ TARİHİ', title: 'TİS BİTİŞ TARİHİ' }
 ];
-
