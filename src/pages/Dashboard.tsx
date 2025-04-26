@@ -19,7 +19,6 @@ import { YhkGonderimTable } from "@/components/dashboard/YhkGonderimTable";
 import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTable";
 import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { Filter } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -28,8 +27,6 @@ const Dashboard = () => {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [showEditableTable, setShowEditableTable] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [isFiltered, setIsFiltered] = useState(false);
-
   const {
     data: n8nDashboardData,
     isLoading,
@@ -63,13 +60,8 @@ const Dashboard = () => {
     }
   };
 
-  const toggleFilter = () => {
-    setIsFiltered(!isFiltered);
-    if (!isFiltered) {
-      setSelectedCards(allDashboardData.filter(item => item.value > 0).map(item => item.id));
-    } else {
-      setSelectedCards(allDashboardData.map(item => item.id));
-    }
+  const toggleCard = (cardId: string) => {
+    setSelectedCards(current => current.includes(cardId) ? current.filter(id => id !== cardId) : [...current, cardId]);
   };
 
   const filteredDashboardData = allDashboardData.filter(item => selectedCards.includes(item.id));
@@ -122,24 +114,8 @@ const Dashboard = () => {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-end items-center">
-        <Button 
-          variant={isFiltered ? "default" : "outline"} 
-          onClick={toggleFilter} 
-          className="gap-2"
-        >
-          <Filter size={16} />
-          {isFiltered ? "Filtreyi Kaldır" : "Boş Kartları Filtrele"}
-        </Button>
-      </div>
-
-      <DashboardHeader 
-        allDashboardData={allDashboardData} 
-        selectedCards={selectedCards} 
-        onToggleCard={() => {}} 
-      />
+  return <div className="space-y-6">
+      <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
 
       {showEditableTable ? <div className="space-y-4">
           <div className="flex justify-between items-center">
@@ -182,8 +158,7 @@ const Dashboard = () => {
           {selectedItem && <WorkplaceItemDetails item={selectedItem} />}
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 };
 
 export default Dashboard;
