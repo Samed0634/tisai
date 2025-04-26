@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Edit, Check, X, Settings, MoveHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -118,11 +119,15 @@ export const EditableWorkplaceTable: React.FC<EditableWorkplaceTableProps> = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-[#ea384c] sticky left-0 bg-background z-20">İşlem</TableHead>
+              <TableHead className="text-[#ea384c] sticky left-0 bg-background z-20 whitespace-nowrap min-w-[100px]">
+                İşlem
+              </TableHead>
               {visibleColumnDefinitions.map(column => (
                 <TableHead 
                   key={column.id}
                   className={cn(
+                    "whitespace-nowrap px-4",
+                    "min-w-[150px]",
                     column.fixed && "sticky bg-background z-20",
                     column.id === 'SORUMLU UZMAN' && "left-[100px]",
                     column.id === 'BAĞLI OLDUĞU ŞUBE' && "left-[250px]",
@@ -180,6 +185,7 @@ export const EditableWorkplaceTable: React.FC<EditableWorkplaceTableProps> = ({
                     <TableCell 
                       key={`${item.ID}-${column.id}`}
                       className={cn(
+                        "whitespace-nowrap px-4",
                         column.fixed && "sticky bg-background z-20",
                         column.id === 'SORUMLU UZMAN' && "left-[100px]",
                         column.id === 'BAĞLI OLDUĞU ŞUBE' && "left-[250px]",
