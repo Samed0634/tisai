@@ -13,7 +13,7 @@ const DEFAULT_VISIBLE_COLUMNS = [
 ];
 
 const ProcedureStatus = () => {
-  const { workplaces, isLoading, refetch } = useWorkplaceData();
+  const { workplaces, isLoading, refetch, updateWorkplace } = useWorkplaceData();
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +23,15 @@ const ProcedureStatus = () => {
     workplace["SORUMLU UZMAN"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     workplace["BAĞLI OLDUĞU ŞUBE"]?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
+
+  const handleUpdateWorkplace = async (updatedWorkplace) => {
+    try {
+      await updateWorkplace(updatedWorkplace);
+      await refetch();
+    } catch (error) {
+      console.error("Error updating workplace:", error);
+    }
+  };
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -49,6 +58,7 @@ const ProcedureStatus = () => {
         setCurrentPage={setCurrentPage}
         pageSizeOptions={[10, 20, 30, 40, 50]}
         showHorizontalScrollbar={true}
+        onUpdateData={handleUpdateWorkplace}
       />
     </div>
   );

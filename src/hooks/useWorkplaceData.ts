@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Workplace } from "@/types/workplace";
@@ -30,23 +29,17 @@ export const useWorkplaceData = () => {
 
   const updateWorkplace = useMutation({
     mutationFn: async (workplace: Workplace) => {
-      console.log("Updating workplace:", workplace);
+      console.log("Updating workplace in isyerleri table:", workplace);
       
-      // Check if the workplace exists first
       const { data: existingWorkplace, error: checkError } = await supabase
         .from('isyerleri')
         .select('ID')
         .eq('ID', workplace.ID)
         .maybeSingle();
         
-      console.log("Check if workplace exists:", existingWorkplace, checkError);
-      
       if (checkError) throw checkError;
       
-      let result;
-      
       if (existingWorkplace) {
-        // Update existing workplace
         const { data, error } = await supabase
           .from('isyerleri')
           .update(workplace)
@@ -54,39 +47,29 @@ export const useWorkplaceData = () => {
           .select();
         
         if (error) throw error;
-        result = data;
         
+        // Log the action
         await logAction(`"${workplace["İŞYERİ ADI"]}" işyeri bilgileri güncellendi.`);
+        
+        return data;
       } else {
-        // Insert new workplace
-        const { data, error } = await supabase
-          .from('isyerleri')
-          .insert(workplace)
-          .select();
-        
-        if (error) throw error;
-        result = data;
-        
-        await logAction(`"${workplace["İŞYERİ ADI"]}" adlı yeni işyeri kaydı oluşturuldu.`);
+        throw new Error("Workplace not found");
       }
-      
-      console.log("Operation result:", result);
-      return workplace;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workplaces'] });
       toast({
         title: "Başarılı",
-        description: "Kayıt güncellendi.",
+        description: "İşyeri bilgileri güncellendi.",
       });
     },
     onError: (error) => {
+      console.error("Update error:", error);
       toast({
         title: "Hata",
-        description: "Kayıt güncellenirken bir hata oluştu.",
+        description: "İşyeri bilgileri güncellenirken bir hata oluştu.",
         variant: "destructive",
       });
-      console.error("Update error:", error);
     }
   });
 
