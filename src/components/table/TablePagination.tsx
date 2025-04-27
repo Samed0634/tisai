@@ -9,42 +9,26 @@ import {
 } from "@/components/ui/select";
 
 interface TablePaginationProps {
-  totalItems: number;
-  pageSize: number;
   currentPage: number;
-  setPageSize: (size: number) => void;
-  setCurrentPage: (page: number) => void;
-  pageSizeOptions?: number[];
+  totalPages: number;
+  pageSize: number;
+  totalItems: number;
+  startIndex: number;
+  onPageSizeChange: (value: string) => void;
+  onPreviousPage: () => void;
+  onNextPage: () => void;
 }
 
 export const TablePagination: React.FC<TablePaginationProps> = ({
-  totalItems,
-  pageSize,
   currentPage,
-  setPageSize,
-  setCurrentPage,
-  pageSizeOptions = [10, 20, 30, 40, 50]
+  totalPages,
+  pageSize,
+  totalItems,
+  startIndex,
+  onPageSizeChange,
+  onPreviousPage,
+  onNextPage,
 }) => {
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
-  const startIndex = (currentPage - 1) * pageSize;
-
-  const onPageSizeChange = (value: string) => {
-    setPageSize(parseInt(value, 10));
-    setCurrentPage(1); // Reset to first page when changing page size
-  };
-
-  const onPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const onNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   return (
     <div className="flex justify-between items-center gap-2 py-2 text-xs">
       <div className="flex gap-2">
@@ -76,11 +60,10 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {pageSizeOptions.map(option => (
-              <SelectItem key={option} value={option.toString()} className="text-xs">
-                {option}
-              </SelectItem>
-            ))}
+            <SelectItem value="10" className="text-xs">10</SelectItem>
+            <SelectItem value="20" className="text-xs">20</SelectItem>
+            <SelectItem value="30" className="text-xs">30</SelectItem>
+            <SelectItem value="50" className="text-xs">50</SelectItem>
           </SelectContent>
         </Select>
       </div>

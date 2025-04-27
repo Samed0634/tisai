@@ -1,9 +1,13 @@
 
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
+import { useWorkplaceData } from '@/hooks/useWorkplaceData';
+import { usePagination } from '@/hooks/usePagination';
 import { Workplace } from '@/types/workplace';
 import { TableContent } from '../table/TableContent';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { useTableEdit } from '@/hooks/useTableEdit';
+import { TableColumnFilter } from './table/TableColumnFilter';
 
 interface EditableTableBaseProps {
   data: Workplace[];
@@ -21,7 +25,6 @@ interface EditableTableBaseProps {
   setCurrentPage?: (page: number) => void;
   pageSizeOptions?: number[];
   showHorizontalScrollbar?: boolean;
-  onUpdateData?: (updatedWorkplace: Workplace) => Promise<void>;
 }
 
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
@@ -39,54 +42,22 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   setPageSize: externalSetPageSize,
   setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
-  showHorizontalScrollbar = false,
-  onUpdateData
+  showHorizontalScrollbar = false
 }) => {
   const { visibleColumns, toggleColumn } = useTableColumns({
     tableType,
     defaultColumns: defaultColumns || getDefaultColumns(tableType)
   });
 
-  // State for editing
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editData, setEditData] = useState<Record<string, any>>({});
+  const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave } = useTableEdit(refetch);
 
-  // Pagination state (internal or externally controlled)
   const [internalPageSize, setInternalPageSize] = useState(externalPageSize);
   const [internalCurrentPage, setInternalCurrentPage] = useState(externalCurrentPage);
 
   const pageSize = externalSetPageSize ? externalPageSize : internalPageSize;
   const currentPage = externalSetCurrentPage ? externalCurrentPage : internalCurrentPage;
-  const setPageSizeValue = externalSetPageSize || setInternalPageSize;
-  const setCurrentPageValue = externalSetCurrentPage || setInternalCurrentPage;
-
-  // Edit handling functions
-  const handleEdit = (id: number, field: string, value: any) => {
-    setEditingId(id);
-    setEditData({ [field]: value });
-  };
-
-  const handleCancel = () => {
-    setEditingId(null);
-    setEditData({});
-  };
-
-  const handleChange = (field: string, value: any) => {
-    setEditData({ ...editData, [field]: value });
-  };
-
-  // Handle the save action with the onUpdateData prop if provided
-  const handleSave = async (workplace: Workplace) => {
-    try {
-      if (onUpdateData) {
-        await onUpdateData(workplace);
-      }
-      setEditingId(null);
-      setEditData({});
-    } catch (error) {
-      console.error("Error saving data:", error);
-    }
-  };
+  const setPageSize = externalSetPageSize || setInternalPageSize;
+  const setCurrentPage = externalSetCurrentPage || setInternalCurrentPage;
 
   if (isLoading) {
     return (
@@ -109,9 +80,9 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       handleChange={handleChange}
       handleSave={handleSave}
       pageSize={pageSize}
-      setPageSize={setPageSizeValue}
+      setPageSize={setPageSize}
       currentPage={currentPage}
-      setCurrentPage={setCurrentPageValue}
+      setCurrentPage={setCurrentPage}
       title={title}
       titleClassName={titleClassName}
       editableField={editableField}
