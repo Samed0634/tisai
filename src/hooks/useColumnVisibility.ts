@@ -11,7 +11,7 @@ const DEFAULT_COLUMNS_MAP = {
   yetkiBelgesiColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YETKİ BELGESİ TEBLİĞ TARİHİ', 'ÇAĞRI TARİHİ'],
   yerGunTespitColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YER VE GÜN TESPİT TARİHİ', 'İLK OTURUM TARİHİ'],
   ilkOturumColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'ÇAĞRI TARİHİ', 'İLK OTURUM TARİHİ'],
-  muzakereSuresiColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'MÜZAKERE SÜRESİ SON TARİH', 'UYUŞMAZLIK TARİHİ'],
+  muzakereSuresiColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'İLK OTURUM TARİHİ'],
   uyusmazlikColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'MÜZAKERE SÜRESİ SON TARİH', 'UYUŞMAZLIK TARİHİ'],
   yhkGonderimColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'GREV OYLAMASI TARİHİ', 'YHK GÖNDERİM TARİHİ'],
   imzalananTislerColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'TİS İMZA TARİHİ', 'TİS BAŞLANGIÇ TARİHİ', 'TİS BİTİŞ TARİHİ'],
