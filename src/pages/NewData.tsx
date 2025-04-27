@@ -12,12 +12,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { BasicWorkplaceFields } from "@/components/workplace/BasicWorkplaceFields";
 import { TenderFields } from "@/components/workplace/TenderFields";
 import { workplaceFormSchema, type WorkplaceFormValues } from "@/schemas/workplaceFormSchema";
+import { useActionHistory } from "@/hooks/useActionHistory";
 
 const NewData = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isKitWorkplace, setIsKitWorkplace] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [isKitWorkplace, setIsKitWorkplace] = useState(false);
+  const { logAction } = useActionHistory();
 
   const form = useForm<WorkplaceFormValues>({
     resolver: zodResolver(workplaceFormSchema),
@@ -62,6 +64,9 @@ const NewData = () => {
         .insert(insertData);
 
       if (error) throw error;
+
+      // Log the action after successful insertion
+      await logAction("Yeni İşyeri Kaydı Oluşturuldu");
 
       toast({
         title: "Başarılı",
