@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { isyeriTuruOptions } from "@/constants/formOptions";
 import { newDataFormSchema } from "@/utils/validationSchemas";
 import { BasicFields } from "./BasicFields";
@@ -45,17 +45,57 @@ export const MainForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Format data for Supabase
+      const formattedData = {
+        "İŞYERİ TÜRÜ": data["İŞYERİ TÜRÜ"],
+        "SORUMLU UZMAN": data["SORUMLU UZMAN"],
+        "İŞYERİNİN BULUNDUĞU İL": data["İŞYERİNİN BULUNDUĞU İL"],
+        "BAĞLI OLDUĞU ŞUBE": data["BAĞLI OLDUĞU ŞUBE"],
+        "İŞYERİ ADI": data["İŞYERİ ADI"],
+        "SGK NO": data["SGK NO"],
+        "İŞÇİ SAYISI": Number(data["İŞÇİ SAYISI"]),
+        "ÜYE SAYISI": Number(data["ÜYE SAYISI"]),
+        "İŞVEREN SENDİKASI": data["İŞVEREN SENDİKASI"],
+        "GREV YASAĞI DURUMU": data["GREV YASAĞI DURUMU"],
+        "YETKİ TESPİT İSTEM TARİHİ": data["YETKİ TESPİT İSTEM TARİHİ"],
+        "YETKİ BELGESİ TEBLİĞ TARİHİ": data["YETKİ BELGESİ TEBLİĞ TARİHİ"],
+      } as any;
+
+      // Add KİT specific fields if relevant
+      if (isKit) {
+        formattedData["İHALE ADI"] = data["İHALE ADI"];
+        formattedData["İHALE BAŞLANGIÇ TARİHİ"] = data["İHALE BAŞLANGIÇ TARİHİ"];
+        formattedData["İHALE BİTİŞ TARİHİ"] = data["İHALE BİTİŞ TARİHİ"];
+      }
+      
+      console.log("Submitting data to Supabase:", formattedData);
+      
+      // Send data to Supabase
+      const { error } = await supabase
+        .from('isyerleri')
+        .insert(formattedData);
+      
+      if (error) {
+        console.error("Supabase error details:", error);
+        throw new Error(`${error.message} (Code: ${error.code})`);
+      }
+
       // Send webhook notification with all form data
-      await fetch('https://primary-production-dcf9.up.railway.app/webhook/yenikayıt', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          timestamp: new Date().toISOString()
-        })
-      });
+      try {
+        await fetch('https://primary-production-dcf9.up.railway.app/webhook/yenikayıt', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...data,
+            timestamp: new Date().toISOString()
+          })
+        });
+      } catch (webhookError) {
+        console.error("Webhook notification failed:", webhookError);
+        // Continue execution even if webhook fails
+      }
 
       // Show success message
       toast({
@@ -114,4 +154,3 @@ export const MainForm = () => {
     </Card>
   );
 };
-
