@@ -1,4 +1,3 @@
-
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Control } from "react-hook-form";
@@ -104,9 +103,7 @@ export const TenderFields = ({ control }: TenderFieldsProps) => {
                   mode="single"
                   selected={field.value}
                   onSelect={field.onChange}
-                  disabled={(date) =>
-                    date > new Date() || date < new Date("1900-01-01")
-                  }
+                  disabled={(date) => date < new Date("1900-01-01")}
                   initialFocus
                   className="pointer-events-auto"
                 />
