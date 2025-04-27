@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -125,6 +126,7 @@ const NewData = () => {
     setIsSubmitting(true);
     
     try {
+      // Format dates for Supabase (convert Date objects to ISO strings)
       const insertData = {
         "İŞYERİ ADI": data.companyName,
         "SGK NO": data.sgkNo,
@@ -132,14 +134,14 @@ const NewData = () => {
         "SORUMLU UZMAN": data.expert,
         "İŞYERİNİN BULUNDUĞU İL": data.city,
         "BAĞLI OLDUĞU ŞUBE": data.branch,
-        "İŞÇİ SAYISI": data.employeeCount,
-        "ÜYE SAYISI": data.memberCount,
+        "İŞÇİ SAYISI": data.employeeCount, // Now this is a number thanks to zod transform
+        "ÜYE SAYISI": data.memberCount, // Now this is a number thanks to zod transform
         "İŞVEREN SENDİKASI": data.employerUnion,
         "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
-        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate,
+        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate.toISOString(), // Convert Date to ISO string
         "İHALE ADI": data.tenderName || null,
-        "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate || null,
-        "İHALE BİTİŞ TARİHİ": data.tenderEndDate || null,
+        "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null, // Convert Date to ISO string
+        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null, // Convert Date to ISO string
       };
 
       const { error } = await supabase
