@@ -109,57 +109,61 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
         </div>
       </div>
       
-      <ScrollArea className="rounded-md border" showTopScrollbar showBottomScrollbar>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-[#ea384c]">İşlem</TableHead>
-              {visibleColumnDefinitions.map(column => (
-                <TableHead key={column.id}>{column.title}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
-                  Görüntülenecek veri bulunamadı
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedData.map((item) => (
-                <TableRow key={item.ID} className="hover:bg-muted/50">
-                  <TableCell>
-                    <TableActions 
-                      isEditing={editingId === item.ID}
-                      onEdit={() => handleEdit(item)}
-                      onSave={handleSave}
-                      onCancel={handleCancel}
-                    />
-                  </TableCell>
-                  
+      <div className="overflow-x-auto">
+        <ScrollArea className="rounded-md border w-full" showTopScrollbar={true} showBottomScrollbar={true}>
+          <div className="min-w-full">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-[#ea384c]">İşlem</TableHead>
                   {visibleColumnDefinitions.map(column => (
-                    <TableCell 
-                      key={`${item.ID}-${column.id}`}
-                      className={cn(
-                        column.id === editableField && "bg-yellow-50"
-                      )}
-                    >
-                      <EditableTableCell 
-                        value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
-                        isEditing={editingId === item.ID}
-                        isEditable={column.id === editableField}
-                        field={column.id}
-                        onChange={handleChange}
-                      />
-                    </TableCell>
+                    <TableHead key={column.id}>{column.title}</TableHead>
                   ))}
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </ScrollArea>
+              </TableHeader>
+              <TableBody>
+                {paginatedData.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
+                      Görüntülenecek veri bulunamadı
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  paginatedData.map((item) => (
+                    <TableRow key={item.ID} className="hover:bg-muted/50">
+                      <TableCell>
+                        <TableActions 
+                          isEditing={editingId === item.ID}
+                          onEdit={() => handleEdit(item)}
+                          onSave={handleSave}
+                          onCancel={handleCancel}
+                        />
+                      </TableCell>
+                      
+                      {visibleColumnDefinitions.map(column => (
+                        <TableCell 
+                          key={`${item.ID}-${column.id}`}
+                          className={cn(
+                            column.id === editableField && "bg-yellow-50"
+                          )}
+                        >
+                          <EditableTableCell 
+                            value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
+                            isEditing={editingId === item.ID}
+                            isEditable={column.id === editableField}
+                            field={column.id}
+                            onChange={handleChange}
+                          />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </ScrollArea>
+      </div>
 
       {data.length > 0 && (
         <div className="flex justify-end items-center gap-2 py-2">
