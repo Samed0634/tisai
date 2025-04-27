@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { 
   Table, 
@@ -34,6 +33,7 @@ interface EditableTableBaseProps {
   editableField: string;
   title: string;
   defaultColumns?: string[];
+  titleClassName?: string;
 }
 
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({ 
@@ -43,7 +43,8 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   tableType,
   editableField,
   title,
-  defaultColumns
+  defaultColumns,
+  titleClassName
 }) => {
   const { visibleColumns, toggleColumn } = useColumnVisibility(tableType, defaultColumns);
   const {
@@ -95,22 +96,22 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{title}</h2>
+        <h2 className={cn("font-bold", titleClassName || "text-2xl")}>{title}</h2>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Sayfa başına:</span>
+            <span className="text-xs text-muted-foreground">Sayfa başına:</span>
             <Select
               value={pageSize.toString()}
               onValueChange={handlePageSizeChange}
             >
-              <SelectTrigger className="w-[100px]">
+              <SelectTrigger className="w-[80px] text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-                <SelectItem value="30">30</SelectItem>
-                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="10" className="text-xs">10</SelectItem>
+                <SelectItem value="20" className="text-xs">20</SelectItem>
+                <SelectItem value="30" className="text-xs">30</SelectItem>
+                <SelectItem value="50" className="text-xs">50</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -124,26 +125,26 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       <div className="border rounded-md overflow-hidden">
         <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
           <div className="min-w-max">
-            <Table>
+            <Table className="text-sm">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10">İşlem</TableHead>
+                  <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">İşlem</TableHead>
                   {visibleColumnDefinitions.map(column => (
-                    <TableHead key={column.id}>{column.title}</TableHead>
+                    <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedData.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
+                    <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6 text-xs">
                       Görüntülenecek veri bulunamadı
                     </TableCell>
                   </TableRow>
                 ) : (
                   paginatedData.map((item) => (
-                    <TableRow key={item.ID} className="hover:bg-muted/50">
-                      <TableCell className="sticky left-0 bg-background z-10">
+                    <TableRow key={item.ID} className="hover:bg-muted/50 text-xs">
+                      <TableCell className="sticky left-0 bg-background z-10 text-xs">
                         <TableActions 
                           isEditing={editingId === item.ID}
                           onEdit={() => handleEdit(item)}
@@ -156,6 +157,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
                         <TableCell 
                           key={`${item.ID}-${column.id}`}
                           className={cn(
+                            "text-xs",
                             column.id === editableField && "bg-yellow-50"
                           )}
                         >
@@ -178,27 +180,27 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       </div>
 
       {data.length > 0 && (
-        <div className="flex justify-between items-center gap-2 py-2">
+        <div className="flex justify-between items-center gap-2 py-2 text-xs">
           <div className="flex gap-2">
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+              className="px-2 py-1 rounded border border-gray-300 disabled:opacity-50 text-xs"
             >
               Önceki
             </button>
-            <span className="px-3 py-1 rounded bg-primary text-white">
+            <span className="px-2 py-1 rounded bg-primary text-white text-xs">
               {currentPage} / {totalPages}
             </span>
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+              className="px-2 py-1 rounded border border-gray-300 disabled:opacity-50 text-xs"
             >
               Sonraki
             </button>
           </div>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             Toplam {data.length} kayıttan {startIndex + 1}-{Math.min(startIndex + pageSize, data.length)} arası gösteriliyor
           </span>
         </div>
