@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { EditableTableBase } from "./EditableTableBase";
 import { Workplace } from "@/types/workplace";
 
@@ -14,6 +14,9 @@ export const YetkiBelgesiTable: React.FC<YetkiBelgesiTableProps> = ({
   isLoading = false,
   refetch
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   return (
     <EditableTableBase 
       data={data}
@@ -22,6 +25,10 @@ export const YetkiBelgesiTable: React.FC<YetkiBelgesiTableProps> = ({
       tableType="yetkiBelgesiColumns"
       editableField="ÇAĞRI TARİHİ"
       title="Yetki Belgesi Tebliğ Yapılan İşyerleri"
+      currentPage={currentPage}
+      pageSize={pageSize}
+      setCurrentPage={setCurrentPage}
+      setPageSize={setPageSize}
     />
   );
 };

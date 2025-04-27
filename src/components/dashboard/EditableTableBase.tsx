@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { useWorkplaceData } from '@/hooks/useWorkplaceData';
@@ -36,10 +37,10 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   defaultColumns,
   titleClassName = 'text-2xl',
   showControls = true,
-  pageSize = 10,
-  currentPage = 1,
-  setPageSize,
-  setCurrentPage,
+  pageSize: externalPageSize = 10,
+  currentPage: externalCurrentPage = 1,
+  setPageSize: externalSetPageSize,
+  setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
   showHorizontalScrollbar = false
 }) => {
@@ -49,6 +50,16 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   });
 
   const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave } = useTableEdit(refetch);
+
+  // Use internal state if external state handlers are not provided
+  const [internalPageSize, setInternalPageSize] = useState(externalPageSize);
+  const [internalCurrentPage, setInternalCurrentPage] = useState(externalCurrentPage);
+
+  // Determine which state and handlers to use
+  const pageSize = externalSetPageSize ? externalPageSize : internalPageSize;
+  const currentPage = externalSetCurrentPage ? externalCurrentPage : internalCurrentPage;
+  const setPageSize = externalSetPageSize || setInternalPageSize;
+  const setCurrentPage = externalSetCurrentPage || setInternalCurrentPage;
 
   if (isLoading) {
     return (
@@ -71,9 +82,9 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       handleChange={handleChange}
       handleSave={handleSave}
       pageSize={pageSize}
-      setPageSize={setPageSize!}
+      setPageSize={setPageSize}
       currentPage={currentPage}
-      setCurrentPage={setCurrentPage!}
+      setCurrentPage={setCurrentPage}
       title={title}
       titleClassName={titleClassName}
       editableField={editableField}
@@ -96,7 +107,7 @@ const getDefaultColumns = (tableType: string): string[] => {
     case "ilkOturumColumns":
       return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"];
     case "muzakereSuresiColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "UYUŞMAZLIK TARİHİ"];
+      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "MÜZAKERE SÜRESİ SON TARİH"];
     case "uyusmazlikColumns":
       return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "UYUŞMAZLIK TARİHİ"];
     case "yhkColumns":
