@@ -20,6 +20,15 @@ const ActivityHistory: React.FC = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
+        // Fetch the current session to ensure we're authenticated
+        const { data: sessionData } = await supabase.auth.getSession();
+        
+        if (!sessionData.session) {
+          console.error('No active session found. User might not be authenticated.');
+          setLoading(false);
+          return;
+        }
+        
         const { data, error } = await supabase
           .from('İşlem Geçmişi')
           .select('*')
