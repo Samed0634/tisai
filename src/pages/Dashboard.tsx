@@ -13,6 +13,7 @@ import { CagriYapilacakTable } from "@/components/dashboard/CagriYapilacakTable"
 import { YetkiTespitTable } from "@/components/dashboard/YetkiTespitTable";
 import { YetkiBelgesiTable } from "@/components/dashboard/YetkiBelgesiTable";
 import { YerGunTespitTable } from "@/components/dashboard/YerGunTespitTable";
+import { OncedenBelirlenenTable } from "@/components/dashboard/OncedenBelirlenenTable";
 import { IlkOturumTable } from "@/components/dashboard/IlkOturumTable";
 import { MuzakereSuresiTable } from "@/components/dashboard/MuzakereSuresiTable";
 import { UyusmazlikTable } from "@/components/dashboard/UyusmazlikTable";
@@ -52,7 +53,11 @@ const Dashboard = () => {
 
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
-    if (categoryId === 'grevKarari' || categoryId === 'grevOylamasi' || categoryId === 'cagri' || categoryId === 'yetkiTespit' || categoryId === 'yetkiBelgesi' || categoryId === 'yerGunTespit' || categoryId === 'ilkOturum' || categoryId === 'muzakereSuresi' || categoryId === 'uyusmazlik' || categoryId === 'yhk' || categoryId === 'imzalananTisler' || categoryId === 'grevYasagi') {
+    if (categoryId === 'grevKarari' || categoryId === 'grevOylamasi' || categoryId === 'cagri' || 
+        categoryId === 'yetkiTespit' || categoryId === 'yetkiBelgesi' || categoryId === 'yerGunTespit' || 
+        categoryId === 'oncedenBelirlenen' || categoryId === 'ilkOturum' || categoryId === 'muzakereSuresi' || 
+        categoryId === 'uyusmazlik' || categoryId === 'yhk' || categoryId === 'imzalananTisler' || 
+        categoryId === 'grevYasagi') {
       setSelectedCategory(categoryId);
       setShowEditableTable(true);
     } else if (category?.items) {
@@ -82,6 +87,7 @@ const Dashboard = () => {
   const yetkiTespitData = getListItems('yetki_tespit_istenecek_view');
   const yetkiBelgesiData = getListItems('yetki_belgesi_tebliğ_yapılan_view');
   const yerGunTespitData = getListItems('yer_ve_gün_tespit_tarihli_view');
+  const oncedenBelirlenenData = getListItems('önceden_belirlenen_ilk_oturum_view');
   const ilkOturumData = getListItems('ilk_oturum_tutulması_gereken_view');
   const muzakereSuresiData = getListItems('müzakere_süresi_dolan_view');
   const uyusmazlikData = getListItems('uyuşmazlık_bildirimi_yapılması_gereken_view');
@@ -110,6 +116,8 @@ const Dashboard = () => {
           {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} />}
 
           {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} />}
+          
+          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} />}
 
           {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} />}
 

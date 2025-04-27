@@ -17,6 +17,7 @@ export const categoryTitles: Record<string, string> = {
   "call-required": "Çağrı Yapılacak İşyerleri",
   "place-date-determination": "Yer ve Gün Tespiti Yapılacak İşyerleri",
   "pre-determined-first-session": "Önceden Belirlenen İlk Oturum İşyerleri",
+  "oncedenBelirlenen": "Önceden Belirlenen İlk Oturum İşyerleri",
   "first-session": "İlk Oturum Tutulması Gereken İşyerleri",
   "dispute-notices": "Uyuşmazlık Bildirimi Yapılması Gereken İşyerleri",
   "mediator-appointment-deadline": "Arabulucu Ataması Son Tarih İşyerleri",
