@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Calendar } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 const ActivityHistory: React.FC = () => {
   const [activities, setActivities] = useState<ActionHistory[]>([]);
@@ -16,29 +17,62 @@ const ActivityHistory: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [timeFilter, setTimeFilter] = useState("all");
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
         // Fetch the current session to ensure we're authenticated
-        const { data: sessionData } = await supabase.auth.getSession();
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
         
-        if (!sessionData.session) {
-          console.error('No active session found. User might not be authenticated.');
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+          toast({
+            title: "Oturum Hatası",
+            description: "Oturum bilgileri alınamadı. Lütfen tekrar giriş yapın.",
+            variant: "destructive",
+          });
           setLoading(false);
           return;
         }
         
+        if (!sessionData.session) {
+          console.error('No active session found. User might not be authenticated.');
+          toast({
+            title: "Oturum Bulunamadı",
+            description: "Aktif bir oturum bulunamadı. Lütfen giriş yapın.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        
+        // Ensure we have the auth token in the request
         const { data, error } = await supabase
           .from('İşlem Geçmişi')
           .select('*')
           .order('id', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching activities:', error);
+          toast({
+            title: "Veri Hatası",
+            description: "İşlem geçmişi verileri yüklenirken bir hata oluştu: " + error.message,
+            variant: "destructive",
+          });
+          throw error;
+        }
+        
+        console.log('Fetched activities data:', data);
         setActivities(data || []);
         setFilteredActivities(data || []);
       } catch (error) {
-        console.error('Error fetching activities:', error);
+        console.error('Error in fetchActivities:', error);
+        toast({
+          title: "Hata",
+          description: "İşlem geçmişi yüklenirken bir hata oluştu.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
@@ -56,7 +90,8 @@ const ActivityHistory: React.FC = () => {
           schema: 'public',
           table: 'İşlem Geçmişi'
         },
-        () => {
+        (payload) => {
+          console.log('Realtime update received:', payload);
           fetchActivities();
         }
       )
@@ -65,7 +100,7 @@ const ActivityHistory: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     filterActivities();
@@ -79,7 +114,8 @@ const ActivityHistory: React.FC = () => {
       filtered = filtered.filter(
         (activity) => 
           activity["İşlem Adı"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          activity["İşlem Yapan Kullanıcı"]?.toLowerCase().includes(searchTerm.toLowerCase())
+          activity["İşlem Yapan Kullanıcı"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (activity["İşyeri ADI"] && activity["İşyeri ADI"]?.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
@@ -142,7 +178,7 @@ const ActivityHistory: React.FC = () => {
           <div className="relative w-full sm:w-96">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="İşyeri Ara..."
+              placeholder="İşlem veya İşyeri Ara..."
               value={searchTerm}
               onChange={handleSearchChange}
               className="pl-8"
