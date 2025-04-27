@@ -112,8 +112,8 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       <div className="border rounded-md">
         <ScrollArea 
           className="w-full" 
-          showTopScrollbar={showHorizontalScrollbar}
-          showBottomScrollbar={showHorizontalScrollbar}
+          showTopScrollbar={true}
+          showBottomScrollbar={true}
         >
           <div className="min-w-max">
             <Table>

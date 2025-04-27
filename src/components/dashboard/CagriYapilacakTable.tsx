@@ -29,6 +29,8 @@ export const CagriYapilacakTable: React.FC<CagriYapilacakTableProps> = ({
       currentPage={currentPage}
       setPageSize={setPageSize}
       setCurrentPage={setCurrentPage}
+      showHorizontalScrollbar={true}
     />
   );
 };
+
