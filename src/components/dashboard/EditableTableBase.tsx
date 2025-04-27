@@ -80,6 +80,18 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -109,13 +121,13 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
         </div>
       </div>
       
-      <div className="overflow-x-auto">
-        <ScrollArea className="rounded-md border w-full" showTopScrollbar={true} showBottomScrollbar={true}>
-          <div className="min-w-full">
+      <div className="border rounded-md overflow-hidden">
+        <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
+          <div className="min-w-max">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-[#ea384c]">İşlem</TableHead>
+                  <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10">İşlem</TableHead>
                   {visibleColumnDefinitions.map(column => (
                     <TableHead key={column.id}>{column.title}</TableHead>
                   ))}
@@ -131,7 +143,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
                 ) : (
                   paginatedData.map((item) => (
                     <TableRow key={item.ID} className="hover:bg-muted/50">
-                      <TableCell>
+                      <TableCell className="sticky left-0 bg-background z-10">
                         <TableActions 
                           isEditing={editingId === item.ID}
                           onEdit={() => handleEdit(item)}
@@ -166,7 +178,26 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       </div>
 
       {data.length > 0 && (
-        <div className="flex justify-end items-center gap-2 py-2">
+        <div className="flex justify-between items-center gap-2 py-2">
+          <div className="flex gap-2">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+            >
+              Önceki
+            </button>
+            <span className="px-3 py-1 rounded bg-primary text-white">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
+            >
+              Sonraki
+            </button>
+          </div>
           <span className="text-sm text-muted-foreground">
             Toplam {data.length} kayıttan {startIndex + 1}-{Math.min(startIndex + pageSize, data.length)} arası gösteriliyor
           </span>
