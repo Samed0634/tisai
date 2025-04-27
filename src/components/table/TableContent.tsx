@@ -76,6 +76,20 @@ export const TableContent: React.FC<TableContentProps> = ({
     setCurrentPage(1);
   };
 
+  // Handle navigation to previous page
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Handle navigation to next page
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <TableHeaderComponent 
@@ -125,8 +139,8 @@ export const TableContent: React.FC<TableContentProps> = ({
           totalItems={data.length}
           startIndex={startIndex}
           onPageSizeChange={handlePageSizeChange}
-          onPreviousPage={() => setCurrentPage(curr => curr > 1 ? curr - 1 : curr)}
-          onNextPage={() => setCurrentPage(curr => curr < totalPages ? curr + 1 : curr)}
+          onPreviousPage={handlePreviousPage}
+          onNextPage={handleNextPage}
         />
       )}
     </div>
