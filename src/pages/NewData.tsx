@@ -42,24 +42,6 @@ const baseSchema = {
   branch: z.string({
     required_error: "Bağlı olduğu şube gereklidir",
   }),
-  employeeCount: z.string().transform(val => {
-    const num = parseInt(val, 10);
-    return isNaN(num) ? 0 : num;
-  }).pipe(
-    z.number({
-      required_error: "İşçi sayısı gereklidir",
-      invalid_type_error: "İşçi sayısı bir sayı olmalıdır",
-    }).min(1, "İşçi sayısı 1'den küçük olamaz")
-  ),
-  memberCount: z.string().transform(val => {
-    const num = parseInt(val, 10);
-    return isNaN(num) ? 0 : num;
-  }).pipe(
-    z.number({
-      required_error: "Üye sayısı gereklidir",
-      invalid_type_error: "Üye sayısı bir sayı olmalıdır",
-    }).min(0, "Üye sayısı negatif olamaz")
-  ),
   employerUnion: z.string({
     required_error: "İşveren sendikası gereklidir",
   }),
@@ -138,8 +120,8 @@ const NewData = () => {
         "SORUMLU UZMAN": data.expert,
         "İŞYERİNİN BULUNDUĞU İL": data.city,
         "BAĞLI OLDUĞU ŞUBE": data.branch,
-        "İŞÇİ SAYISI": Number(data.employeeCount),
-        "ÜYE SAYISI": Number(data.memberCount),
+        "İŞÇİ SAYISI": data.employeeCount,
+        "ÜYE SAYISI": data.memberCount,
         "İŞVEREN SENDİKASI": data.employerUnion,
         "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
         "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate.toISOString(),
@@ -149,7 +131,7 @@ const NewData = () => {
       };
 
       const { error } = await supabase
-        .from("isyerleri")
+        .from('isyerleri')
         .insert(insertData);
 
       if (error) throw error;
