@@ -3,9 +3,11 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Workplace } from "@/types/workplace";
+import { useActionHistory } from "./useActionHistory";
 
 export const useTableEdit = (refetch: () => void) => {
   const { toast } = useToast();
+  const { logAction } = useActionHistory();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Workplace | null>(null);
 
@@ -38,6 +40,9 @@ export const useTableEdit = (refetch: () => void) => {
         .eq('ID', editData.ID);
       
       if (error) throw error;
+      
+      // Log the action
+      await logAction(`${editingId} ID'li işyerinin ${editData["İŞYERİ ADI"]} bilgileri güncellenmiştir.`);
       
       toast({
         title: "Başarılı",
