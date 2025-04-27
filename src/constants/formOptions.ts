@@ -1,9 +1,10 @@
 
 export const isyeriTuruOptions = [
-  "BELEDİYE",
-  "ŞİRKET",
-  "KİT",
-  "DİĞER",
+  "Özel",
+  "Kamu",
+  "Belediye (Kadrolu)",
+  "Belediye (Şirket)",
+  "Kit",
 ];
 
 export const ilOptions = [
@@ -41,7 +42,6 @@ export const sendikalarOptions = [
 ];
 
 export const grevYasagiOptions = [
-  "VAR",
-  "YOK",
-  "BELİRSİZ",
+  "Yasak",
+  "Serbest",
 ];

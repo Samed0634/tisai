@@ -44,7 +44,7 @@ const NewData = () => {
   });
 
   const isyeriTuru = form.watch("İŞYERİ TÜRÜ");
-  const isKit = isyeriTuru === "KİT";
+  const isKit = isyeriTuru === "Kit";
 
   const onSubmit = async (data: z.infer<typeof newDataFormSchema>) => {
     setIsSubmitting(true);
