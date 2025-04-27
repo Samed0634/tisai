@@ -59,6 +59,15 @@ const fetchDashboardData = async () => {
       throw new Error(`Error fetching yer gün tespit data: ${yerGunTespitError.message}`);
     }
     
+    // Fetch data for önceden belirlenen ilk oturum
+    const { data: oncedenBelirlenenData, error: oncedenBelirlenenError } = await supabase
+      .from('önceden_belirlenen_ilk_oturum_view')
+      .select('*');
+    
+    if (oncedenBelirlenenError) {
+      throw new Error(`Error fetching önceden belirlenen ilk oturum data: ${oncedenBelirlenenError.message}`);
+    }
+    
     // Fetch data for ilk oturum
     const { data: ilkOturumData, error: ilkOturumError } = await supabase
       .from('ilk_oturum_tutulması_gereken_view')
@@ -113,28 +122,21 @@ const fetchDashboardData = async () => {
       throw new Error(`Error fetching grev yasağı data: ${grevYasagiError.message}`);
     }
 
-    // Continue with existing API for other data
-    const response = await fetch('https://primary-production-dcf9.up.railway.app/webhook/terminsorgu');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const apiData = await response.json();
-    
     // Transform the response into the expected format for dashboard cards
     const transformedData = {
-      cagriYapilacakListesi: cagriYapilacakData || [],
-      yetkiTespitIstenenListesi: yetkiTespitData || [],
-      yetkiBelgesiTebligYapilanListesi: yetkiBelgesiData || [],
-      yerVeGunTespitListesi: yerGunTespitData || [],
-      oncedenBelirlenenIlkOturumListesi: [],
-      ilkOturumGerekenListesi: ilkOturumData || [],
-      muzakereSuresiDolanListesi: muzakereSuresiData || [],
-      uyusmazlikGerekenListesi: uyusmazlikData || [],
-      grevKarariAlinmasiGerekenListesi: grevKarariData || [],
-      grevOylamasiYapilmasiGerekenListesi: grevOylamasiData || [],
-      yhkGonderimGerekenListesi: yhkGonderimData || [],
-      imzalananTislerListesi: imzalananTislerData || [],
-      grevYasagiOlanListesi: grevYasagiData || []
+      çağrı_yapılacak_view: cagriYapilacakData || [],
+      yetki_tespit_istenecek_view: yetkiTespitData || [],
+      yetki_belgesi_tebliğ_yapılan_view: yetkiBelgesiData || [],
+      yer_ve_gün_tespit_tarihli_view: yerGunTespitData || [],
+      önceden_belirlenen_ilk_oturum_view: oncedenBelirlenenData || [],
+      ilk_oturum_tutulması_gereken_view: ilkOturumData || [],
+      müzakere_süresi_dolan_view: muzakereSuresiData || [],
+      uyuşmazlık_bildirimi_yapılması_gereken_view: uyusmazlikData || [],
+      grev_kararı_alınması_gereken_view: grevKarariData || [],
+      grev_oylaması_yapılması_gereken_view: grevOylamasiData || [],
+      yhk_gönderim_gereken_view: yhkGonderimData || [],
+      imzalanan_tisler_view: imzalananTislerData || [],
+      grev_yasağı_olan_view: grevYasagiData || []
     };
 
     console.log("Dashboard data loaded:", Object.keys(transformedData));

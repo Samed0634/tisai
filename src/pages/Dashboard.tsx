@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -28,14 +29,14 @@ const Dashboard = () => {
   const [showEditableTable, setShowEditableTable] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const {
-    data: n8nDashboardData,
+    data: dashboardData,
     isLoading,
     refetch
   } = useDashboardData();
 
   const getListItems = (listName: string) => {
-    if (!n8nDashboardData) return [];
-    return n8nDashboardData[listName] as any[] || [];
+    if (!dashboardData) return [];
+    return dashboardData[listName] as any[] || [];
   };
 
   const allDashboardData = staticDashboardData.map(item => ({
@@ -70,49 +71,18 @@ const Dashboard = () => {
     return <div>Yükleniyor...</div>;
   }
 
-  const grevKarariData = getListItems('grevKarariAlinmasiGerekenListesi');
-  const grevOylamasiData = getListItems('grevOylamasiYapilmasiGerekenListesi');
-  const cagriYapilacakData = getListItems('cagriYapilacakListesi');
-  const yetkiTespitData = getListItems('yetkiTespitIstenenListesi');
-  const yetkiBelgesiData = getListItems('yetkiBelgesiTebligYapilanListesi');
-  const yerGunTespitData = getListItems('yerVeGunTespitListesi');
-  const ilkOturumData = getListItems('ilkOturumGerekenListesi');
-  const muzakereSuresiData = getListItems('muzakereSuresiDolanListesi');
-  const uyusmazlikData = getListItems('uyusmazlikGerekenListesi');
-  const yhkGonderimData = getListItems('yhkGonderimGerekenListesi');
-  const imzalananTislerData = getListItems('imzalananTislerListesi');
-  const grevYasagiData = getListItems('grevYasagiOlanListesi');
-
-  const getTableTitle = () => {
-    switch (selectedCategory) {
-      case 'grevKarari':
-        return "Grev Kararı Alınması Gereken İşyerleri";
-      case 'grevOylamasi':
-        return "Grev Oylaması Yapılması Gereken İşyerleri";
-      case 'cagri':
-        return "Çağrı Yapılacak İşyerleri";
-      case 'yetkiTespit':
-        return "Yetki Tespiti İstenen İşyerleri";
-      case 'yetkiBelgesi':
-        return "Yetki Belgesi Tebliğ Yapılan İşyerleri";
-      case 'yerGunTespit':
-        return "Yer ve Gün Tespiti Yapılan İşyerleri";
-      case 'ilkOturum':
-        return "İlk Oturum Gereken İşyerleri";
-      case 'muzakereSuresi':
-        return "Müzakere Süresi Dolan İşyerleri";
-      case 'uyusmazlik':
-        return "Uyuşmazlık Gereken İşyerleri";
-      case 'yhk':
-        return "YHK Gönderim Gereken İşyerleri";
-      case 'imzalananTisler':
-        return "İmzalanan Tisler";
-      case 'grevYasagi':
-        return "Grev Yasağı Olan İşyerleri";
-      default:
-        return "";
-    }
-  };
+  const grevKarariData = getListItems('grev_kararı_alınması_gereken_view');
+  const grevOylamasiData = getListItems('grev_oylaması_yapılması_gereken_view');
+  const cagriYapilacakData = getListItems('çağrı_yapılacak_view');
+  const yetkiTespitData = getListItems('yetki_tespit_istenecek_view');
+  const yetkiBelgesiData = getListItems('yetki_belgesi_tebliğ_yapılan_view');
+  const yerGunTespitData = getListItems('yer_ve_gün_tespit_tarihli_view');
+  const ilkOturumData = getListItems('ilk_oturum_tutulması_gereken_view');
+  const muzakereSuresiData = getListItems('müzakere_süresi_dolan_view');
+  const uyusmazlikData = getListItems('uyuşmazlık_bildirimi_yapılması_gereken_view');
+  const yhkGonderimData = getListItems('yhk_gönderim_gereken_view');
+  const imzalananTislerData = getListItems('imzalanan_tisler_view');
+  const grevYasagiData = getListItems('grev_yasağı_olan_view');
 
   return <div className="space-y-6">
       <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
