@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { useWorkplaceData } from '@/hooks/useWorkplaceData';
@@ -52,28 +51,20 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   const { updateWorkplace } = useWorkplaceData();
   const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave: originalHandleSave } = useTableEdit(refetch);
 
-  // Enhanced handleSave function that also uses updateWorkplace from useWorkplaceData
   const handleSave = async () => {
     if (!editData) return;
     
     try {
-      // Call the table edit's handleSave
       await originalHandleSave();
-      
-      // Also use the central workplaceData mutation to ensure consistency
-      if (editData) {
-        await updateWorkplace(editData);
-      }
+      await updateWorkplace(editData);
     } catch (error) {
       console.error("Error saving data:", error);
     }
   };
 
-  // Use internal state if external state handlers are not provided
   const [internalPageSize, setInternalPageSize] = useState(externalPageSize);
   const [internalCurrentPage, setInternalCurrentPage] = useState(externalCurrentPage);
 
-  // Determine which state and handlers to use
   const pageSize = externalSetPageSize ? externalPageSize : internalPageSize;
   const currentPage = externalSetCurrentPage ? externalCurrentPage : internalCurrentPage;
   const setPageSize = externalSetPageSize || setInternalPageSize;
