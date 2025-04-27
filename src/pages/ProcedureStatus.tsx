@@ -3,39 +3,9 @@ import React, { useState } from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
-
-const ALL_COLUMNS = [
-  "İŞYERİ TÜRÜ",
-  "SORUMLU UZMAN",
-  "İŞYERİNİN BULUNDUĞU İL",
-  "BAĞLI OLDUĞU ŞUBE",
-  "İŞYERİ ADI",
-  "SGK NO",
-  "İŞÇİ SAYISI",
-  "ÜYE SAYISI",
-  "İŞVEREN SENDİKASI",
-  "GREV YASAĞI DURUMU",
-  "İHALE ADI",
-  "İHALE BAŞLANGIÇ TARİHİ",
-  "İHALE BİTİŞ TARİHİ",
-  "YETKİ TESPİT İSTEM TARİHİ",
-  "YETKİ BELGESİ TEBLİĞ TARİHİ",
-  "ÇAĞRI TARİHİ",
-  "YER VE GÜN TESPİT TARİHİ",
-  "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ",
-  "İLK OTURUM TARİHİ",
-  "MÜZAKERE SÜRESİ SON TARİH",
-  "UYUŞMAZLIK TARİHİ",
-  "ARABULUCU RAPORU TEBLİĞ TARİHİ",
-  "GREV KARARI TARİHİ",
-  "FİİLİ GREV KARARI TARİHİ",
-  "GREV OYLAMASI TARİHİ",
-  "YHK GÖNDERİM TARİHİ",
-  "TİS GELİŞ TARİHİ",
-  "TİS İMZA TARİHİ",
-  "TİS BAŞLANGIÇ TARİHİ",
-  "TİS BİTİŞ TARİHİ"
-];
+import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ArrowDown } from "lucide-react";
 
 const DEFAULT_VISIBLE_COLUMNS = [
   "SORUMLU UZMAN",
@@ -45,30 +15,70 @@ const DEFAULT_VISIBLE_COLUMNS = [
   "ÜYE SAYISI"
 ];
 
+type SortOption = {
+  value: string;
+  label: string;
+};
+
+const sortOptions: SortOption[] = [
+  { value: "İŞYERİ ADI", label: "İşyeri Adı" },
+  { value: "SORUMLU UZMAN", label: "Sorumlu Uzman" },
+  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" }
+];
+
 const ProcedureStatus = () => {
-  const { workplaces, isLoading, refetch, updateWorkplace } = useWorkplaceData();
+  const { workplaces, isLoading, refetch } = useWorkplaceData();
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<string>("İŞYERİ ADI");
 
-  const filteredWorkplaces = workplaces?.filter(workplace => 
-    workplace["İŞYERİ ADI"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    workplace["SORUMLU UZMAN"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    workplace["BAĞLI OLDUĞU ŞUBE"]?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredAndSortedWorkplaces = React.useMemo(() => {
+    let filtered = workplaces?.filter(workplace => 
+      workplace["İŞYERİ ADI"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      workplace["SORUMLU UZMAN"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      workplace["BAĞLI OLDUĞU ŞUBE"]?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
+    return [...filtered].sort((a, b) => {
+      const aValue = (a[sortBy] || "").toString().toLowerCase();
+      const bValue = (b[sortBy] || "").toString().toLowerCase();
+      return aValue.localeCompare(bValue);
+    });
+  }, [workplaces, searchTerm, sortBy]);
 
   return (
     <div className="container mx-auto py-6 space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">Prosedür Durumu</h1>
       
-      <SearchBox 
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        placeholder="İşyeri veya uzman ara..."
-      />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <SearchBox 
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          placeholder="İşyeri veya uzman ara..."
+        />
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-[240px]">
+              <ArrowDown className="mr-2 h-4 w-4" />
+              Sıralama: {sortOptions.find(opt => opt.value === sortBy)?.label}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[240px]">
+            <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+              {sortOptions.map((option) => (
+                <DropdownMenuRadioItem key={option.value} value={option.value}>
+                  {option.label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       <EditableTableBase
-        data={filteredWorkplaces}
+        data={filteredAndSortedWorkplaces}
         isLoading={isLoading}
         refetch={refetch}
         tableType="default"
