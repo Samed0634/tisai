@@ -11,23 +11,53 @@ export const useWorkplaceData = () => {
   const { data: workplaces, isLoading, refetch } = useQuery({
     queryKey: ['workplaces'],
     queryFn: async () => {
+      console.log("Fetching all workplaces data");
       const { data, error } = await supabase
         .from('isyerleri')
         .select('*');
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching workplaces:", error);
+        throw error;
+      }
+      
+      console.log(`Fetched ${data?.length || 0} workplaces`);
       return data as Workplace[];
     }
   });
 
   const updateWorkplace = useMutation({
     mutationFn: async (workplace: Workplace) => {
-      const { error } = await supabase
-        .from('isyerleri')
-        .update(workplace)
-        .eq('ID', workplace.ID);
+      console.log("Updating workplace:", workplace);
       
-      if (error) throw error;
+      // Check if the workplace exists first
+      const { data: existingWorkplace, error: checkError } = await supabase
+        .from('isyerleri')
+        .select('ID')
+        .eq('ID', workplace.ID)
+        .maybeSingle();
+        
+      console.log("Check if workplace exists:", existingWorkplace, checkError);
+      
+      if (checkError) throw checkError;
+      
+      if (existingWorkplace) {
+        // Update existing workplace
+        const { error } = await supabase
+          .from('isyerleri')
+          .update(workplace)
+          .eq('ID', workplace.ID);
+        
+        if (error) throw error;
+      } else {
+        // Insert new workplace
+        const { error } = await supabase
+          .from('isyerleri')
+          .insert(workplace);
+        
+        if (error) throw error;
+      }
+      
       return workplace;
     },
     onSuccess: () => {

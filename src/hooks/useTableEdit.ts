@@ -37,12 +37,39 @@ export const useTableEdit = (refetch: () => void) => {
     if (!editData || !previousData) return;
     
     try {
-      const { error } = await supabase
-        .from('isyerleri')
-        .update(editData)
-        .eq('ID', editData.ID);
+      console.log("Saving workplace data:", editData);
       
-      if (error) throw error;
+      // Check if the ID exists in the database first
+      const { data: existingData, error: checkError } = await supabase
+        .from('isyerleri')
+        .select('ID')
+        .eq('ID', editData.ID)
+        .maybeSingle();
+      
+      console.log("Check if workplace exists:", existingData, checkError);
+      
+      let saveError;
+      
+      if (existingData) {
+        // Update existing record
+        console.log("Updating existing workplace with ID:", editData.ID);
+        const { error } = await supabase
+          .from('isyerleri')
+          .update(editData)
+          .eq('ID', editData.ID);
+        
+        saveError = error;
+      } else {
+        // Insert new record
+        console.log("Inserting new workplace with ID:", editData.ID);
+        const { error } = await supabase
+          .from('isyerleri')
+          .insert(editData);
+        
+        saveError = error;
+      }
+      
+      if (saveError) throw saveError;
 
       // Find changed fields and their values
       const changedFields = Object.entries(editData).filter(([key, value]) => {

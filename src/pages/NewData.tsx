@@ -42,7 +42,7 @@ const NewData = () => {
     setIsSubmitting(true);
     
     try {
-      // Supabase'e gönderilecek veri nesnesini hazırlayalım
+      // Prepare data object for Supabase
       const insertData = {
         "İŞYERİ ADI": data.companyName,
         "SGK NO": data.sgkNo,
@@ -54,16 +54,15 @@ const NewData = () => {
         "ÜYE SAYISI": data.memberCount,
         "İŞVEREN SENDİKASI": data.employerUnion,
         "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
-        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate.toISOString(),
+        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate ? data.authDate.toISOString() : null,
         "İHALE ADI": data.tenderName || null,
         "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null,
         "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null,
-        // ID alanını hiç kullanmıyoruz, Supabase'in kendi oluşturmasını sağlayacağız
       };
 
-      console.log("Inserting data:", insertData);
+      console.log("Preparing to insert data:", insertData);
 
-      // Önce mevcut tüm verileri çekelim ve bir sonraki ID'yi belirleyelim
+      // Fetch the current highest ID to determine the next ID value
       const { error: fetchError, data: existingData } = await supabase
         .from('isyerleri')
         .select('ID')
@@ -72,13 +71,13 @@ const NewData = () => {
 
       if (fetchError) throw fetchError;
 
-      // Mevcut en büyük ID'yi bulalım ve bir sonraki ID'yi hesaplayalım
-      let nextId = 1; // Varsayılan değer olarak 1'i kullanıyoruz
+      // Calculate the next ID value
+      let nextId = 1;
       if (existingData && existingData.length > 0 && existingData[0].ID) {
         nextId = existingData[0].ID + 1;
       }
 
-      // nextId ile birlikte veriyi ekleyelim
+      // Add the ID to the insert data
       const finalInsertData = {
         ...insertData,
         "ID": nextId
@@ -86,14 +85,15 @@ const NewData = () => {
       
       console.log("Final insert data with ID:", finalInsertData);
 
+      // Insert the data into the database
       const { error } = await supabase
         .from('isyerleri')
         .insert(finalInsertData);
 
       if (error) throw error;
 
-      // Başarılı işlem sonrası işlem geçmişine kayıt ekleyelim
-      await logAction("Yeni İşyeri Kaydı Oluşturuldu");
+      // Record the action in the history
+      await logAction(`"${data.companyName}" adlı yeni işyeri kaydı oluşturuldu.`);
 
       toast({
         title: "Başarılı",
