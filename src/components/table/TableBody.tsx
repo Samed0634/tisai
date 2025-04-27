@@ -54,15 +54,15 @@ export const TableBody: React.FC<TableBodyProps> = ({
           </TableCell>
           
           {visibleColumnDefinitions.map(column => {
-            // Check if this field is the editable one
-            const isEditable = column.id === editableField;
+            // Make all fields editable
+            const isEditable = true;
             
             return (
               <TableCell 
                 key={`${item.ID}-${column.id}`}
                 className={cn(
                   "text-xs",
-                  isEditable && "bg-yellow-50"
+                  column.id === editableField && "bg-yellow-50"
                 )}
               >
                 <EditableTableCell 
@@ -70,7 +70,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
                   isEditing={editingId === item.ID}
                   isEditable={isEditable}
                   field={column.id}
-                  rowId={item.ID} // İşyeri ID'sini geçir
+                  rowId={item.ID}
                   onChange={handleChange}
                 />
               </TableCell>

@@ -17,6 +17,8 @@ interface TablePaginationProps {
   onPageSizeChange: (value: string) => void;
   onPreviousPage: () => void;
   onNextPage: () => void;
+  setPageSize?: (size: number) => void;
+  setCurrentPage?: (page: number) => void;
 }
 
 export const TablePagination: React.FC<TablePaginationProps> = ({

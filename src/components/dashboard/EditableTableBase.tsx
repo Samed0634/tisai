@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
-import { useWorkplaceData } from '@/hooks/useWorkplaceData';
 import { usePagination } from '@/hooks/usePagination';
 import { Workplace } from '@/types/workplace';
 import { TableContent } from '../table/TableContent';
@@ -56,8 +55,8 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
 
   const pageSize = externalSetPageSize ? externalPageSize : internalPageSize;
   const currentPage = externalSetCurrentPage ? externalCurrentPage : internalCurrentPage;
-  const setPageSize = externalSetPageSize || setInternalPageSize;
-  const setCurrentPage = externalSetCurrentPage || setInternalCurrentPage;
+  const setPageSizeInternal = externalSetPageSize || setInternalPageSize;
+  const setCurrentPageInternal = externalSetCurrentPage || setInternalCurrentPage;
 
   if (isLoading) {
     return (
@@ -80,9 +79,9 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       handleChange={handleChange}
       handleSave={handleSave}
       pageSize={pageSize}
-      setPageSize={setPageSize}
+      setPageSize={setPageSizeInternal}
       currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
+      setCurrentPage={setCurrentPageInternal}
       title={title}
       titleClassName={titleClassName}
       editableField={editableField}
