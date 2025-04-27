@@ -1,5 +1,5 @@
 
-import { BarChart3, Building2, Calendar, FileJson2, FolderKanban, History, ListChecks, Upload } from "lucide-react";
+import { BarChart3, Building2, History, Upload } from "lucide-react";
 import { NavigationLink } from "./NavigationLink";
 import { useSidebar } from "@/components/ui/sidebar";
 
@@ -7,10 +7,13 @@ export function Navigation() {
   const {
     setOpenMobile
   } = useSidebar();
+  
   const handleLinkClick = () => {
     setOpenMobile(false);
   };
-  return <nav className="space-y-2 px-4 rounded-none">
+  
+  return (
+    <nav className="space-y-2 px-4 rounded-none">
       <NavigationLink to="/" onClick={handleLinkClick}>
         <BarChart3 className="h-4 w-4" />
         Gösterge Paneli
@@ -21,9 +24,15 @@ export function Navigation() {
         Yeni Veri Girişi
       </NavigationLink>
 
+      <NavigationLink to="/upload-tis" onClick={handleLinkClick}>
+        <Upload className="h-4 w-4" />
+        TİS Yükle
+      </NavigationLink>
+      
       <NavigationLink to="/activity-history" onClick={handleLinkClick}>
         <History className="h-4 w-4" />
         İşlem Geçmişi
       </NavigationLink>
-    </nav>;
+    </nav>
+  );
 }

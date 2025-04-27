@@ -8,16 +8,9 @@ import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
-import UpdateData from "./pages/UpdateData";
-import ProcedureBot from "./pages/ProcedureBot";
-import TisBot from "./pages/TisBot";
 import UploadTis from "./pages/UploadTis";
-import DataDetails from "./pages/DataDetails";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
-import ProcedureStatus from "./pages/ProcedureStatus";
-import WriteLegalNotice from "./pages/WriteLegalNotice";
-import CourtDecisionQuery from "./pages/CourtDecisionQuery";
 import ActivityHistory from "./pages/ActivityHistory";
 import { supabase } from "./integrations/supabase/client";
 
@@ -69,14 +62,7 @@ const App = () => (
           }>
             <Route index element={<Dashboard />} />
             <Route path="new-data" element={<NewData />} />
-            <Route path="update-data" element={<UpdateData />} />
             <Route path="upload-tis" element={<UploadTis />} />
-            <Route path="procedure-bot" element={<ProcedureBot />} />
-            <Route path="tis-bot" element={<TisBot />} />
-            <Route path="procedure-status" element={<ProcedureStatus />} />
-            <Route path="write-legal-notice" element={<WriteLegalNotice />} />
-            <Route path="court-decision-query" element={<CourtDecisionQuery />} />
-            <Route path="details/:type" element={<DataDetails />} />
             <Route path="activity-history" element={<ActivityHistory />} />
           </Route>
 
