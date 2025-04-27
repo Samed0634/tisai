@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Table,
@@ -102,10 +103,12 @@ export const TableContent: React.FC<TableContentProps> = ({
                   return (
                     <EditableTableCell
                       key={`${workplace.ID}-${column}`}
-                      column={column}
+                      field={column}
                       value={workplace[column]}
                       isEditing={isEditing}
-                      editValue={isEditing ? editData[column] : null}
+                      editValue={isEditing ? editData[column] : undefined}
+                      isEditable={column === editableField}
+                      rowId={workplace.ID}
                       onEdit={() => editableField && column === editableField && handleEdit(workplace.ID, column, workplace[column])}
                       onChange={(value) => handleChange(column, value)}
                       onCancel={handleCancel}

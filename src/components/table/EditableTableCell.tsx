@@ -2,69 +2,66 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useFormToSupabase } from "@/utils/formToSupabase"; // Yeni eklenen import
 
 interface EditableTableCellProps {
   value: any;
   isEditing: boolean;
-  isEditable: boolean;
-  field: string;
-  rowId: number; // İşyeri ID'si
-  onChange?: (field: string, value: string) => void;
+  editValue?: any;
+  column?: string;
+  field?: string;
+  rowId?: number;
+  isEditable?: boolean;
+  onEdit?: () => void;
+  onChange?: (value: string) => void;
+  onCancel?: () => void;
+  onSave?: () => void;
   className?: string;
 }
 
 export const EditableTableCell: React.FC<EditableTableCellProps> = ({
   value,
   isEditing,
-  isEditable,
+  editValue,
+  column,
   field,
   rowId,
+  isEditable = true,
+  onEdit,
   onChange,
+  onCancel,
+  onSave,
   className
 }) => {
-  const { updateSupabaseRecord } = useFormToSupabase();
+  // Use column or field, prioritizing field if both are provided
+  const fieldName = field || column || '';
 
-  // Eğer field değerine göre Supabase sütun adını bulmak için
-  const getDataDbColumn = (fieldName: string) => {
-    // Burada field değerini data-db-column formatına dönüştürebiliriz
-    // Örnek: "ÇAĞRI TARİHİ" -> "cagri_tarihi"
-    return fieldName.toLowerCase()
-      .replace(/ç/g, 'c')
-      .replace(/ğ/g, 'g')
-      .replace(/ı/g, 'i')
-      .replace(/İ/g, 'i')
-      .replace(/ö/g, 'o')
-      .replace(/ş/g, 's')
-      .replace(/ü/g, 'u')
-      .replace(/\s+/g, '_');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e.target.value);
+    }
   };
 
-  // Değer değiştiğinde Supabase'e otomatik kaydetme
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Önce local onChange'i çağır (eğer varsa)
-    if (onChange) {
-      onChange(field, e.target.value);
-    }
-
-    // Doğrudan Supabase'e kaydet
-    if (rowId) {
-      const newValue = field.includes('TARİHİ') && e.target.value ? e.target.value : e.target.value;
-      updateSupabaseRecord(rowId, field, newValue).catch(console.error);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && onSave) {
+      onSave();
+    } else if (e.key === 'Escape' && onCancel) {
+      onCancel();
     }
   };
 
   if (isEditing && isEditable) {
     // For date fields, use date input type
-    if (field.includes('TARİHİ')) {
-      const dateValue = value ? new Date(value).toISOString().split('T')[0] : '';
+    if (fieldName.includes('TARİHİ') || fieldName.includes('TARIHI')) {
+      const dateValue = editValue || (value ? new Date(value).toISOString().split('T')[0] : '');
       
       return (
         <Input 
           type="date"
           value={dateValue}
           onChange={handleChange}
-          data-db-column={getDataDbColumn(field)}
+          onKeyDown={handleKeyDown}
+          onBlur={onCancel}
+          autoFocus
           className="w-40"
         />
       );
@@ -74,17 +71,22 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
     return (
       <Input 
         type="text"
-        value={value || ''}
+        value={editValue !== undefined ? editValue : value || ''}
         onChange={handleChange}
-        data-db-column={getDataDbColumn(field)}
-        className="w-40"
+        onKeyDown={handleKeyDown}
+        onBlur={onCancel}
+        autoFocus
+        className="w-full max-w-xs"
       />
     );
   }
 
   return (
-    <span className={cn(className)}>
-      {field.includes('TARİHİ') && value
+    <span 
+      className={cn("cursor-pointer hover:bg-muted/50", className)}
+      onClick={onEdit}
+    >
+      {fieldName.includes('TARİHİ') && value
         ? new Date(value).toLocaleDateString('tr-TR')
         : value}
     </span>
