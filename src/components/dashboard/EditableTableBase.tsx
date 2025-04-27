@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { useWorkplaceData } from '@/hooks/useWorkplaceData';
@@ -48,19 +49,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
     defaultColumns: defaultColumns || getDefaultColumns(tableType)
   });
 
-  const { updateWorkplace } = useWorkplaceData();
-  const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave: originalHandleSave } = useTableEdit(refetch);
-
-  const handleSave = async () => {
-    if (!editData) return;
-    
-    try {
-      await originalHandleSave();
-      await updateWorkplace(editData);
-    } catch (error) {
-      console.error("Error saving data:", error);
-    }
-  };
+  const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave } = useTableEdit(refetch);
 
   const [internalPageSize, setInternalPageSize] = useState(externalPageSize);
   const [internalCurrentPage, setInternalCurrentPage] = useState(externalCurrentPage);
@@ -125,6 +114,8 @@ const getDefaultColumns = (tableType: string): string[] => {
       return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "TİS GELİŞ TARİHİ"];
     case "grevYasagiColumns":
       return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU"];
+    case "grevKarariColumns":
+      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV KARARI TARİHİ"];
     default:
       return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"];
   }

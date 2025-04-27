@@ -17,7 +17,6 @@ export const CagriYapilacakTable: React.FC<CagriYapilacakTableProps> = ({
 }) => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const { updateWorkplace } = useWorkplaceData();
 
   return (
     <EditableTableBase 
