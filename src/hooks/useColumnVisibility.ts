@@ -20,8 +20,9 @@ const DEFAULT_COLUMNS_MAP = {
 
 export type TableType = keyof typeof DEFAULT_COLUMNS_MAP;
 
-export const useColumnVisibility = (type: TableType = "default") => {
-  const defaultColumns = DEFAULT_COLUMNS_MAP[type] || DEFAULT_COLUMNS_MAP.default;
+export const useColumnVisibility = (type: TableType = "default", customDefaultColumns?: string[]) => {
+  // Use customDefaultColumns if provided, otherwise use the predefined defaults
+  const defaultColumns = customDefaultColumns || DEFAULT_COLUMNS_MAP[type] || DEFAULT_COLUMNS_MAP.default;
   const [visibleColumns, setVisibleColumns] = useState<string[]>(defaultColumns);
 
   const toggleColumn = (columnId: string) => {

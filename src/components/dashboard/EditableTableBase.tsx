@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Edit, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,6 +30,7 @@ interface EditableTableBaseProps {
   tableType: TableType;
   editableField: string;
   title: string;
+  defaultColumns?: string[];
 }
 
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({ 
@@ -39,12 +39,13 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   refetch,
   tableType,
   editableField,
-  title
+  title,
+  defaultColumns
 }) => {
   const { toast } = useToast();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editData, setEditData] = useState<WorkplaceItem | null>(null);
-  const { visibleColumns, toggleColumn } = useColumnVisibility(tableType);
+  const { visibleColumns, toggleColumn } = useColumnVisibility(tableType, defaultColumns);
   
   const handleEdit = (item: WorkplaceItem) => {
     setEditingId(item.ID);
