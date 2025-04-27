@@ -60,7 +60,7 @@ export const useTableEdit = (refetch: () => void) => {
         
         saveError = error;
       } else {
-        // Insert new record
+        // Insert new record with the specified ID
         console.log("Inserting new workplace with ID:", editData.ID);
         const { error } = await supabase
           .from('isyerleri')
@@ -90,7 +90,7 @@ export const useTableEdit = (refetch: () => void) => {
           }
         }
 
-        const actionMessage = `"${editData["İŞYERİ ADI"]}" işyerinin "${field}" değeri "${oldDisplayValue || 'boş'}" -> "${displayValue}" olarak güncellenmiştir.`;
+        const actionMessage = `"${editData["İŞYERİ ADI"] || 'Yeni işyeri'}" işyerinin "${field}" değeri "${oldDisplayValue || 'boş'}" -> "${displayValue}" olarak güncellenmiştir.`;
         await logAction(actionMessage);
       }
       

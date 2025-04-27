@@ -3,10 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Workplace } from "@/types/workplace";
 import { useToast } from "@/hooks/use-toast";
+import { useActionHistory } from "@/hooks/useActionHistory";
 
 export const useWorkplaceData = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { logAction } = useActionHistory();
 
   const { data: workplaces, isLoading, refetch } = useQuery({
     queryKey: ['workplaces'],
@@ -49,6 +51,9 @@ export const useWorkplaceData = () => {
           .eq('ID', workplace.ID);
         
         if (error) throw error;
+        
+        // Log update action
+        await logAction(`"${workplace["İŞYERİ ADI"]}" işyeri bilgileri güncellendi.`);
       } else {
         // Insert new workplace
         const { error } = await supabase
@@ -56,6 +61,9 @@ export const useWorkplaceData = () => {
           .insert(workplace);
         
         if (error) throw error;
+        
+        // Log new workplace creation
+        await logAction(`"${workplace["İŞYERİ ADI"]}" adlı yeni işyeri kaydı oluşturuldu.`);
       }
       
       return workplace;

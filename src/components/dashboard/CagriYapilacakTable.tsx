@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { EditableTableBase } from "./EditableTableBase";
 import { Workplace } from "@/types/workplace";
+import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 
 interface CagriYapilacakTableProps {
   data: Workplace[];
@@ -16,6 +17,7 @@ export const CagriYapilacakTable: React.FC<CagriYapilacakTableProps> = ({
 }) => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const { updateWorkplace } = useWorkplaceData();
 
   return (
     <EditableTableBase 
