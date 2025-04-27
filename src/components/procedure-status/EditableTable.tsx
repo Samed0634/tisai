@@ -1,16 +1,24 @@
 
 import { useState } from "react";
+import { Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Workplace } from "@/types/workplace";
-import { TableHeader as TableHeaderComponent } from "./TableHeader";
-import { EditableCell } from "./EditableCell";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface EditableTableProps {
   data: Workplace[];
@@ -31,60 +39,32 @@ export const EditableTable = ({
 }: EditableTableProps) => {
   const [editingCell, setEditingCell] = useState<{ id: number; column: string } | null>(null);
   const [editValue, setEditValue] = useState<string>("");
-  const [pendingChanges, setPendingChanges] = useState<{ [key: string]: any }>({});
-  const [isEditing, setIsEditing] = useState(false);
 
   const allColumns = Object.keys(data[0] || {}).filter(key => key !== "ID");
 
   const handleCellClick = (workplace: Workplace, column: string) => {
-    if (!isEditing) return;
     setEditingCell({ id: workplace.ID, column });
     setEditValue(workplace[column]?.toString() || "");
   };
 
-  const handleCellChange = (workplace: Workplace) => {
+  const handleSave = (workplace: Workplace) => {
     if (!editingCell) return;
     
-    const newChanges = {
-      ...pendingChanges,
-      [workplace.ID]: {
-        ...(pendingChanges[workplace.ID] || {}),
-        [editingCell.column]: editValue,
-        ID: workplace.ID
-      }
+    const updatedWorkplace = {
+      ...workplace,
+      [editingCell.column]: editValue
     };
     
-    setPendingChanges(newChanges);
+    onUpdate(updatedWorkplace);
     setEditingCell(null);
   };
 
-  const handleSave = () => {
-    Object.values(pendingChanges).forEach((workplace: any) => {
-      const originalWorkplace = data.find(w => w.ID === workplace.ID);
-      if (originalWorkplace) {
-        const updatedWorkplace = {
-          ...originalWorkplace,
-          ...workplace
-        };
-        onUpdate(updatedWorkplace);
-      }
-    });
-    setPendingChanges({});
-    setIsEditing(false);
-  };
-
   const toggleColumn = (column: string) => {
-    if (visibleColumns.includes(column)) {
-      setVisibleColumns(visibleColumns.filter(col => col !== column));
-    } else {
-      setVisibleColumns([...visibleColumns, column]);
-    }
-  };
-
-  const getCellValue = (workplace: Workplace, column: string) => {
-    const pendingValue = pendingChanges[workplace.ID]?.[column];
-    if (pendingValue !== undefined) return pendingValue;
-    return workplace[column];
+    setVisibleColumns(current =>
+      current.includes(column)
+        ? current.filter(col => col !== column)
+        : [...current, column]
+    );
   };
 
   if (isLoading) {
@@ -97,15 +77,28 @@ export const EditableTable = ({
 
   return (
     <div className="space-y-4">
-      <TableHeaderComponent
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        hasPendingChanges={Object.keys(pendingChanges).length > 0}
-        onSave={handleSave}
-        visibleColumns={visibleColumns}
-        allColumns={allColumns}
-        toggleColumn={toggleColumn}
-      />
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Prosedür Durumu</h1>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Filter className="mr-2 h-4 w-4" />
+              Sütunları Filtrele
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[200px]">
+            {allColumns.map(column => (
+              <DropdownMenuCheckboxItem
+                key={column}
+                checked={visibleColumns.includes(column)}
+                onCheckedChange={() => toggleColumn(column)}
+              >
+                {column}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       <div className="border rounded-md">
         <Table>
@@ -120,18 +113,30 @@ export const EditableTable = ({
             {data.map(workplace => (
               <TableRow key={workplace.ID}>
                 {visibleColumns.map(column => (
-                  <EditableCell
-                    key={`${workplace.ID}-${column}`}
-                    isEditing={editingCell?.id === workplace.ID && editingCell.column === column}
-                    column={column}
-                    value={editingCell?.id === workplace.ID && editingCell.column === column
-                      ? editValue
-                      : getCellValue(workplace, column)}
-                    onChange={setEditValue}
-                    onBlur={() => handleCellChange(workplace)}
-                    isPending={pendingChanges[workplace.ID]?.[column] !== undefined}
+                  <TableCell
+                    key={column}
                     onClick={() => handleCellClick(workplace, column)}
-                  />
+                    className="cursor-pointer hover:bg-muted/50"
+                  >
+                    {editingCell?.id === workplace.ID && editingCell.column === column ? (
+                      <Input
+                        type={column.includes("TARİHİ") ? "date" : "text"}
+                        value={editValue}
+                        onChange={e => setEditValue(e.target.value)}
+                        onBlur={() => handleSave(workplace)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter") {
+                            handleSave(workplace);
+                          }
+                        }}
+                        autoFocus
+                      />
+                    ) : (
+                      column.includes("TARİHİ") && workplace[column]
+                        ? new Date(workplace[column]).toLocaleDateString("tr-TR")
+                        : workplace[column]
+                    )}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
