@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { isyeriTuruOptions } from "@/constants/formOptions";
 import { newDataFormSchema } from "@/utils/validationSchemas";
-import { DateField } from "./DateField";
 import { BasicFields } from "./BasicFields";
 import { SelectFields } from "./SelectFields";
 import { DateFields } from "./DateFields";
@@ -47,6 +46,7 @@ export const MainForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Format data for Supabase
       const formattedData = {
         "İŞYERİ TÜRÜ": data["İŞYERİ TÜRÜ"],
         "SORUMLU UZMAN": data["SORUMLU UZMAN"],
@@ -62,30 +62,39 @@ export const MainForm = () => {
         "YETKİ BELGESİ TEBLİĞ TARİHİ": data["YETKİ BELGESİ TEBLİĞ TARİHİ"],
       } as any;
 
+      // Add KİT specific fields if relevant
       if (isKit) {
         formattedData["İHALE ADI"] = data["İHALE ADI"];
         formattedData["İHALE BAŞLANGIÇ TARİHİ"] = data["İHALE BAŞLANGIÇ TARİHİ"];
         formattedData["İHALE BİTİŞ TARİHİ"] = data["İHALE BİTİŞ TARİHİ"];
       }
       
+      console.log("Submitting data to Supabase:", formattedData);
+      
+      // Send data to Supabase
       const { error } = await supabase
         .from('isyerleri')
         .insert(formattedData);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error details:", error);
+        throw new Error(`${error.message} (Code: ${error.code})`);
+      }
 
+      // Show success message
       toast({
         title: "Veri başarıyla kaydedildi",
         description: `${data["İŞYERİ ADI"]} için yeni veri girişi tamamlandı.`,
       });
       
+      // Reset form and navigate
       form.reset();
       navigate("/procedure-status");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting data:", error);
       toast({
         title: "Hata",
-        description: "Veri girişi sırasında bir hata oluştu.",
+        description: `Veri girişi sırasında bir hata oluştu: ${error.message || 'Bilinmeyen hata'}`,
         variant: "destructive",
       });
     } finally {
