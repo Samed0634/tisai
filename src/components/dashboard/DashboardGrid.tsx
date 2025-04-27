@@ -91,8 +91,10 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => 
             <PaginationItem>
               <PaginationPrevious 
                 onClick={handlePreviousPage} 
-                className={!hasPreviousPage ? "pointer-events-none opacity-50" : "cursor-pointer"} 
-              />
+                className={!hasPreviousPage ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              >
+                <span>Önceki</span>
+              </PaginationPrevious>
             </PaginationItem>
             <PaginationItem>
               <span className="px-2 py-1 text-sm">
@@ -102,8 +104,10 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => 
             <PaginationItem>
               <PaginationNext 
                 onClick={handleNextPage} 
-                className={!hasNextPage ? "pointer-events-none opacity-50" : "cursor-pointer"} 
-              />
+                className={!hasNextPage ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              >
+                <span>Sonraki</span>
+              </PaginationNext>
             </PaginationItem>
           </PaginationContent>
         </Pagination>
@@ -113,4 +117,3 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => 
 };
 
 export default DashboardGrid;
-
