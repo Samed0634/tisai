@@ -70,6 +70,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
                   isEditing={editingId === item.ID}
                   isEditable={isEditable}
                   field={column.id}
+                  rowId={item.ID} // İşyeri ID'sini geçir
                   onChange={handleChange}
                 />
               </TableCell>
