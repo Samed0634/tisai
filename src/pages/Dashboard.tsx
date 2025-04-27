@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -20,6 +19,7 @@ import { YhkGonderimTable } from "@/components/dashboard/YhkGonderimTable";
 import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTable";
 import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { GrevKarariTable } from "@/components/dashboard/GrevKarariTable";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -89,13 +89,12 @@ const Dashboard = () => {
 
       {showEditableTable ? <div className="space-y-4">
           <div className="flex justify-between items-center">
-            
             <Button variant="outline" onClick={() => setShowEditableTable(false)}>
               Gösterge Paneline Dön
             </Button>
           </div>
           
-          {selectedCategory === 'grevKarari' && <EditableWorkplaceTable data={grevKarariData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} />}
           
           {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} />}
 
