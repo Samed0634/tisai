@@ -1,14 +1,10 @@
 
 import React from "react";
 import { EditableTableBase } from "./EditableTableBase";
-
-interface WorkplaceItem {
-  ID: number;
-  [key: string]: any;
-}
+import { Workplace } from "@/types/workplace";
 
 interface YerGunTespitTableProps {
-  data: WorkplaceItem[];
+  data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
 }

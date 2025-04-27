@@ -2,14 +2,14 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { WorkplaceItem } from "@/types/workplace";
+import { Workplace } from "@/types/workplace";
 
 export const useTableEdit = (refetch: () => void) => {
   const { toast } = useToast();
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editData, setEditData] = useState<WorkplaceItem | null>(null);
+  const [editData, setEditData] = useState<Workplace | null>(null);
 
-  const handleEdit = (item: WorkplaceItem) => {
+  const handleEdit = (item: Workplace) => {
     setEditingId(item.ID);
     setEditData({ ...item });
   };

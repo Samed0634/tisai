@@ -16,14 +16,10 @@ import { useColumnVisibility, TableType } from "@/hooks/useColumnVisibility";
 import { useTableEdit } from "@/hooks/useTableEdit";
 import { TableActions } from "@/components/table/TableActions";
 import { EditableTableCell } from "@/components/table/EditableTableCell";
-
-interface WorkplaceItem {
-  ID: number;
-  [key: string]: any;
-}
+import { Workplace } from "@/types/workplace";
 
 interface EditableTableBaseProps {
-  data: WorkplaceItem[];
+  data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
   tableType: TableType;
