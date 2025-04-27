@@ -81,6 +81,25 @@ export const MainForm = () => {
         throw new Error(`${error.message} (Code: ${error.code})`);
       }
 
+      // Send webhook notification
+      try {
+        await fetch('https://primary-production-dcf9.up.railway.app/webhook/yenikayıt', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            isyeriAdi: data["İŞYERİ ADI"],
+            isyeriTuru: data["İŞYERİ TÜRÜ"],
+            sorumluUzman: data["SORUMLU UZMAN"],
+            timestamp: new Date().toISOString()
+          })
+        });
+      } catch (webhookError) {
+        console.error("Webhook notification failed:", webhookError);
+        // Continue execution even if webhook fails
+      }
+
       // Show success message
       toast({
         title: "Veri başarıyla kaydedildi",
