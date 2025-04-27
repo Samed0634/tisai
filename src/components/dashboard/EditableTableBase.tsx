@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { 
   Table, 
@@ -7,23 +8,17 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { TableControls } from "@/components/data-details/TableControls";
 import { COLUMNS } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
 import { useColumnVisibility, TableType } from "@/hooks/useColumnVisibility";
 import { useTableEdit } from "@/hooks/useTableEdit";
 import { TableActions } from "@/components/table/TableActions";
 import { EditableTableCell } from "@/components/table/EditableTableCell";
-import { Workplace } from "@/types/workplace";
+import { TableHeader as TableHeaderComponent } from "@/components/table/TableHeader";
+import { TablePagination } from "@/components/table/TablePagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Workplace } from "@/types/workplace";
 
 interface EditableTableBaseProps {
   data: Workplace[];
@@ -78,49 +73,19 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
 
   const handlePageSizeChange = (value: string) => {
     setPageSize(Number(value));
-    setCurrentPage(1); // Reset to first page when changing page size
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    setCurrentPage(1);
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className={cn("font-bold", titleClassName || "text-2xl")}>{title}</h2>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Sayfa başına:</span>
-            <Select
-              value={pageSize.toString()}
-              onValueChange={handlePageSizeChange}
-            >
-              <SelectTrigger className="w-[80px] text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10" className="text-xs">10</SelectItem>
-                <SelectItem value="20" className="text-xs">20</SelectItem>
-                <SelectItem value="30" className="text-xs">30</SelectItem>
-                <SelectItem value="50" className="text-xs">50</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <TableControls 
-            visibleColumns={visibleColumns}
-            toggleColumn={toggleColumn}
-          />
-        </div>
-      </div>
+      <TableHeaderComponent 
+        title={title}
+        titleClassName={titleClassName}
+        visibleColumns={visibleColumns}
+        toggleColumn={toggleColumn}
+        pageSize={pageSize}
+        onPageSizeChange={handlePageSizeChange}
+      />
       
       <div className="border rounded-md overflow-hidden">
         <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
@@ -180,30 +145,16 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       </div>
 
       {data.length > 0 && (
-        <div className="flex justify-between items-center gap-2 py-2 text-xs">
-          <div className="flex gap-2">
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className="px-2 py-1 rounded border border-gray-300 disabled:opacity-50 text-xs"
-            >
-              Önceki
-            </button>
-            <span className="px-2 py-1 rounded bg-primary text-white text-xs">
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className="px-2 py-1 rounded border border-gray-300 disabled:opacity-50 text-xs"
-            >
-              Sonraki
-            </button>
-          </div>
-          <span className="text-xs text-muted-foreground">
-            Toplam {data.length} kayıttan {startIndex + 1}-{Math.min(startIndex + pageSize, data.length)} arası gösteriliyor
-          </span>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          totalItems={data.length}
+          startIndex={startIndex}
+          onPageSizeChange={handlePageSizeChange}
+          onPreviousPage={() => setCurrentPage(curr => curr > 1 ? curr - 1 : curr)}
+          onNextPage={() => setCurrentPage(curr => curr < totalPages ? curr + 1 : curr)}
+        />
       )}
     </div>
   );
