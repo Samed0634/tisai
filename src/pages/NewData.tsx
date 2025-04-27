@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -126,26 +125,26 @@ const NewData = () => {
     setIsSubmitting(true);
     
     try {
-      // This is the key fix: We need to explicitly convert the numeric fields to numbers
-      // and use the exact column names as defined in the database
+      const insertData = {
+        "İŞYERİ ADI": data.companyName,
+        "SGK NO": data.sgkNo,
+        "İŞYERİ TÜRÜ": data.workplaceType,
+        "SORUMLU UZMAN": data.expert,
+        "İŞYERİNİN BULUNDUĞU İL": data.city,
+        "BAĞLI OLDUĞU ŞUBE": data.branch,
+        "İŞÇİ SAYISI": data.employeeCount,
+        "ÜYE SAYISI": data.memberCount,
+        "İŞVEREN SENDİKASI": data.employerUnion,
+        "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
+        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate,
+        "İHALE ADI": data.tenderName || null,
+        "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate || null,
+        "İHALE BİTİŞ TARİHİ": data.tenderEndDate || null,
+      };
+
       const { error } = await supabase
-        .from('isyerleri')
-        .insert({
-          "İŞYERİ ADI": data.companyName,
-          "SGK NO": data.sgkNo,
-          "İŞYERİ TÜRÜ": data.workplaceType,
-          "SORUMLU UZMAN": data.expert,
-          "İŞYERİNİN BULUNDUĞU İL": data.city,
-          "BAĞLI OLDUĞU ŞUBE": data.branch,
-          "İŞÇİ SAYISI": Number(data.employeeCount),
-          "ÜYE SAYISI": Number(data.memberCount),
-          "İŞVEREN SENDİKASI": data.employerUnion,
-          "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
-          "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate,
-          "İHALE ADI": data.tenderName || null,
-          "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate || null,
-          "İHALE BİTİŞ TARİHİ": data.tenderEndDate || null,
-        });
+        .from("isyerleri")
+        .insert(insertData);
 
       if (error) throw error;
 
