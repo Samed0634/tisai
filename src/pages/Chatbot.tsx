@@ -19,7 +19,7 @@ const Chatbot = () => {
     {
       id: "welcome",
       role: "assistant",
-      content: "Merhaba! Ben Aura Data Flow chatbot asistanınızım. İş yerleriniz, çalışanlarınız, üyeleriniz veya sistemdeki herhangi bir veri hakkında sorularınız varsa, bana sorabilirsiniz.",
+      content: "Merhaba! Ben TISAI, Prosedür asistanınızım. Prosedür sistemindeki herhangi bir veri hakkında sorularınız varsa, bana sorabilirsiniz.",
       timestamp: new Date(),
     },
   ]);
