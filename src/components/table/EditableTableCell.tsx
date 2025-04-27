@@ -47,7 +47,7 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
   }
 
   return (
-    <span>
+    <span className={cn(className)}>
       {field.includes('TARİHİ') && value
         ? new Date(value).toLocaleDateString('tr-TR')
         : value}

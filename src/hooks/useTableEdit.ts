@@ -26,10 +26,20 @@ export const useTableEdit = (refetch: () => void) => {
 
   const handleChange = (field: string, value: string | number) => {
     if (editData) {
-      setEditData({
-        ...editData,
-        [field]: value
-      });
+      console.log(`Updating field "${field}" with value:`, value);
+      
+      // Convert date strings to proper format for saving to database
+      if (field.includes('TARİHİ') && typeof value === 'string') {
+        setEditData({
+          ...editData,
+          [field]: value
+        });
+      } else {
+        setEditData({
+          ...editData,
+          [field]: value
+        });
+      }
     }
   };
 

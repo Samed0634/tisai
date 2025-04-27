@@ -43,27 +43,34 @@ export const useWorkplaceData = () => {
       
       if (checkError) throw checkError;
       
+      let result;
+      
       if (existingWorkplace) {
         // Update existing workplace
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('isyerleri')
           .update(workplace)
-          .eq('ID', workplace.ID);
+          .eq('ID', workplace.ID)
+          .select();
         
         if (error) throw error;
+        result = data;
         
         await logAction(`"${workplace["İŞYERİ ADI"]}" işyeri bilgileri güncellendi.`);
       } else {
         // Insert new workplace
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('isyerleri')
-          .insert(workplace);
+          .insert(workplace)
+          .select();
         
         if (error) throw error;
+        result = data;
         
         await logAction(`"${workplace["İŞYERİ ADI"]}" adlı yeni işyeri kaydı oluşturuldu.`);
       }
       
+      console.log("Operation result:", result);
       return workplace;
     },
     onSuccess: () => {

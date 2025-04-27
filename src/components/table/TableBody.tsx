@@ -53,23 +53,28 @@ export const TableBody: React.FC<TableBodyProps> = ({
             />
           </TableCell>
           
-          {visibleColumnDefinitions.map(column => (
-            <TableCell 
-              key={`${item.ID}-${column.id}`}
-              className={cn(
-                "text-xs",
-                column.id === editableField && "bg-yellow-50"
-              )}
-            >
-              <EditableTableCell 
-                value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
-                isEditing={editingId === item.ID}
-                isEditable={column.id === editableField}
-                field={column.id}
-                onChange={handleChange}
-              />
-            </TableCell>
-          ))}
+          {visibleColumnDefinitions.map(column => {
+            // Check if this field is the editable one
+            const isEditable = column.id === editableField;
+            
+            return (
+              <TableCell 
+                key={`${item.ID}-${column.id}`}
+                className={cn(
+                  "text-xs",
+                  isEditable && "bg-yellow-50"
+                )}
+              >
+                <EditableTableCell 
+                  value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
+                  isEditing={editingId === item.ID}
+                  isEditable={isEditable}
+                  field={column.id}
+                  onChange={handleChange}
+                />
+              </TableCell>
+            );
+          })}
         </TableRow>
       ))}
     </>
