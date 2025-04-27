@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Search, Calendar } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { TablePagination } from "@/components/ui/table-pagination";
 
 const ActivityHistory: React.FC = () => {
   const [activities, setActivities] = useState<ActionHistory[]>([]);
@@ -17,12 +18,13 @@ const ActivityHistory: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [timeFilter, setTimeFilter] = useState("all");
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        // Fetch the current session to ensure we're authenticated
         const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -47,7 +49,6 @@ const ActivityHistory: React.FC = () => {
           return;
         }
         
-        // Ensure we have the auth token in the request
         const { data, error } = await supabase
           .from('İşlem Geçmişi')
           .select('*')
@@ -80,7 +81,6 @@ const ActivityHistory: React.FC = () => {
 
     fetchActivities();
 
-    // Subscribe to realtime changes
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -109,7 +109,6 @@ const ActivityHistory: React.FC = () => {
   const filterActivities = () => {
     let filtered = [...activities];
 
-    // Apply search filter
     if (searchTerm.trim() !== "") {
       filtered = filtered.filter(
         (activity) => 
@@ -119,7 +118,6 @@ const ActivityHistory: React.FC = () => {
       );
     }
 
-    // Apply time filter
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
@@ -162,6 +160,15 @@ const ActivityHistory: React.FC = () => {
     setTimeFilter(value);
   };
 
+  const handlePageSizeChange = (value: string) => {
+    setPageSize(Number(value));
+    setCurrentPage(1);
+  };
+
+  const totalPages = Math.ceil(filteredActivities.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedActivities = filteredActivities.slice(startIndex, startIndex + pageSize);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -202,36 +209,53 @@ const ActivityHistory: React.FC = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Tarih</TableHead>
-              <TableHead>Saat</TableHead>
-              <TableHead>İşlem</TableHead>
-              <TableHead>İşlemi Yapan</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredActivities.length > 0 ? (
-              filteredActivities.map((activity) => (
-                <TableRow key={activity.id}>
-                  <TableCell>{activity["Tarih"]}</TableCell>
-                  <TableCell>{activity["Saat"]}</TableCell>
-                  <TableCell>{activity["İşlem Adı"]}</TableCell>
-                  <TableCell>{activity["İşlem Yapan Kullanıcı"]}</TableCell>
+        <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
+          <div className="min-w-max">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Tarih</TableHead>
+                  <TableHead>Saat</TableHead>
+                  <TableHead>İşlem</TableHead>
+                  <TableHead>İşlemi Yapan</TableHead>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-8">
-                  {searchTerm || timeFilter !== "all" 
-                    ? "Arama kriterlerine uygun sonuç bulunamadı." 
-                    : "Henüz işlem geçmişi bulunmamaktadır."}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              </TableHeader>
+              <TableBody>
+                {paginatedActivities.length > 0 ? (
+                  paginatedActivities.map((activity) => (
+                    <TableRow key={activity.id}>
+                      <TableCell>{activity["Tarih"]}</TableCell>
+                      <TableCell>{activity["Saat"]}</TableCell>
+                      <TableCell>{activity["İşlem Adı"]}</TableCell>
+                      <TableCell>{activity["İşlem Yapan Kullanıcı"]}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-8">
+                      {searchTerm || timeFilter !== "all" 
+                        ? "Arama kriterlerine uygun sonuç bulunamadı." 
+                        : "Henüz işlem geçmişi bulunmamaktadır."}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </ScrollArea>
+        
+        {filteredActivities.length > 0 && (
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={filteredActivities.length}
+            startIndex={startIndex}
+            onPageSizeChange={handlePageSizeChange}
+            onPreviousPage={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            onNextPage={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+          />
+        )}
       </CardContent>
     </Card>
   );
