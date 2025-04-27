@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { 
   Table, 
   TableBody, 
@@ -7,6 +8,13 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { TableControls } from "@/components/data-details/TableControls";
 import { COLUMNS } from "@/constants/tableColumns";
@@ -47,6 +55,9 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
     handleSave
   } = useTableEdit(refetch);
 
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   if (isLoading) {
     return (
       <div className="rounded-md border p-8">
@@ -59,17 +70,46 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
     visibleColumns.includes(col.id)
   );
 
+  // Pagination calculations
+  const totalPages = Math.ceil(data.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedData = data.slice(startIndex, startIndex + pageSize);
+
+  const handlePageSizeChange = (value: string) => {
+    setPageSize(Number(value));
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{title}</h2>
-        <TableControls 
-          visibleColumns={visibleColumns}
-          toggleColumn={toggleColumn}
-        />
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Sayfa başına:</span>
+            <Select
+              value={pageSize.toString()}
+              onValueChange={handlePageSizeChange}
+            >
+              <SelectTrigger className="w-[100px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="30">30</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <TableControls 
+            visibleColumns={visibleColumns}
+            toggleColumn={toggleColumn}
+          />
+        </div>
       </div>
       
-      <ScrollArea className="rounded-md border" showTopScrollbar>
+      <ScrollArea className="rounded-md border" showTopScrollbar showBottomScrollbar>
         <Table>
           <TableHeader>
             <TableRow>
@@ -80,14 +120,14 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.length === 0 ? (
+            {paginatedData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
                   Görüntülenecek veri bulunamadı
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((item) => (
+              paginatedData.map((item) => (
                 <TableRow key={item.ID} className="hover:bg-muted/50">
                   <TableCell>
                     <TableActions 
@@ -120,6 +160,14 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
           </TableBody>
         </Table>
       </ScrollArea>
+
+      {data.length > 0 && (
+        <div className="flex justify-end items-center gap-2 py-2">
+          <span className="text-sm text-muted-foreground">
+            Toplam {data.length} kayıttan {startIndex + 1}-{Math.min(startIndex + pageSize, data.length)} arası gösteriliyor
+          </span>
+        </div>
+      )}
     </div>
   );
 };
