@@ -1,7 +1,8 @@
 
-import React from "react";
+import React, { useState } from "react";
 import DashboardCard from "./DashboardCard";
 import { DashboardItem } from "./dashboardTypes";
+import { usePagination } from "@/hooks/usePagination";
 
 // Helper to check deadlineDate condition per Turkish spec
 function shouldHighlightRed(items: any[]): boolean {
@@ -36,9 +37,18 @@ interface DashboardGridProps {
 }
 
 const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => {
+  const [pageSize] = useState(10);
+  const [currentPage] = useState(1);
+
+  const { paginatedData } = usePagination({
+    data: items,
+    pageSize,
+    currentPage
+  });
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-      {items.map((item) => {
+      {paginatedData.map((item) => {
         const highlightRed = shouldHighlightRed(item.items || []);
         return (
           <DashboardCard
