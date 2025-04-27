@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,13 +42,19 @@ const baseSchema = {
   branch: z.string({
     required_error: "Bağlı olduğu şube gereklidir",
   }),
-  employeeCount: z.string().transform(val => parseInt(val, 10)).pipe(
+  employeeCount: z.string().transform(val => {
+    const num = parseInt(val, 10);
+    return isNaN(num) ? 0 : num;
+  }).pipe(
     z.number({
       required_error: "İşçi sayısı gereklidir",
       invalid_type_error: "İşçi sayısı bir sayı olmalıdır",
     }).min(1, "İşçi sayısı 1'den küçük olamaz")
   ),
-  memberCount: z.string().transform(val => parseInt(val, 10)).pipe(
+  memberCount: z.string().transform(val => {
+    const num = parseInt(val, 10);
+    return isNaN(num) ? 0 : num;
+  }).pipe(
     z.number({
       required_error: "Üye sayısı gereklidir",
       invalid_type_error: "Üye sayısı bir sayı olmalıdır",
@@ -126,7 +131,6 @@ const NewData = () => {
     setIsSubmitting(true);
     
     try {
-      // Format dates for Supabase (convert Date objects to ISO strings)
       const insertData = {
         "İŞYERİ ADI": data.companyName,
         "SGK NO": data.sgkNo,
@@ -134,14 +138,14 @@ const NewData = () => {
         "SORUMLU UZMAN": data.expert,
         "İŞYERİNİN BULUNDUĞU İL": data.city,
         "BAĞLI OLDUĞU ŞUBE": data.branch,
-        "İŞÇİ SAYISI": data.employeeCount, // Now this is a number thanks to zod transform
-        "ÜYE SAYISI": data.memberCount, // Now this is a number thanks to zod transform
+        "İŞÇİ SAYISI": Number(data.employeeCount),
+        "ÜYE SAYISI": Number(data.memberCount),
         "İŞVEREN SENDİKASI": data.employerUnion,
         "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
-        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate.toISOString(), // Convert Date to ISO string
+        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate.toISOString(),
         "İHALE ADI": data.tenderName || null,
-        "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null, // Convert Date to ISO string
-        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null, // Convert Date to ISO string
+        "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null,
+        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null,
       };
 
       const { error } = await supabase
