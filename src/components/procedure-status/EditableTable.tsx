@@ -60,11 +60,12 @@ export const EditableTable = ({
   };
 
   const toggleColumn = (column: string) => {
-    setVisibleColumns(current =>
-      current.includes(column)
-        ? current.filter(col => col !== column)
-        : [...current, column]
-    );
+    // Create a new array based on current visibleColumns instead of using a callback
+    const newVisibleColumns = visibleColumns.includes(column)
+      ? visibleColumns.filter(col => col !== column)
+      : [...visibleColumns, column];
+      
+    setVisibleColumns(newVisibleColumns);
   };
 
   if (isLoading) {
@@ -146,3 +147,4 @@ export const EditableTable = ({
     </div>
   );
 };
+
