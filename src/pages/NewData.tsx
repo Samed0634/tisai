@@ -42,6 +42,7 @@ const NewData = () => {
     setIsSubmitting(true);
     
     try {
+      // Supabase'e gönderilecek veri nesnesini hazırlayalım
       const insertData = {
         "İŞYERİ ADI": data.companyName,
         "SGK NO": data.sgkNo,
@@ -57,18 +58,41 @@ const NewData = () => {
         "İHALE ADI": data.tenderName || null,
         "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null,
         "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null,
-        // We are NOT setting the ID field here to allow Supabase to auto-generate it
+        // ID alanını hiç kullanmıyoruz, Supabase'in kendi oluşturmasını sağlayacağız
       };
 
       console.log("Inserting data:", insertData);
 
+      // Önce mevcut tüm verileri çekelim ve bir sonraki ID'yi belirleyelim
+      const { error: fetchError, data: existingData } = await supabase
+        .from('isyerleri')
+        .select('ID')
+        .order('ID', { ascending: false })
+        .limit(1);
+
+      if (fetchError) throw fetchError;
+
+      // Mevcut en büyük ID'yi bulalım ve bir sonraki ID'yi hesaplayalım
+      let nextId = 1; // Varsayılan değer olarak 1'i kullanıyoruz
+      if (existingData && existingData.length > 0 && existingData[0].ID) {
+        nextId = existingData[0].ID + 1;
+      }
+
+      // nextId ile birlikte veriyi ekleyelim
+      const finalInsertData = {
+        ...insertData,
+        "ID": nextId
+      };
+      
+      console.log("Final insert data with ID:", finalInsertData);
+
       const { error } = await supabase
         .from('isyerleri')
-        .insert(insertData);
+        .insert(finalInsertData);
 
       if (error) throw error;
 
-      // Log the action after successful insertion
+      // Başarılı işlem sonrası işlem geçmişine kayıt ekleyelim
       await logAction("Yeni İşyeri Kaydı Oluşturuldu");
 
       toast({
