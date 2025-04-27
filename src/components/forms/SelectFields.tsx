@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { ilOptions, subeOptions, sendikalarOptions, grevYasagiOptions } from "@/constants/formOptions";
+import { ilOptions, subeOptions, sendikalarOptions, grevYasagiOptions, isyeriTuruOptions } from "@/constants/formOptions";
 
 interface SelectFieldsProps {
   form: UseFormReturn<any>;
@@ -12,6 +11,34 @@ interface SelectFieldsProps {
 export const SelectFields: React.FC<SelectFieldsProps> = ({ form }) => {
   return (
     <>
+      <FormField
+        control={form.control}
+        name="İŞYERİ TÜRÜ"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>İşyeri Türü</FormLabel>
+            <Select 
+              onValueChange={field.onChange} 
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="İşyeri Türü Seçiniz" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {isyeriTuruOptions.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="İŞYERİNİN BULUNDUĞU İL"
