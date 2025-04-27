@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -81,7 +80,7 @@ export const MainForm = () => {
         throw new Error(`${error.message} (Code: ${error.code})`);
       }
 
-      // Send webhook notification
+      // Send webhook notification with all form data
       try {
         await fetch('https://primary-production-dcf9.up.railway.app/webhook/yenikayıt', {
           method: 'POST',
@@ -89,9 +88,7 @@ export const MainForm = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            isyeriAdi: data["İŞYERİ ADI"],
-            isyeriTuru: data["İŞYERİ TÜRÜ"],
-            sorumluUzman: data["SORUMLU UZMAN"],
+            ...data,
             timestamp: new Date().toISOString()
           })
         });
