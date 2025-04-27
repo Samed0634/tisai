@@ -59,6 +59,7 @@ export const useTableEdit = (refetch: () => void) => {
           .eq('ID', editData.ID);
         
         saveError = error;
+        console.log("Update result:", error ? "Error" : "Success");
       } else {
         // Insert new record with the specified ID
         console.log("Inserting new workplace with ID:", editData.ID);
@@ -67,6 +68,7 @@ export const useTableEdit = (refetch: () => void) => {
           .insert(editData);
         
         saveError = error;
+        console.log("Insert result:", error ? "Error" : "Success");
       }
       
       if (saveError) {
