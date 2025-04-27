@@ -3,6 +3,14 @@ import React, { useState } from "react";
 import DashboardCard from "./DashboardCard";
 import { DashboardItem } from "./dashboardTypes";
 import { usePagination } from "@/hooks/usePagination";
+import { 
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from "@/components/ui/pagination";
 
 // Helper to check deadlineDate condition per Turkish spec
 function shouldHighlightRed(items: any[]): boolean {
@@ -37,33 +45,72 @@ interface DashboardGridProps {
 }
 
 const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => {
-  const [pageSize] = useState(10);
-  const [currentPage] = useState(1);
+  const [pageSize] = useState(8);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { paginatedData } = usePagination({
+  const { paginatedData, totalPages, hasNextPage, hasPreviousPage } = usePagination({
     data: items,
     pageSize,
     currentPage
   });
 
+  const handlePreviousPage = () => {
+    if (hasPreviousPage) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-      {paginatedData.map((item) => {
-        const highlightRed = shouldHighlightRed(item.items || []);
-        return (
-          <DashboardCard
-            key={item.id}
-            title={item.title}
-            value={item.value}
-            icon={item.icon}
-            color={item.color}
-            onClick={() => onCardClick(item.id)}
-            className={highlightRed ? "text-destructive" : ""}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        {paginatedData.map((item) => {
+          const highlightRed = shouldHighlightRed(item.items || []);
+          return (
+            <DashboardCard
+              key={item.id}
+              title={item.title}
+              value={item.value}
+              icon={item.icon}
+              color={item.color}
+              onClick={() => onCardClick(item.id)}
+              className={highlightRed ? "text-destructive" : ""}
+            />
+          );
+        })}
+      </div>
+      
+      {totalPages > 1 && (
+        <Pagination className="mt-4 justify-center">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={handlePreviousPage} 
+                className={!hasPreviousPage ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <span className="px-2 py-1 text-sm">
+                {currentPage} / {totalPages}
+              </span>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext 
+                onClick={handleNextPage} 
+                className={!hasNextPage ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </>
   );
 };
 
 export default DashboardGrid;
+
