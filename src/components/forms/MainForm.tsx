@@ -4,15 +4,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { isyeriTuruOptions, ilOptions, subeOptions, sendikalarOptions, grevYasagiOptions } from "@/constants/formOptions";
+import { isyeriTuruOptions } from "@/constants/formOptions";
 import { newDataFormSchema } from "@/utils/validationSchemas";
 import { DateField } from "./DateField";
+import { BasicFields } from "./BasicFields";
+import { SelectFields } from "./SelectFields";
+import { DateFields } from "./DateFields";
 import { KitFields } from "./KitFields";
 import { Loader2 } from "lucide-react";
 import type { z } from "zod";
@@ -101,34 +102,6 @@ export const MainForm = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="İŞYERİ TÜRÜ"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>İşyeri Türü</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="İşyeri Türü Seçiniz" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {isyeriTuruOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <BasicFields form={form} />
               <SelectFields form={form} />
               <DateFields form={form} />
