@@ -136,9 +136,15 @@ export type Database = {
         Relationships: []
       }
       vectordata: {
-        Row: {}
-        Insert: {}
-        Update: {}
+        Row: {
+          ID: number
+        }
+        Insert: {
+          ID?: number
+        }
+        Update: {
+          ID?: number
+        }
         Relationships: []
       }
     }

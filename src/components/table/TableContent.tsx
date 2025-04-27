@@ -1,38 +1,39 @@
-
-import React from "react";
+import React from 'react';
 import {
   Table,
-  TableHeader,
+  TableBody,
+  TableCell,
   TableHead,
+  TableHeader,
   TableRow,
-  TableBody as TableBodyUI,
 } from "@/components/ui/table";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { TableBody } from "./TableBody";
-import { TableHeader as TableHeaderComponent } from "./TableHeader";
+import { Filter } from "lucide-react";
+import { Button } from "../ui/button";
+import { EditableTableCell } from "./EditableTableCell";
 import { TablePagination } from "./TablePagination";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { TableHeader as CustomTableHeader } from "./TableHeader";
+import { TableBody as CustomTableBody } from "./TableBody";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Workplace } from "@/types/workplace";
-import { COLUMNS } from "@/constants/tableColumns";
 
 interface TableContentProps {
   data: Workplace[];
   isLoading: boolean;
   visibleColumns: string[];
-  toggleColumn: (columnId: string) => void;
+  toggleColumn: (column: string) => void;
   editingId: number | null;
-  editData: Workplace | null;
-  handleEdit: (item: Workplace) => void;
+  editData: Record<string, any>;
+  handleEdit: (id: number, field: string, value: any) => void;
   handleCancel: () => void;
-  handleChange: (field: string, value: string | number) => void;
-  handleSave: () => void;
+  handleChange: (field: string, value: any) => void;
+  handleSave: (workplace: Workplace) => void;
   pageSize: number;
   setPageSize: (size: number) => void;
   currentPage: number;
   setCurrentPage: (page: number) => void;
-  title: string;
+  title?: string;
   titleClassName?: string;
-  editableField: string;
+  editableField?: string;
 }
 
 export const TableContent: React.FC<TableContentProps> = ({
@@ -51,98 +52,86 @@ export const TableContent: React.FC<TableContentProps> = ({
   currentPage,
   setCurrentPage,
   title,
-  titleClassName,
-  editableField,
+  titleClassName = 'text-2xl font-bold',
+  editableField
 }) => {
-  if (isLoading) {
-    return (
-      <div className="rounded-md border p-8">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  const visibleColumnDefinitions = COLUMNS.filter(col => 
-    visibleColumns.includes(col.id)
-  );
-
-  // Pagination calculations
-  const totalPages = Math.ceil(data.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedData = data.slice(startIndex, startIndex + pageSize);
-
-  const handlePageSizeChange = (value: string) => {
-    setPageSize(Number(value));
-    setCurrentPage(1);
-  };
-
-  // Handle navigation to previous page
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  // Handle navigation to next page
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  const endIndex = startIndex + pageSize;
+  const paginatedData = data.slice(startIndex, endIndex);
 
   return (
     <div className="space-y-4">
-      <TableHeaderComponent 
-        title={title}
-        titleClassName={titleClassName}
-        visibleColumns={visibleColumns}
-        toggleColumn={toggleColumn}
-        pageSize={pageSize}
-        onPageSizeChange={handlePageSizeChange}
-      />
-      
-      <div className="border rounded-md overflow-hidden">
-        <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
-          <div className="min-w-max">
-            <Table className="text-xs">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">İşlem</TableHead>
-                  {visibleColumnDefinitions.map(column => (
-                    <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBodyUI>
-                <TableBody 
-                  data={paginatedData}
-                  visibleColumnDefinitions={visibleColumnDefinitions}
-                  editingId={editingId}
-                  editData={editData}
-                  handleEdit={handleEdit}
-                  handleCancel={handleCancel}
-                  handleChange={handleChange}
-                  handleSave={handleSave}
-                  editableField={editableField}
-                />
-              </TableBodyUI>
-            </Table>
-          </div>
-        </ScrollArea>
+      <div className="flex justify-between items-center">
+        {title && <h1 className={titleClassName}>{title}</h1>}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Filter className="mr-2 h-4 w-4" />
+              Sütunları Filtrele
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[200px]">
+            {Object.keys(data[0] || {}).filter(key => key !== "ID").map(column => (
+              <DropdownMenuCheckboxItem
+                key={column}
+                checked={visibleColumns.includes(column)}
+                onCheckedChange={() => toggleColumn(column)}
+              >
+                {column}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
-      {data.length > 0 && (
-        <TablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          pageSize={pageSize}
-          totalItems={data.length}
-          startIndex={startIndex}
-          onPageSizeChange={handlePageSizeChange}
-          onPreviousPage={handlePreviousPage}
-          onNextPage={handleNextPage}
-        />
-      )}
+      <div className="border rounded-md overflow-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {visibleColumns.map(column => (
+                <TableHead key={column}>{column}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {paginatedData.map(workplace => (
+              <TableRow key={workplace.ID}>
+                {visibleColumns.map((column) => {
+                  const isEditing = editingId === workplace.ID && column === editableField;
+                  return (
+                    <EditableTableCell
+                      key={`${workplace.ID}-${column}`}
+                      column={column}
+                      value={workplace[column]}
+                      isEditing={isEditing}
+                      editValue={isEditing ? editData[column] : null}
+                      onEdit={() => editableField && column === editableField && handleEdit(workplace.ID, column, workplace[column])}
+                      onChange={(value) => handleChange(column, value)}
+                      onCancel={handleCancel}
+                      onSave={() => {
+                        const updatedWorkplace = {
+                          ...workplace,
+                          [column]: editData[column]
+                        };
+                        handleSave(updatedWorkplace);
+                      }}
+                    />
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <TablePagination
+        totalItems={data.length}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        setPageSize={setPageSize}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };

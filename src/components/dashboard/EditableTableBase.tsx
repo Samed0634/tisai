@@ -25,6 +25,7 @@ interface EditableTableBaseProps {
   setCurrentPage?: (page: number) => void;
   pageSizeOptions?: number[];
   showHorizontalScrollbar?: boolean;
+  onUpdateData?: (updatedWorkplace: Workplace) => Promise<void>;
 }
 
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
@@ -42,7 +43,8 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   setPageSize: externalSetPageSize,
   setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
-  showHorizontalScrollbar = false
+  showHorizontalScrollbar = false,
+  onUpdateData
 }) => {
   const { visibleColumns, toggleColumn } = useTableColumns({
     tableType,
@@ -58,6 +60,15 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   const currentPage = externalSetCurrentPage ? externalCurrentPage : internalCurrentPage;
   const setPageSize = externalSetPageSize || setInternalPageSize;
   const setCurrentPage = externalSetCurrentPage || setInternalCurrentPage;
+
+  // Handle the save action with the onUpdateData prop if provided
+  const handleSaveWithUpdate = async (workplace: Workplace) => {
+    if (onUpdateData) {
+      await onUpdateData(workplace);
+    } else {
+      handleSave(workplace);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -78,7 +89,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       handleEdit={handleEdit}
       handleCancel={handleCancel}
       handleChange={handleChange}
-      handleSave={handleSave}
+      handleSave={onUpdateData ? handleSaveWithUpdate : handleSave}
       pageSize={pageSize}
       setPageSize={setPageSize}
       currentPage={currentPage}

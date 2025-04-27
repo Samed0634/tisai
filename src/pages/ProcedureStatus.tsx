@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
+import { Workplace } from "@/types/workplace";
 
 const DEFAULT_VISIBLE_COLUMNS = [
   "SORUMLU UZMAN",
@@ -24,7 +25,7 @@ const ProcedureStatus = () => {
     workplace["BAĞLI OLDUĞU ŞUBE"]?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  const handleUpdateWorkplace = async (updatedWorkplace) => {
+  const handleUpdateWorkplace = async (updatedWorkplace: Workplace): Promise<void> => {
     try {
       await updateWorkplace(updatedWorkplace);
       await refetch();
