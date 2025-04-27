@@ -24,11 +24,10 @@ const ProcedureStatus = () => {
         editableField="GREV YASAĞI DURUMU"
         title="Prosedür Durumu"
         defaultColumns={DEFAULT_VISIBLE_COLUMNS}
-        titleClassName="text-xl" // Reduced from text-2xl to text-xl
+        titleClassName="text-xl"
       />
     </div>
   );
 };
 
 export default ProcedureStatus;
-

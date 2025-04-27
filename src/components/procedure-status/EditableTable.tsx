@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +40,19 @@ export const EditableTable = ({
   const [editingCell, setEditingCell] = useState<{ id: number; column: string } | null>(null);
   const [editValue, setEditValue] = useState<string>("");
 
+  // Load saved column visibility from localStorage
+  useEffect(() => {
+    const savedColumns = localStorage.getItem('procedureStatusColumns');
+    if (savedColumns) {
+      setVisibleColumns(JSON.parse(savedColumns));
+    }
+  }, []);
+
+  // Save column visibility to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('procedureStatusColumns', JSON.stringify(visibleColumns));
+  }, [visibleColumns]);
+
   const allColumns = Object.keys(data[0] || {}).filter(key => key !== "ID");
 
   const handleCellClick = (workplace: Workplace, column: string) => {
@@ -60,7 +73,6 @@ export const EditableTable = ({
   };
 
   const toggleColumn = (column: string) => {
-    // Create a new array based on current visibleColumns instead of using a callback
     const newVisibleColumns = visibleColumns.includes(column)
       ? visibleColumns.filter(col => col !== column)
       : [...visibleColumns, column];
@@ -147,4 +159,3 @@ export const EditableTable = ({
     </div>
   );
 };
-
