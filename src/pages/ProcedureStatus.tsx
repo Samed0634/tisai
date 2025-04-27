@@ -13,6 +13,8 @@ const DEFAULT_VISIBLE_COLUMNS = [
 
 const ProcedureStatus = () => {
   const { workplaces, isLoading, refetch } = useWorkplaceData();
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <div className="container mx-auto py-6">
@@ -25,6 +27,12 @@ const ProcedureStatus = () => {
         title="Prosedür Durumu"
         defaultColumns={DEFAULT_VISIBLE_COLUMNS}
         titleClassName="text-xl"
+        pageSize={pageSize}
+        currentPage={currentPage}
+        setPageSize={setPageSize}
+        setCurrentPage={setCurrentPage}
+        pageSizeOptions={[10, 20, 30, 40, 50]}
+        showHorizontalScrollbar={true}
       />
     </div>
   );
