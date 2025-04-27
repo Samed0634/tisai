@@ -121,7 +121,7 @@ export const useFormToSupabase = () => {
         return false;
       }
 
-      const target = event.target as HTMLInputElement | HTMLSelectElement;
+      const target = event.target as HTMLElement;
       let columnInfo;
 
       // Önce data-db-column attribute'una bakıyoruz
@@ -145,12 +145,21 @@ export const useFormToSupabase = () => {
       let value;
       
       // Input tipine göre değer alımı
-      if (target.type === 'checkbox') {
-        value = (target as HTMLInputElement).checked;
-      } else if (target.type === 'date') {
-        value = target.value ? target.value : null; // YYYY-MM-DD formatında
-      } else {
+      if (target instanceof HTMLInputElement) {
+        if (target.type === 'checkbox') {
+          value = target.checked;
+        } else if (target.type === 'date') {
+          value = target.value ? target.value : null; // YYYY-MM-DD formatında
+        } else {
+          value = target.value;
+        }
+      } else if (target instanceof HTMLSelectElement) {
         value = target.value;
+      } else if (target instanceof HTMLTextAreaElement) {
+        value = target.value;
+      } else {
+        console.warn("Desteklenmeyen element tipi:", target.tagName);
+        return false;
       }
 
       // Supabase değer formatını ayarla
@@ -214,9 +223,9 @@ export const useFormToSupabase = () => {
       
       inputs.forEach(input => {
         // Girdi türüne göre uygun event listener ekle
-        if (input.type === 'checkbox') {
+        if (input instanceof HTMLInputElement && input.type === 'checkbox') {
           input.addEventListener('change', (e) => handleInputChange(e, workplaceId));
-        } else if (input.tagName.toLowerCase() === 'select') {
+        } else if (input instanceof HTMLSelectElement) {
           input.addEventListener('change', (e) => handleInputChange(e, workplaceId));
         } else {
           // Text, number, date, vb. için blur (odak kaybı) olayını kullan
