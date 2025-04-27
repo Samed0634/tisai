@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { EditableTableBase } from "./EditableTableBase";
 import { Workplace } from "@/types/workplace";
-import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 
 interface CagriYapilacakTableProps {
   data: Workplace[];

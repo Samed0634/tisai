@@ -69,7 +69,10 @@ export const useTableEdit = (refetch: () => void) => {
         saveError = error;
       }
       
-      if (saveError) throw saveError;
+      if (saveError) {
+        console.error("Error saving data:", saveError);
+        throw saveError;
+      }
 
       // Find changed fields and their values
       const changedFields = Object.entries(editData).filter(([key, value]) => {
