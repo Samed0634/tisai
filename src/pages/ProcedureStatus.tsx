@@ -1,8 +1,7 @@
 
 import { useState } from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
-import { Workplace } from "@/types/workplace";
-import { EditableTable } from "@/components/procedure-status/EditableTable";
+import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 
 const DEFAULT_VISIBLE_COLUMNS = [
   "SORUMLU UZMAN",
@@ -13,21 +12,17 @@ const DEFAULT_VISIBLE_COLUMNS = [
 ];
 
 const ProcedureStatus = () => {
-  const { workplaces, isLoading, updateWorkplace } = useWorkplaceData();
-  const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE_COLUMNS);
-
-  const handleUpdate = (workplace: Workplace) => {
-    updateWorkplace(workplace);
-  };
+  const { workplaces, isLoading, refetch } = useWorkplaceData();
 
   return (
     <div className="container mx-auto py-6">
-      <EditableTable
+      <EditableTableBase
         data={workplaces || []}
         isLoading={isLoading}
-        visibleColumns={visibleColumns}
-        setVisibleColumns={setVisibleColumns}
-        onUpdate={handleUpdate}
+        refetch={refetch}
+        tableType="default"
+        editableField="GREV YASAĞI DURUMU"
+        title="Prosedür Durumu"
         defaultColumns={DEFAULT_VISIBLE_COLUMNS}
       />
     </div>
