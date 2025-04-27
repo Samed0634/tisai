@@ -8,7 +8,7 @@ export const useWorkplaceData = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: workplaces, isLoading } = useQuery({
+  const { data: workplaces, isLoading, refetch } = useQuery({
     queryKey: ['workplaces'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -50,6 +50,7 @@ export const useWorkplaceData = () => {
   return {
     workplaces,
     isLoading,
-    updateWorkplace: updateWorkplace.mutate
+    updateWorkplace: updateWorkplace.mutate,
+    refetch
   };
 };
