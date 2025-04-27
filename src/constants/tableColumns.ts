@@ -1,4 +1,3 @@
-
 export type ColumnType = {
   id: string;
   title: string;
@@ -27,7 +26,7 @@ export const COLUMNS: ColumnType[] = [
   { id: 'YER VE GÜN TESPİT TARİHİ', title: 'YER VE GÜN TESPİT TARİHİ', editable: true },
   { id: 'ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ', title: 'ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ' },
   { id: 'İLK OTURUM TARİHİ', title: 'İLK OTURUM TARİHİ', editable: true },
-  { id: 'MÜZAKERE SÜRESİ SON TARİH', title: 'MÜZAKERE SÜRESİ DOLAN İŞYERLERİ' },
+  { id: 'MÜZAKERE SÜRESİ SON TARİH', title: 'MÜZAKERE SÜRESİ SON TARİH' },
   { id: 'UYUŞMAZLIK TARİHİ', title: 'UYUŞMAZLIK TARİHİ', editable: true },
   { id: 'ARABULUCU RAPORU TEBLİĞ TARİHİ', title: 'ARABULUCU RAPORU TEBLİĞ TARİHİ' },
   { id: 'GREV KARARI TARİHİ', title: 'GREV KARARI TARİHİ' },
