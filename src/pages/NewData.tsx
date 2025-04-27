@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,6 +43,14 @@ const baseSchema = {
   branch: z.string({
     required_error: "Bağlı olduğu şube gereklidir",
   }),
+  employeeCount: z.coerce.number({
+    required_error: "İşçi sayısı gereklidir",
+    invalid_type_error: "İşçi sayısı bir sayı olmalıdır",
+  }).min(1, "İşçi sayısı 1'den küçük olamaz"),
+  memberCount: z.coerce.number({
+    required_error: "Üye sayısı gereklidir",
+    invalid_type_error: "Üye sayısı bir sayı olmalıdır",
+  }).min(0, "Üye sayısı negatif olamaz"),
   employerUnion: z.string({
     required_error: "İşveren sendikası gereklidir",
   }),
@@ -101,8 +110,8 @@ const NewData = () => {
       expert: "",
       city: "",
       branch: "",
-      employeeCount: "",
-      memberCount: "",
+      employeeCount: 0,
+      memberCount: 0,
       employerUnion: "",
       strikeProhibitionStatus: "",
       tenderName: "",
