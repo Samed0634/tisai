@@ -20,6 +20,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { TablePagination } from "@/components/table/TablePagination";
 
 interface EditableTableBaseProps {
   data: Workplace[];
@@ -31,6 +33,13 @@ interface EditableTableBaseProps {
   defaultColumns?: string[];
   titleClassName?: string;
   showControls?: boolean;
+  // Pagination properties
+  pageSize?: number;
+  currentPage?: number;
+  setPageSize?: (size: number) => void;
+  setCurrentPage?: (page: number) => void;
+  pageSizeOptions?: number[];
+  showHorizontalScrollbar?: boolean;
 }
 
 const getDefaultColumns = (tableType: string): string[] => {
@@ -71,7 +80,13 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   title,
   defaultColumns,
   titleClassName = "text-2xl",
-  showControls = true
+  showControls = true,
+  pageSize = 10,
+  currentPage = 1,
+  setPageSize,
+  setCurrentPage,
+  pageSizeOptions = [10, 20, 30, 50],
+  showHorizontalScrollbar = false
 }) => {
   // Initialize column visibility from localStorage or defaults
   const getInitialColumns = () => {
@@ -118,6 +133,33 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
     setEditingCell(null);
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(data.length / (pageSize || 10));
+  const startIndex = ((currentPage || 1) - 1) * (pageSize || 10);
+  const paginatedData = pageSize ? data.slice(startIndex, startIndex + pageSize) : data;
+
+  // Handle page size changes
+  const handlePageSizeChange = (value: string) => {
+    if (setPageSize) {
+      setPageSize(Number(value));
+      if (setCurrentPage) setCurrentPage(1);
+    }
+  };
+
+  // Handle navigation to previous page
+  const handlePreviousPage = () => {
+    if (setCurrentPage && currentPage && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Handle navigation to next page
+  const handleNextPage = () => {
+    if (setCurrentPage && currentPage && totalPages && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -131,71 +173,95 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       {showControls && (
         <div className="flex justify-between items-center">
           <h1 className={titleClassName}>{title}</h1>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Sütunları Filtrele
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px]">
-              {availableColumns.map(column => (
-                <DropdownMenuCheckboxItem
-                  key={column}
-                  checked={visibleColumns.includes(column)}
-                  onCheckedChange={() => toggleColumn(column)}
-                >
-                  {column}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Filter className="mr-2 h-4 w-4" />
+                  Sütunları Filtrele
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[200px]">
+                {availableColumns.map(column => (
+                  <DropdownMenuCheckboxItem
+                    key={column}
+                    checked={visibleColumns.includes(column)}
+                    onCheckedChange={() => toggleColumn(column)}
+                  >
+                    {column}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       )}
 
       <div className="border rounded-md">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {visibleColumns.map(column => (
-                <TableHead key={column}>{column}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map(workplace => (
-              <TableRow key={workplace.ID}>
-                {visibleColumns.map(column => (
-                  <TableCell
-                    key={column}
-                    onClick={() => column === editableField ? handleCellClick(workplace, column) : undefined}
-                    className={column === editableField ? "cursor-pointer hover:bg-muted/50" : ""}
-                  >
-                    {editingCell?.id === workplace.ID && editingCell.column === column ? (
-                      <Input
-                        type={column.includes("TARİHİ") ? "date" : "text"}
-                        value={editValue}
-                        onChange={e => setEditValue(e.target.value)}
-                        onBlur={() => handleSave(workplace)}
-                        onKeyDown={e => {
-                          if (e.key === "Enter") {
-                            handleSave(workplace);
-                          }
-                        }}
-                        autoFocus
-                      />
-                    ) : (
-                      column.includes("TARİHİ") && workplace[column]
-                        ? new Date(workplace[column]).toLocaleDateString("tr-TR")
-                        : workplace[column]
-                    )}
-                  </TableCell>
+        <ScrollArea 
+          className="w-full" 
+          showTopScrollbar={showHorizontalScrollbar}
+          showBottomScrollbar={showHorizontalScrollbar}
+        >
+          <div className="min-w-max">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {visibleColumns.map(column => (
+                    <TableHead key={column}>{column}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedData.map(workplace => (
+                  <TableRow key={workplace.ID}>
+                    {visibleColumns.map(column => (
+                      <TableCell
+                        key={column}
+                        onClick={() => column === editableField ? handleCellClick(workplace, column) : undefined}
+                        className={column === editableField ? "cursor-pointer hover:bg-muted/50" : ""}
+                      >
+                        {editingCell?.id === workplace.ID && editingCell.column === column ? (
+                          <Input
+                            type={column.includes("TARİHİ") ? "date" : "text"}
+                            value={editValue}
+                            onChange={e => setEditValue(e.target.value)}
+                            onBlur={() => handleSave(workplace)}
+                            onKeyDown={e => {
+                              if (e.key === "Enter") {
+                                handleSave(workplace);
+                              }
+                            }}
+                            autoFocus
+                          />
+                        ) : (
+                          column.includes("TARİHİ") && workplace[column]
+                            ? new Date(workplace[column]).toLocaleDateString("tr-TR")
+                            : workplace[column]
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+              </TableBody>
+            </Table>
+          </div>
+        </ScrollArea>
       </div>
+
+      {/* Add pagination component if pageSize is provided */}
+      {pageSize && setPageSize && setCurrentPage && (
+        <TablePagination
+          currentPage={currentPage || 1}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          totalItems={data.length}
+          startIndex={startIndex}
+          onPageSizeChange={handlePageSizeChange}
+          onPreviousPage={handlePreviousPage}
+          onNextPage={handleNextPage}
+        />
+      )}
     </div>
   );
 };
