@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { Edit, Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
+import React from "react";
 import { 
   Table, 
   TableBody, 
@@ -11,12 +9,13 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { TableControls } from "@/components/data-details/TableControls";
 import { COLUMNS } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
 import { useColumnVisibility, TableType } from "@/hooks/useColumnVisibility";
+import { useTableEdit } from "@/hooks/useTableEdit";
+import { TableActions } from "@/components/table/TableActions";
+import { EditableTableCell } from "@/components/table/EditableTableCell";
 
 interface WorkplaceItem {
   ID: number;
@@ -42,59 +41,15 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   title,
   defaultColumns
 }) => {
-  const { toast } = useToast();
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editData, setEditData] = useState<WorkplaceItem | null>(null);
   const { visibleColumns, toggleColumn } = useColumnVisibility(tableType, defaultColumns);
-  
-  const handleEdit = (item: WorkplaceItem) => {
-    setEditingId(item.ID);
-    setEditData({ ...item });
-  };
-
-  const handleCancel = () => {
-    setEditingId(null);
-    setEditData(null);
-  };
-
-  const handleChange = (field: string, value: string | number) => {
-    if (editData && field === editableField) {
-      setEditData({
-        ...editData,
-        [field]: value
-      });
-    }
-  };
-
-  const handleSave = async () => {
-    if (!editData) return;
-    
-    try {
-      const { error } = await supabase
-        .from('isyerleri')
-        .update(editData)
-        .eq('ID', editData.ID);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Başarılı",
-        description: "İşyeri bilgileri güncellendi.",
-        variant: "default",
-      });
-      
-      setEditingId(null);
-      setEditData(null);
-      refetch();
-    } catch (error) {
-      console.error("Error updating workplace:", error);
-      toast({
-        title: "Hata",
-        description: "İşyeri bilgileri güncellenirken bir hata oluştu.",
-        variant: "destructive",
-      });
-    }
-  };
+  const {
+    editingId,
+    editData,
+    handleEdit,
+    handleCancel,
+    handleChange,
+    handleSave
+  } = useTableEdit(refetch);
 
   if (isLoading) {
     return (
@@ -139,35 +94,12 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
               data.map((item) => (
                 <TableRow key={item.ID} className="hover:bg-muted/50">
                   <TableCell>
-                    {editingId === item.ID ? (
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={handleSave}
-                          className="hover:bg-green-100 hover:text-green-600"
-                        >
-                          <Check className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={handleCancel}
-                          className="hover:bg-red-100 hover:text-red-600"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleEdit(item)}
-                        className="hover:bg-primary hover:text-white"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    )}
+                    <TableActions 
+                      isEditing={editingId === item.ID}
+                      onEdit={() => handleEdit(item)}
+                      onSave={handleSave}
+                      onCancel={handleCancel}
+                    />
                   </TableCell>
                   
                   {visibleColumnDefinitions.map(column => (
@@ -177,27 +109,13 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
                         column.id === editableField && "bg-yellow-50"
                       )}
                     >
-                      {editingId === item.ID && editData && column.id === editableField ? (
-                        column.id === 'GREV YASAĞI DURUMU' ? (
-                          <Input 
-                            type="text"
-                            value={editData[column.id] || ''}
-                            onChange={(e) => handleChange(column.id, e.target.value)}
-                            className="w-full"
-                          />
-                        ) : (
-                          <Input 
-                            type="date"
-                            value={editData[column.id] ? new Date(editData[column.id]).toISOString().split('T')[0] : ''}
-                            onChange={(e) => handleChange(column.id, e.target.value)}
-                            className="w-40"
-                          />
-                        )
-                      ) : (
-                        column.id.includes('TARİHİ') ? 
-                          item[column.id] ? new Date(item[column.id]).toLocaleDateString('tr-TR') : ''
-                          : item[column.id]
-                      )}
+                      <EditableTableCell 
+                        value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
+                        isEditing={editingId === item.ID}
+                        isEditable={column.id === editableField}
+                        field={column.id}
+                        onChange={handleChange}
+                      />
                     </TableCell>
                   ))}
                 </TableRow>
