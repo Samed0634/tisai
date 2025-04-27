@@ -75,7 +75,7 @@ export type Database = {
           "GREV KARARI TARİHİ"?: string | null
           "GREV OYLAMASI TARİHİ"?: string | null
           "GREV YASAĞI DURUMU"?: string | null
-          ID?: number
+          ID: number
           "İHALE ADI"?: string | null
           "İHALE BAŞLANGIÇ TARİHİ"?: string | null
           "İHALE BİTİŞ TARİHİ"?: string | null
