@@ -57,7 +57,10 @@ const NewData = () => {
         "İHALE ADI": data.tenderName || null,
         "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null,
         "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null,
+        // We are NOT setting the ID field here to allow Supabase to auto-generate it
       };
+
+      console.log("Inserting data:", insertData);
 
       const { error } = await supabase
         .from('isyerleri')
