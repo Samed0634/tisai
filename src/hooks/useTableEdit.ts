@@ -10,15 +10,18 @@ export const useTableEdit = (refetch: () => void) => {
   const { logAction } = useActionHistory();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Workplace | null>(null);
+  const [previousData, setPreviousData] = useState<Workplace | null>(null);
 
   const handleEdit = (item: Workplace) => {
     setEditingId(item.ID);
     setEditData({ ...item });
+    setPreviousData({ ...item });
   };
 
   const handleCancel = () => {
     setEditingId(null);
     setEditData(null);
+    setPreviousData(null);
   };
 
   const handleChange = (field: string, value: string | number) => {
@@ -31,7 +34,7 @@ export const useTableEdit = (refetch: () => void) => {
   };
 
   const handleSave = async () => {
-    if (!editData) return;
+    if (!editData || !previousData) return;
     
     try {
       const { error } = await supabase
@@ -40,9 +43,29 @@ export const useTableEdit = (refetch: () => void) => {
         .eq('ID', editData.ID);
       
       if (error) throw error;
-      
-      // Log the action
-      await logAction(`${editingId} ID'li işyerinin ${editData["İŞYERİ ADI"]} bilgileri güncellenmiştir.`);
+
+      // Find changed fields and their values
+      const changedFields = Object.entries(editData).filter(([key, value]) => {
+        return previousData[key as keyof Workplace] !== value;
+      });
+
+      // Create detailed action message for each changed field
+      for (const [field, newValue] of changedFields) {
+        const oldValue = previousData[field as keyof Workplace];
+        let displayValue = newValue;
+        let oldDisplayValue = oldValue;
+
+        // Format dates for display
+        if (field.includes('TARİHİ') && newValue) {
+          displayValue = new Date(newValue).toLocaleDateString('tr-TR');
+          if (oldValue) {
+            oldDisplayValue = new Date(oldValue).toLocaleDateString('tr-TR');
+          }
+        }
+
+        const actionMessage = `"${editData["İŞYERİ ADI"]}" işyerinin "${field}" değeri "${oldDisplayValue || 'boş'}" -> "${displayValue}" olarak güncellenmiştir.`;
+        await logAction(actionMessage);
+      }
       
       toast({
         title: "Başarılı",
@@ -52,6 +75,7 @@ export const useTableEdit = (refetch: () => void) => {
       
       setEditingId(null);
       setEditData(null);
+      setPreviousData(null);
       refetch();
     } catch (error) {
       console.error("Error updating workplace:", error);
