@@ -135,6 +135,12 @@ export type Database = {
         }
         Relationships: []
       }
+      vectordata: {
+        Row: {}
+        Insert: {}
+        Update: {}
+        Relationships: []
+      }
     }
     Views: {
       çağrı_yapılacak_view: {
