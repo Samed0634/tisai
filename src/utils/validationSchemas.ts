@@ -44,7 +44,7 @@ export const newDataFormSchema = z.object({
   "İHALE BAŞLANGIÇ TARİHİ": z.date().optional(),
   "İHALE BİTİŞ TARİHİ": z.date().optional(),
 }).refine((data) => {
-  if (data["İŞYERİ TÜRÜ"] === "Kit") {
+  if (data["İŞYERİ TÜRÜ"] === "KİT") {
     return data["İHALE ADI"] && data["İHALE BAŞLANGIÇ TARİHİ"] && data["İHALE BİTİŞ TARİHİ"];
   }
   return true;
