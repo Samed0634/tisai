@@ -12,6 +12,7 @@ import UploadTis from "./pages/UploadTis";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
 import ActivityHistory from "./pages/ActivityHistory";
+import ProcedureStatus from "./pages/ProcedureStatus";
 import { supabase } from "./integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -61,6 +62,7 @@ const App = () => (
             </ProtectedRoute>
           }>
             <Route index element={<Dashboard />} />
+            <Route path="procedure-status" element={<ProcedureStatus />} />
             <Route path="new-data" element={<NewData />} />
             <Route path="upload-tis" element={<UploadTis />} />
             <Route path="activity-history" element={<ActivityHistory />} />
