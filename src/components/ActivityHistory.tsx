@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,7 +11,7 @@ import { Search, Calendar } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { TablePagination } from "@/components/ui/table-pagination";
+import { TablePagination } from "@/components/table/TablePagination";
 
 const ActivityHistory: React.FC = () => {
   const [activities, setActivities] = useState<ActionHistory[]>([]);
