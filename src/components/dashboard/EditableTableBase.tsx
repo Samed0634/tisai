@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -61,21 +62,6 @@ const getDefaultColumns = (tableType: string): string[] => {
   }
 };
 
-const useColumnVisibility = (tableType: string, initialColumns: string[]) => {
-  const [visibleColumns, setVisibleColumns] = useState<string[]>(initialColumns);
-  const availableColumns = Object.keys((data && data[0]) || {}).filter(key => key !== "ID");
-
-  const toggleColumn = useCallback((column: string) => {
-    setVisibleColumns(prevColumns =>
-      prevColumns.includes(column)
-        ? prevColumns.filter(col => col !== column)
-        : [...prevColumns, column]
-    );
-  }, []);
-
-  return { visibleColumns, setVisibleColumns, availableColumns, toggleColumn };
-};
-
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   data,
   isLoading = false,
@@ -94,18 +80,22 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
     return savedColumns ? JSON.parse(savedColumns) : (defaultColumns || getDefaultColumns(tableType));
   };
 
-  const { 
-    visibleColumns, 
-    setVisibleColumns, 
-    availableColumns,
-    toggleColumn
-  } = useColumnVisibility(tableType, getInitialColumns());
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(getInitialColumns());
+  const availableColumns = data && data.length > 0 ? Object.keys(data[0] || {}).filter(key => key !== "ID") : [];
 
   // Save column visibility to localStorage whenever it changes
   useEffect(() => {
     const storageKey = `tableColumns_${tableType}`;
     localStorage.setItem(storageKey, JSON.stringify(visibleColumns));
   }, [visibleColumns, tableType]);
+
+  const toggleColumn = useCallback((column: string) => {
+    setVisibleColumns(prevColumns =>
+      prevColumns.includes(column)
+        ? prevColumns.filter(col => col !== column)
+        : [...prevColumns, column]
+    );
+  }, []);
 
   const [editingCell, setEditingCell] = useState<{ id: number; column: string } | null>(null);
   const [editValue, setEditValue] = useState<string>("");
