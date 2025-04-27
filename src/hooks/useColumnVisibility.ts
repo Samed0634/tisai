@@ -5,6 +5,7 @@ import { COLUMNS } from "@/constants/tableColumns";
 // Define default columns for different table types
 const DEFAULT_COLUMNS_MAP = {
   default: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'ARABULUCU RAPORU TEBLİĞ TARİHİ', 'GREV KARARI TARİHİ'],
+  grevKarariColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'ARABULUCU RAPORU TEBLİĞ TARİHİ', 'GREV KARARI TARİHİ'],
   oylamaColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'GREV KARARI TARİHİ', 'GREV OYLAMASI TARİHİ'],
   cagriColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YETKİ BELGESİ TEBLİĞ TARİHİ', 'ÇAĞRI TARİHİ'],
   yetkiTespitColumns: ['SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YETKİ TESPİT İSTEM TARİHİ', 'YETKİ BELGESİ TEBLİĞ TARİHİ'],
