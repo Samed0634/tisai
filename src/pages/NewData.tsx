@@ -126,6 +126,8 @@ const NewData = () => {
     setIsSubmitting(true);
     
     try {
+      // This is the key fix: We need to explicitly convert the numeric fields to numbers
+      // and use the exact column names as defined in the database
       const { error } = await supabase
         .from('isyerleri')
         .insert({
@@ -135,8 +137,8 @@ const NewData = () => {
           "SORUMLU UZMAN": data.expert,
           "İŞYERİNİN BULUNDUĞU İL": data.city,
           "BAĞLI OLDUĞU ŞUBE": data.branch,
-          "İŞÇİ SAYISI": data.employeeCount,
-          "ÜYE SAYISI": data.memberCount,
+          "İŞÇİ SAYISI": Number(data.employeeCount),
+          "ÜYE SAYISI": Number(data.memberCount),
           "İŞVEREN SENDİKASI": data.employerUnion,
           "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
           "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate,
