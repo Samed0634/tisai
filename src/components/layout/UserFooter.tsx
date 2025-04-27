@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarFooter } from "@/components/ui/sidebar";
@@ -38,12 +38,11 @@ export const UserFooter = () => {
     <SidebarFooter className="border-t border-sidebar-border p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="" />
-            <AvatarFallback className="bg-sidebar-primary/10 text-sidebar-primary">
-              <User className="h-4 w-4" />
-            </AvatarFallback>
-          </Avatar>
+          <img 
+            src="/lovable-uploads/bd1dfeb7-b564-43a4-a738-daeaf281196d.png" 
+            alt="TİS Uzmanı" 
+            className="h-10 w-10 rounded-full object-cover border-2 border-sidebar-primary/20" 
+          />
           <div className="space-y-0.5">
             <p className="text-sm font-medium text-sidebar-foreground">TİS Uzmanı</p>
           </div>
