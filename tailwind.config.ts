@@ -12,7 +12,7 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
         "2xl": "1400px",
       },
@@ -80,14 +80,14 @@ export default {
           500: "#22c55e",
         },
         sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+          DEFAULT: "#1A1F2C",
+          foreground: "#FFFFFF",
+          primary: "#9b87f5",
+          "primary-foreground": "#FFFFFF",
+          accent: "rgba(255,255,255,0.1)",
+          "accent-foreground": "#FFFFFF",
+          border: "rgba(255,255,255,0.1)",
+          ring: "#9b87f5",
         },
       },
       borderRadius: {

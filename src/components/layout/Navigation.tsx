@@ -4,34 +4,32 @@ import { NavigationLink } from "./NavigationLink";
 import { useSidebar } from "@/components/ui/sidebar";
 
 export function Navigation() {
-  const {
-    setOpenMobile
-  } = useSidebar();
+  const { setOpenMobile } = useSidebar();
   
   const handleLinkClick = () => {
     setOpenMobile(false);
   };
   
   return (
-    <nav className="space-y-2 px-4 rounded-none">
+    <nav className="space-y-1 px-3 py-4">
       <NavigationLink to="/" onClick={handleLinkClick}>
         <BarChart3 className="h-4 w-4" />
-        Gösterge Paneli
+        <span className="truncate">Gösterge Paneli</span>
       </NavigationLink>
 
       <NavigationLink to="/new-data" onClick={handleLinkClick}>
         <Building2 className="h-4 w-4" />
-        Yeni Veri Girişi
+        <span className="truncate">Yeni Veri Girişi</span>
       </NavigationLink>
 
       <NavigationLink to="/upload-tis" onClick={handleLinkClick}>
         <Upload className="h-4 w-4" />
-        TİS Yükle
+        <span className="truncate">TİS Yükle</span>
       </NavigationLink>
       
       <NavigationLink to="/activity-history" onClick={handleLinkClick}>
         <History className="h-4 w-4" />
-        İşlem Geçmişi
+        <span className="truncate">İşlem Geçmişi</span>
       </NavigationLink>
     </nav>
   );
