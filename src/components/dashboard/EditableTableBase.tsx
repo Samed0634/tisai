@@ -8,13 +8,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Workplace } from '@/types/workplace';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { TablePagination } from '@/components/table/TablePagination';
 import { useWorkplaceData } from '@/hooks/useWorkplaceData';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { TableColumnFilter } from './table/TableColumnFilter';
 import { EditableCell } from './table/EditableCell';
+import { usePagination } from '@/hooks/usePagination';
+import { Workplace } from '@/types/workplace';
 
 interface EditableTableBaseProps {
   data: Workplace[];
@@ -60,6 +61,12 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   const [editValue, setEditValue] = useState<string>('');
   const { updateWorkplace } = useWorkplaceData();
 
+  const { totalPages, startIndex, paginatedData } = usePagination({
+    data,
+    pageSize,
+    currentPage
+  });
+
   const availableColumns = data && data.length > 0 
     ? Object.keys(data[0] || {}).filter(key => key !== 'ID') 
     : [];
@@ -80,11 +87,6 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
     updateWorkplace(updatedWorkplace);
     setEditingCell(null);
   };
-
-  // Pagination calculations
-  const totalPages = Math.ceil(data.length / (pageSize || 10));
-  const startIndex = ((currentPage || 1) - 1) * (pageSize || 10);
-  const paginatedData = pageSize ? data.slice(startIndex, startIndex + pageSize) : data;
 
   if (isLoading) {
     return (
