@@ -24,7 +24,11 @@ import { GrevKarariTable } from "@/components/dashboard/GrevKarariTable";
 const Dashboard = () => {
   const navigate = useNavigate();
   const staticDashboardData = getDashboardData();
-  const [selectedCards, setSelectedCards] = useState<string[]>(staticDashboardData.map(item => item.id));
+  
+  const [selectedCards, setSelectedCards] = useState<string[]>(() => {
+    const savedFilters = localStorage.getItem('dashboardCardFilters');
+    return savedFilters ? JSON.parse(savedFilters) : staticDashboardData.map(item => item.id);
+  });
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [showEditableTable, setShowEditableTable] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);

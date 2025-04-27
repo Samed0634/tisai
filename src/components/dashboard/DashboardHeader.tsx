@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Filter } from "lucide-react";
@@ -16,6 +16,25 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   selectedCards,
   onToggleCard
 }) => {
+  // Load saved selections from localStorage when component mounts
+  useEffect(() => {
+    const savedSelections = localStorage.getItem('dashboardCardFilters');
+    if (savedSelections) {
+      const parsedSelections = JSON.parse(savedSelections);
+      // Update each card selection based on saved state
+      allDashboardData.forEach(card => {
+        if (parsedSelections.includes(card.id) !== selectedCards.includes(card.id)) {
+          onToggleCard(card.id);
+        }
+      });
+    }
+  }, []); // Only run once on mount
+
+  // Save selections to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('dashboardCardFilters', JSON.stringify(selectedCards));
+  }, [selectedCards]);
+
   return (
     <div className="flex justify-between items-center mb-6">
       <h2 className="text-3xl font-bold tracking-tight">Gösterge Paneli</h2>
