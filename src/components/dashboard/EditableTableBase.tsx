@@ -1,4 +1,3 @@
-
 import React from "react";
 import { 
   Table, 
@@ -17,6 +16,7 @@ import { useTableEdit } from "@/hooks/useTableEdit";
 import { TableActions } from "@/components/table/TableActions";
 import { EditableTableCell } from "@/components/table/EditableTableCell";
 import { Workplace } from "@/types/workplace";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EditableTableBaseProps {
   data: Workplace[];
@@ -69,7 +69,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
         />
       </div>
       
-      <div className="rounded-md border overflow-x-auto">
+      <ScrollArea className="rounded-md border" showTopScrollbar>
         <Table>
           <TableHeader>
             <TableRow>
@@ -119,7 +119,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
             )}
           </TableBody>
         </Table>
-      </div>
+      </ScrollArea>
     </div>
   );
 };
