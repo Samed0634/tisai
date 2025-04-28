@@ -20,9 +20,9 @@ const AppLayout = () => {
           <SidebarHeader className="flex items-center gap-2 px-6 py-4 border-b border-sidebar-border">
             <div className="flex items-center gap-2">
               <img 
-                src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
-                alt="Toplu İş Sözleşmesi Otomasyonu Logo" 
-                className="h-8 w-8 object-contain rounded-full border-2 border-sidebar-primary/20" 
+                src="/lovable-uploads/2503bb8e-1872-4808-80a2-68c145792639.png" 
+                alt="TISAI Logo" 
+                className="h-8 w-8 object-contain"
               />
               <span className="font-semibold text-lg text-white">TISAI</span>
             </div>
