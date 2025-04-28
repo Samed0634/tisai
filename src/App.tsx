@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
 import UploadTis from "./pages/UploadTis";
+import DownloadTis from "./pages/DownloadTis";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
 import ActivityHistory from "./pages/ActivityHistory";
