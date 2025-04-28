@@ -20,7 +20,7 @@ const AppLayout = () => {
           <SidebarHeader className="flex items-center gap-2 px-6 py-4 border-b border-sidebar-border">
             <div className="flex items-center gap-2">
               <img 
-                src="/https://r.resimlink.com/5NPMZDv9Q.png" 
+                src="/lovable-uploads/17321130-c47f-4bb1-ab57-2d353f54c2eb.png" 
                 alt="TISAI Logo" 
                 className="h-8 w-8 object-contain"
               />
