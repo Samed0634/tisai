@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -141,7 +140,7 @@ const Login = () => {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Hizmet İş Sendikası
+            © {new Date().getFullYear()} Tüm hakları saklıdır.
           </p>
         </CardFooter>
       </Card>
