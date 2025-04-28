@@ -1,5 +1,5 @@
 
-import { BarChart3, Building2, History, Upload, FileText, ChartPie } from "lucide-react";
+import { BarChart3, Building2, History, Upload, FileText, ChartPie, Download } from "lucide-react";
 import { NavigationLink } from "./NavigationLink";
 import { useSidebar } from "@/components/ui/sidebar";
 
@@ -30,6 +30,11 @@ export function Navigation() {
       <NavigationLink to="/upload-tis" onClick={handleLinkClick}>
         <Upload className="h-4 w-4" />
         <span className="truncate">TİS Yükle</span>
+      </NavigationLink>
+
+      <NavigationLink to="/download-tis" onClick={handleLinkClick}>
+        <Download className="h-4 w-4" />
+        <span className="truncate">TİS İndir</span>
       </NavigationLink>
       
       <NavigationLink to="/activity-history" onClick={handleLinkClick}>

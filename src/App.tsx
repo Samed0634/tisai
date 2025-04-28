@@ -67,6 +67,7 @@ const App = () => (
             <Route path="procedure-status" element={<ProcedureStatus />} />
             <Route path="new-data" element={<NewData />} />
             <Route path="upload-tis" element={<UploadTis />} />
+            <Route path="download-tis" element={<DownloadTis />} />
             <Route path="activity-history" element={<ActivityHistory />} />
           </Route>
 
