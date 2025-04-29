@@ -2,7 +2,8 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useFormToSupabase } from "@/utils/formToSupabase"; // Yeni eklenen import
+import { useFormToSupabase } from "@/utils/formToSupabase";
+import { getDataDbColumn } from "@/utils/columnMappings";
 import { format, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { tr } from "date-fns/locale";
@@ -27,21 +28,6 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
   className
 }) => {
   const { updateSupabaseRecord } = useFormToSupabase();
-
-  // Eğer field değerine göre Supabase sütun adını bulmak için
-  const getDataDbColumn = (fieldName: string) => {
-    // Burada field değerini data-db-column formatına dönüştürebiliriz
-    // Örnek: "ÇAĞRI TARİHİ" -> "cagri_tarihi"
-    return fieldName.toLowerCase()
-      .replace(/ç/g, 'c')
-      .replace(/ğ/g, 'g')
-      .replace(/ı/g, 'i')
-      .replace(/İ/g, 'i')
-      .replace(/ö/g, 'o')
-      .replace(/ş/g, 's')
-      .replace(/ü/g, 'u')
-      .replace(/\s+/g, '_');
-  };
 
   // Değer değiştiğinde Supabase'e otomatik kaydetme
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
