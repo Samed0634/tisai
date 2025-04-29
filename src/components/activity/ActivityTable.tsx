@@ -1,0 +1,79 @@
+
+import React from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ActionHistory } from "@/types/actionHistory";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
+import { TablePagination } from "@/components/table/TablePagination";
+
+interface ActivityTableProps {
+  activities: ActionHistory[];
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  startIndex: number;
+  onPageSizeChange: (value: string) => void;
+  onPreviousPage: () => void;
+  onNextPage: () => void;
+}
+
+export const ActivityTable: React.FC<ActivityTableProps> = ({
+  activities,
+  currentPage,
+  totalPages,
+  pageSize,
+  startIndex,
+  onPageSizeChange,
+  onPreviousPage,
+  onNextPage
+}) => {
+  return (
+    <>
+      <div className="min-w-max">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Tarih</TableHead>
+              <TableHead>Saat</TableHead>
+              <TableHead>İşlem</TableHead>
+              <TableHead>İşlemi Yapan</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {activities.length > 0 ? (
+              activities.map((activity) => (
+                <TableRow key={activity.id}>
+                  <TableCell>
+                    {formatInTimeZone(new Date(activity["Tarih"]), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })}
+                  </TableCell>
+                  <TableCell>{activity["Saat"]}</TableCell>
+                  <TableCell>{activity["İşlem Adı"]}</TableCell>
+                  <TableCell>{activity["İşlem Yapan Kullanıcı"]}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8">
+                  Arama kriterlerine uygun sonuç bulunamadı.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      
+      {activities.length > 0 && (
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          totalItems={activities.length}
+          startIndex={startIndex}
+          onPageSizeChange={onPageSizeChange}
+          onPreviousPage={onPreviousPage}
+          onNextPage={onNextPage}
+        />
+      )}
+    </>
+  );
+};
