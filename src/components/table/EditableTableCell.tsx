@@ -3,6 +3,9 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useFormToSupabase } from "@/utils/formToSupabase"; // Yeni eklenen import
+import { format, parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
 interface EditableTableCellProps {
   value: any;
@@ -85,7 +88,7 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
   return (
     <span className={cn(className)}>
       {field.includes('TARİHİ') && value
-        ? new Date(value).toLocaleDateString('tr-TR')
+        ? formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })
         : value}
     </span>
   );

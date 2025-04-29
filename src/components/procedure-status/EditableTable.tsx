@@ -19,6 +19,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
 interface EditableTableProps {
   data: Workplace[];
@@ -146,7 +148,7 @@ export const EditableTable = ({
                       />
                     ) : (
                       column.includes("TARİHİ") && workplace[column]
-                        ? new Date(workplace[column]).toLocaleDateString("tr-TR")
+                        ? formatInTimeZone(new Date(workplace[column]), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })
                         : workplace[column]
                     )}
                   </TableCell>

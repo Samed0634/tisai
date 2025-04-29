@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TablePagination } from "@/components/table/TablePagination";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
 const ActivityHistory: React.FC = () => {
   const [activities, setActivities] = useState<ActionHistory[]>([]);
@@ -225,7 +227,9 @@ const ActivityHistory: React.FC = () => {
                 {paginatedActivities.length > 0 ? (
                   paginatedActivities.map((activity) => (
                     <TableRow key={activity.id}>
-                      <TableCell>{activity["Tarih"]}</TableCell>
+                      <TableCell>
+                        {formatInTimeZone(new Date(activity["Tarih"]), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })}
+                      </TableCell>
                       <TableCell>{activity["Saat"]}</TableCell>
                       <TableCell>{activity["İşlem Adı"]}</TableCell>
                       <TableCell>{activity["İşlem Yapan Kullanıcı"]}</TableCell>

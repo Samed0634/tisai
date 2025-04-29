@@ -1,4 +1,6 @@
+
 import { format } from "date-fns";
+import { tr } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { Control } from "react-hook-form";
 import { WorkplaceFormValues } from "@/schemas/workplaceFormSchema";
@@ -47,7 +49,7 @@ export const TenderFields = ({ control }: TenderFieldsProps) => {
                     )}
                   >
                     {field.value ? (
-                      format(field.value, "PPP")
+                      format(field.value, "PPP", { locale: tr })
                     ) : (
                       <span>Tarih Seçin</span>
                     )}
@@ -63,6 +65,7 @@ export const TenderFields = ({ control }: TenderFieldsProps) => {
                   disabled={(date) => date < new Date("1900-01-01")}
                   initialFocus
                   className="pointer-events-auto"
+                  locale={tr}
                 />
               </PopoverContent>
             </Popover>
@@ -88,7 +91,7 @@ export const TenderFields = ({ control }: TenderFieldsProps) => {
                     )}
                   >
                     {field.value ? (
-                      format(field.value, "PPP")
+                      format(field.value, "PPP", { locale: tr })
                     ) : (
                       <span>Tarih Seçin</span>
                     )}
@@ -104,6 +107,7 @@ export const TenderFields = ({ control }: TenderFieldsProps) => {
                   disabled={(date) => date < new Date("1900-01-01")}
                   initialFocus
                   className="pointer-events-auto"
+                  locale={tr}
                 />
               </PopoverContent>
             </Popover>
