@@ -2,6 +2,7 @@
 import { useCallback } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { formatInTimeZone } from 'date-fns-tz';
 
 export const useActionHistory = () => {
   const logAction = useCallback(async (actionName: string) => {
@@ -9,11 +10,17 @@ export const useActionHistory = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      const now = new Date();
+      const turkishDate = formatInTimeZone(now, 'Europe/Istanbul', 'yyyy-MM-dd');
+      const turkishTime = formatInTimeZone(now, 'Europe/Istanbul', 'HH:mm:ss');
+
       const { error } = await supabase
         .from('İşlem Geçmişi')
         .insert({
           "İşlem Adı": actionName,
-          "İşlem Yapan Kullanıcı": user.email
+          "İşlem Yapan Kullanıcı": user.email,
+          "Tarih": turkishDate,
+          "Saat": turkishTime
         });
 
       if (error) throw error;

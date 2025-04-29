@@ -46,7 +46,9 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({
                   <TableCell>
                     {formatInTimeZone(new Date(activity["Tarih"]), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })}
                   </TableCell>
-                  <TableCell>{activity["Saat"]}</TableCell>
+                  <TableCell>
+                    {formatInTimeZone(new Date(`${activity["Tarih"]}T${activity["Saat"]}`), 'Europe/Istanbul', 'HH:mm:ss', { locale: tr })}
+                  </TableCell>
                   <TableCell>{activity["İşlem Adı"]}</TableCell>
                   <TableCell>{activity["İşlem Yapan Kullanıcı"]}</TableCell>
                 </TableRow>
