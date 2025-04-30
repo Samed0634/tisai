@@ -45,23 +45,16 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     }
   });
 
+  // Filter out "durum" and "updated_at" columns from the dropdown menu
+  const filteredColumns = allColumns.filter(
+    column => column.id !== "durum" && column.id !== "updated_at"
+  );
+
   return (
     <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 pb-2">
       <h2 className={cn("text-lg font-semibold tracking-tight", titleClassName)}>{title}</h2>
       
       <div className="flex items-center gap-2">
-        <select
-          value={pageSize}
-          onChange={(e) => onPageSizeChange(e.target.value)}
-          className="h-8 w-[70px] rounded-md border border-input px-2 text-xs"
-        >
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={30}>30</option>
-          <option value={40}>40</option>
-          <option value={50}>50</option>
-        </select>
-        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="ml-auto h-8">
@@ -70,7 +63,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
-            {allColumns.map((column) => (
+            {filteredColumns.map((column) => (
               <DropdownMenuCheckboxItem
                 key={column.id}
                 checked={visibleColumns.includes(column.id)}

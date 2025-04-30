@@ -9,6 +9,7 @@ import { ArrowDown } from "lucide-react";
 import { formatInTimeZone } from "date-fns-tz";
 import { tr } from "date-fns/locale";
 
+// Update column order to match requirements: İşyeri Adı, Bağlı Olduğu Şube, Durum, Son Güncelleme
 const DEFAULT_VISIBLE_COLUMNS = [
   "İŞYERİ ADI",
   "BAĞLI OLDUĞU ŞUBE",
