@@ -7,12 +7,14 @@ interface UyusmazlikTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
+  defaultColumns?: string[];
 }
 
 export const UyusmazlikTable: React.FC<UyusmazlikTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch
+  refetch,
+  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"]
 }) => {
   return (
     <EditableTableBase 
@@ -22,6 +24,7 @@ export const UyusmazlikTable: React.FC<UyusmazlikTableProps> = ({
       tableType="uyusmazlikColumns"
       editableField="UYUŞMAZLIK TARİHİ"
       title="Uyuşmazlık Gereken İşyerleri"
+      defaultColumns={defaultColumns}
     />
   );
 };

@@ -105,15 +105,8 @@ const Dashboard = () => {
   const imzalananTislerData = getListItems('imzalanan_tisler_view');
   const grevYasagiData = getListItems('grev_yasağı_olan_view');
 
-  const tableProps = {
-    columnLabels: {
-      "durum": "Durum",
-      "updated_at": "Son Güncelleme"
-    },
-    formatters: {
-      "updated_at": formatUpdatedAt
-    }
-  };
+  // Remove durum and updated_at columns from the dashboard card tables
+  const defaultColumns = ["İŞYERİ ADI", "BAĞLI OLDUĞU ŞUBE"]; 
 
   return <div className="space-y-6">
       <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
@@ -125,31 +118,31 @@ const Dashboard = () => {
             </Button>
           </div>
           
-          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
           
-          {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
           
-          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
+          {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
         </div> : <DashboardGrid items={filteredDashboardData} onCardClick={handleCardClick} />}
 
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>

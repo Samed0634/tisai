@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { COLUMNS } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface TableHeaderProps {
   title: string;
@@ -62,16 +63,18 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
               <span className="text-xs">Sütunlar</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            {filteredColumns.map((column) => (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                checked={visibleColumns.includes(column.id)}
-                onCheckedChange={() => toggleColumn(column.id)}
-              >
-                {columnLabels[column.id] || column.title}
-              </DropdownMenuCheckboxItem>
-            ))}
+          <DropdownMenuContent align="end" className="w-40 max-h-[300px]">
+            <ScrollArea className="h-full max-h-[300px]">
+              {filteredColumns.map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  checked={visibleColumns.includes(column.id)}
+                  onCheckedChange={() => toggleColumn(column.id)}
+                >
+                  {columnLabels[column.id] || column.title}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </ScrollArea>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

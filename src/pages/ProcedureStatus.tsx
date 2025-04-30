@@ -66,7 +66,7 @@ const ProcedureStatus = () => {
   }, [workplaces, searchTerm, sortBy]);
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto py-4 space-y-4 h-[calc(100vh-6rem)]">
       <h1 className="text-2xl font-bold tracking-tight">Prosedür Durumu</h1>
       
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -95,7 +95,7 @@ const ProcedureStatus = () => {
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border shadow-sm overflow-hidden">
+      <div className="rounded-md border shadow-sm overflow-hidden h-[calc(100vh-15rem)]">
         <EditableTableBase
           data={filteredAndSortedWorkplaces}
           isLoading={isLoading}
@@ -109,7 +109,6 @@ const ProcedureStatus = () => {
           currentPage={currentPage}
           setPageSize={setPageSize}
           setCurrentPage={setCurrentPage}
-          pageSizeOptions={[10, 20, 30, 40, 50]}
           showHorizontalScrollbar={true}
           columnLabels={{
             "durum": "Durum",
