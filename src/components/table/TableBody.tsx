@@ -8,7 +8,6 @@ import { ColumnType } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
 import { formatInTimeZone } from "date-fns-tz";
 import { tr } from "date-fns/locale";
-import { isValid } from "date-fns";
 
 interface TableBodyProps {
   data: Workplace[];
@@ -51,7 +50,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
     
     // Try to create a date object
     const date = new Date(dateValue);
-    return isValid(date) && !isNaN(date.getTime());
+    return !isNaN(date.getTime());
   };
 
   // Function to format date values safely

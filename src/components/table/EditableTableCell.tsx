@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useFormToSupabase } from "@/utils/formToSupabase";
 import { getDataDbColumn } from "@/utils/columnMappings";
-import { format, parseISO, isValid } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { tr } from "date-fns/locale";
 
@@ -51,7 +50,7 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
 
     // Try to create a date object
     const date = new Date(dateValue);
-    return isValid(date) && !isNaN(date.getTime());
+    return !isNaN(date.getTime());
   };
 
   // Format date safely

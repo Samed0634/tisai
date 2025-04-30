@@ -54,6 +54,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
       const date = new Date(value);
       if (isNaN(date.getTime())) return value; // Invalid date
       
+      // Always using Europe/Istanbul timezone for Turkish dates
       return formatInTimeZone(
         date, 
         'Europe/Istanbul', 
