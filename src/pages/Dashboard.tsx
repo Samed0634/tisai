@@ -22,6 +22,8 @@ import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTabl
 import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { GrevKarariTable } from "@/components/dashboard/GrevKarariTable";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -40,6 +42,11 @@ const Dashboard = () => {
     refetch
   } = useDashboardData();
 
+  const formatUpdatedAt = (date: string) => {
+    if (!date) return "";
+    return formatInTimeZone(new Date(date), 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr });
+  };
+
   const getListItems = (listName: string) => {
     if (!dashboardData) return [];
     return dashboardData[listName] as any[] || [];
@@ -48,7 +55,10 @@ const Dashboard = () => {
   const allDashboardData = staticDashboardData.map(item => ({
     ...item,
     value: getListItems(item.dataSource).length,
-    items: getListItems(item.dataSource)
+    items: getListItems(item.dataSource).map(workplace => ({
+      ...workplace,
+      formattedUpdatedAt: formatUpdatedAt(workplace.updated_at)
+    }))
   }));
 
   const handleCardClick = (categoryId: string) => {
@@ -95,6 +105,16 @@ const Dashboard = () => {
   const imzalananTislerData = getListItems('imzalanan_tisler_view');
   const grevYasagiData = getListItems('grev_yasağı_olan_view');
 
+  const tableProps = {
+    columnLabels: {
+      "durum": "Durum",
+      "updated_at": "Son Güncelleme"
+    },
+    formatters: {
+      "updated_at": formatUpdatedAt
+    }
+  };
+
   return <div className="space-y-6">
       <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
 
@@ -105,31 +125,31 @@ const Dashboard = () => {
             </Button>
           </div>
           
-          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
           
-          {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
           
-          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
 
-          {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} />}
+          {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} {...tableProps} />}
         </div> : <DashboardGrid items={filteredDashboardData} onCardClick={handleCardClick} />}
 
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
