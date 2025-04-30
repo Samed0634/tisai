@@ -7,12 +7,14 @@ interface GrevOylamasiTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
+  defaultColumns?: string[];
 }
 
 export const GrevOylamasiTable: React.FC<GrevOylamasiTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch
+  refetch,
+  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"]
 }) => {
   return (
     <EditableTableBase 
@@ -22,6 +24,7 @@ export const GrevOylamasiTable: React.FC<GrevOylamasiTableProps> = ({
       tableType="oylamaColumns"
       editableField="GREV OYLAMASI TARİHİ"
       title="Grev Oylaması Yapılması Gereken İşyerleri"
+      defaultColumns={defaultColumns}
     />
   );
 };
