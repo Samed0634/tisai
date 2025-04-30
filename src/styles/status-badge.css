@@ -1,0 +1,116 @@
+
+/* Base Status Badge Styles */
+.status-badge {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  min-width: 100px; 
+  text-align: center;
+}
+
+/* Light Blue Animation */
+@keyframes pulse-light-blue {
+  0%, 100% { background-color: rgba(219, 234, 254, 1); }
+  50% { background-color: rgba(191, 219, 254, 1); }
+}
+
+.animate-pulse-light-blue {
+  animation: pulse-light-blue 2s infinite;
+}
+
+/* Purple Animation */
+@keyframes pulse-purple {
+  0%, 100% { background-color: rgba(237, 233, 254, 1); }
+  50% { background-color: rgba(221, 214, 254, 1); }
+}
+
+.animate-pulse-purple {
+  animation: pulse-purple 2s infinite;
+}
+
+/* Orange Animation */
+@keyframes pulse-orange {
+  0%, 100% { background-color: rgba(255, 237, 213, 1); }
+  50% { background-color: rgba(254, 215, 170, 1); }
+}
+
+.animate-pulse-orange {
+  animation: pulse-orange 2s infinite;
+}
+
+/* Yellow Animation */
+@keyframes pulse-yellow {
+  0%, 100% { background-color: rgba(254, 249, 195, 1); }
+  50% { background-color: rgba(254, 240, 138, 1); }
+}
+
+.animate-pulse-yellow {
+  animation: pulse-yellow 2s infinite;
+}
+
+/* Pale Red Animation */
+@keyframes pulse-pale-red {
+  0%, 100% { background-color: rgba(254, 226, 226, 1); }
+  50% { background-color: rgba(254, 202, 202, 1); }
+}
+
+.animate-pulse-pale-red {
+  animation: pulse-pale-red 2s infinite;
+}
+
+/* Gold Animation */
+@keyframes pulse-gold {
+  0%, 100% { background-color: rgba(253, 230, 138, 1); }
+  50% { background-color: rgba(252, 211, 77, 1); }
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 2s infinite;
+}
+
+/* Red Animation */
+@keyframes pulse-red {
+  0%, 100% { background-color: rgba(254, 202, 202, 1); }
+  50% { background-color: rgba(252, 165, 165, 1); }
+}
+
+.animate-pulse-red {
+  animation: pulse-red 2s infinite;
+}
+
+/* Red-Purple Animation */
+@keyframes pulse-red-purple {
+  0%, 100% { background-color: rgba(252, 231, 243, 1); }
+  50% { background-color: rgba(249, 168, 212, 1); }
+}
+
+.animate-pulse-red-purple {
+  animation: pulse-red-purple 2s infinite;
+}
+
+/* Yellow-Orange Animation */
+@keyframes pulse-yellow-orange {
+  0%, 100% { background-color: rgba(255, 247, 237, 1); }
+  50% { background-color: rgba(255, 237, 213, 1); }
+}
+
+.animate-pulse-yellow-orange {
+  animation: pulse-yellow-orange 2s infinite;
+}
+
+/* Green Animation */
+@keyframes pulse-green {
+  0%, 100% { background-color: rgba(220, 252, 231, 1); }
+  50% { background-color: rgba(187, 247, 208, 1); }
+}
+
+.animate-pulse-green {
+  animation: pulse-green 2s infinite;
+}
+
+/* Reduced Motion Preference Support */
+@media (prefers-reduced-motion) {
+  .status-badge {
+    animation: none !important;
+  }
+}
