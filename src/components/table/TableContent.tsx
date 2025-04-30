@@ -33,8 +33,6 @@ interface TableContentProps {
   title: string;
   titleClassName?: string;
   editableField: string;
-  columnLabels?: Record<string, string>;
-  formatters?: Record<string, (value: any) => React.ReactNode>;
 }
 
 export const TableContent: React.FC<TableContentProps> = ({
@@ -55,8 +53,6 @@ export const TableContent: React.FC<TableContentProps> = ({
   title,
   titleClassName,
   editableField,
-  columnLabels = {},
-  formatters = {}
 }) => {
   if (isLoading) {
     return (
@@ -68,20 +64,7 @@ export const TableContent: React.FC<TableContentProps> = ({
 
   const visibleColumnDefinitions = COLUMNS.filter(col => 
     visibleColumns.includes(col.id)
-  ).map(col => ({
-    ...col,
-    title: columnLabels[col.id] || col.title
-  }));
-
-  // Add custom columns that aren't in COLUMNS
-  visibleColumns.forEach(colId => {
-    if (!COLUMNS.some(col => col.id === colId)) {
-      visibleColumnDefinitions.push({
-        id: colId,
-        title: columnLabels[colId] || colId
-      });
-    }
-  });
+  );
 
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);
@@ -141,7 +124,6 @@ export const TableContent: React.FC<TableContentProps> = ({
                   handleChange={handleChange}
                   handleSave={handleSave}
                   editableField={editableField}
-                  formatters={formatters}
                 />
               </TableBodyUI>
             </Table>
