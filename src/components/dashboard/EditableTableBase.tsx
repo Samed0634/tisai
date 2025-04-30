@@ -30,7 +30,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   editableField,
   title,
   titleClassName,
-  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI", "durum", "updated_at"],
+  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"],
   pageSize: propPageSize,
   currentPage: propCurrentPage,
   setPageSize: propSetPageSize,
