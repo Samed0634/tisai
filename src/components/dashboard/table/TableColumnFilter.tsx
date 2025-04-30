@@ -27,7 +27,7 @@ export const TableColumnFilter: React.FC<TableColumnFilterProps> = ({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="group">
           <div className="flex items-center">
-            <Filter className="mr-2 h-4 w-4 transition-transform duration-300 ease-in-out group-hover:-translate-y-1 group-hover:translate-y-1 animate-pulse" />
+            <Filter className="mr-2 h-4 w-4 transition-transform duration-300 ease-in-out group-hover:translate-y-[2px] group-hover:-translate-y-[2px] animate-pulse" />
             <span>Sütunları Filtrele</span>
           </div>
         </Button>
@@ -40,7 +40,7 @@ export const TableColumnFilter: React.FC<TableColumnFilterProps> = ({
               checked={visibleColumns.includes(column)}
               onCheckedChange={() => toggleColumn(column)}
             >
-              {column}
+              {column === 'updated_at' ? 'Son Güncelleme' : column}
             </DropdownMenuCheckboxItem>
           ))}
         </ScrollArea>

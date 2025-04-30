@@ -14,6 +14,8 @@ import { StatusBadge } from "./StatusBadge";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { COLUMNS } from "@/constants/tableColumns";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
 interface WorkplaceItem {
   id: string;
@@ -45,6 +47,25 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
     visibleColumns.includes(col.id)
   );
 
+  const formatDateValue = (value: any, isDateTime = false) => {
+    if (!value) return "";
+    
+    try {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return value; // Invalid date
+      
+      return formatInTimeZone(
+        date, 
+        'Europe/Istanbul', 
+        isDateTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy',
+        { locale: tr }
+      );
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return value;
+    }
+  };
+
   return (
     <div className="rounded-md border">
       <ScrollArea className="w-full" showTopScrollbar={true}>
@@ -53,7 +74,9 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
             <TableRow>
               <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10">İşlem</TableHead>
               {visibleColumnDefinitions.map(column => (
-                <TableHead key={column.id}>{column.title}</TableHead>
+                <TableHead key={column.id}>
+                  {column.id === 'updated_at' ? 'Son Güncelleme' : column.title}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -81,6 +104,10 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                     <TableCell key={column.id}>
                       {column.id === 'SON DURUM' ? (
                         <StatusBadge status={item[column.id] || 'Bekliyor'} />
+                      ) : column.id === 'updated_at' ? (
+                        formatDateValue(item[column.id], true)
+                      ) : column.id.includes('TARİHİ') ? (
+                        formatDateValue(item[column.id])
                       ) : (
                         item[column.id]
                       )}
