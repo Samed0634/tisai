@@ -1,12 +1,10 @@
 
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
-import { usePagination } from '@/hooks/usePagination';
 import { Workplace } from '@/types/workplace';
 import { TableContent } from '../table/TableContent';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useTableEdit } from '@/hooks/useTableEdit';
-import { TableColumnFilter } from './table/TableColumnFilter';
 
 interface EditableTableBaseProps {
   data: Workplace[];

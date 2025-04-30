@@ -7,12 +7,14 @@ interface IlkOturumTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
+  defaultColumns?: string[];
 }
 
 export const IlkOturumTable: React.FC<IlkOturumTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch
+  refetch,
+  defaultColumns
 }) => {
   return (
     <EditableTableBase 
@@ -22,6 +24,7 @@ export const IlkOturumTable: React.FC<IlkOturumTableProps> = ({
       tableType="ilkOturumColumns"
       editableField="İLK OTURUM TARİHİ"
       title="İlk Oturum Gereken İşyerleri"
+      defaultColumns={defaultColumns || ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"]}
     />
   );
 };

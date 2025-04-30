@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
 
 const DEFAULT_VISIBLE_COLUMNS = [
+  "İŞLEM",
   "SORUMLU UZMAN",
   "BAĞLI OLDUĞU ŞUBE",
   "İŞYERİ ADI",
