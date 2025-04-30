@@ -7,15 +7,20 @@ interface MuzakereSuresiTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
-  defaultColumns?: string[];
 }
 
 export const MuzakereSuresiTable: React.FC<MuzakereSuresiTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch,
-  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"]
+  refetch
 }) => {
+  const defaultColumns = [
+    "SORUMLU UZMAN",
+    "BAĞLI OLDUĞU ŞUBE",
+    "İŞYERİ ADI",
+    "İLK OTURUM TARİHİ"
+  ];
+
   return (
     <EditableTableBase 
       data={data}

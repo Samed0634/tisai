@@ -17,7 +17,6 @@ interface TableBodyProps {
   handleChange: (field: string, value: string | number) => void;
   handleSave: () => void;
   editableField: string;
-  formatters?: Record<string, (value: any) => string>;
 }
 
 export const TableBody: React.FC<TableBodyProps> = ({
@@ -30,7 +29,6 @@ export const TableBody: React.FC<TableBodyProps> = ({
   handleChange,
   handleSave,
   editableField,
-  formatters = {},
 }) => {
   if (data.length === 0) {
     return (
@@ -59,11 +57,6 @@ export const TableBody: React.FC<TableBodyProps> = ({
             // Make all fields editable
             const isEditable = true;
             
-            // Get the display value, applying formatter if one exists
-            const displayValue = formatters[column.id] && item[column.id] 
-              ? formatters[column.id](item[column.id]) 
-              : item[column.id];
-            
             return (
               <TableCell 
                 key={`${item.ID}-${column.id}`}
@@ -73,7 +66,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
                 )}
               >
                 <EditableTableCell 
-                  value={editData && editingId === item.ID ? editData[column.id] : displayValue}
+                  value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
                   isEditing={editingId === item.ID}
                   isEditable={isEditable}
                   field={column.id}
