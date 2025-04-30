@@ -1,7 +1,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import "../styles/status-badge.css"; // Will create this file next
 
 interface StatusBadgeProps {
   status: string;
