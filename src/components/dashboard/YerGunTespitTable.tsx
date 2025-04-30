@@ -7,12 +7,14 @@ interface YerGunTespitTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
+  defaultColumns?: string[];
 }
 
 export const YerGunTespitTable: React.FC<YerGunTespitTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch
+  refetch,
+  defaultColumns
 }) => {
   return (
     <EditableTableBase 
@@ -22,6 +24,7 @@ export const YerGunTespitTable: React.FC<YerGunTespitTableProps> = ({
       tableType="yerGunTespitColumns"
       editableField="YER VE GÜN TESPİT TARİHİ"
       title="Yer ve Gün Tespiti Yapılan İşyerleri"
+      defaultColumns={defaultColumns || ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YER VE GÜN TESPİT TARİHİ"]}
     />
   );
 };

@@ -7,12 +7,14 @@ interface YetkiTespitTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
+  defaultColumns?: string[];
 }
 
 export const YetkiTespitTable: React.FC<YetkiTespitTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch
+  refetch,
+  defaultColumns
 }) => {
   return (
     <EditableTableBase 
@@ -22,6 +24,7 @@ export const YetkiTespitTable: React.FC<YetkiTespitTableProps> = ({
       tableType="yetkiTespitColumns"
       editableField="YETKİ BELGESİ TEBLİĞ TARİHİ"
       title="Yetki Tespiti İstenen İşyerleri"
+      defaultColumns={defaultColumns || ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YETKİ BELGESİ TEBLİĞ TARİHİ"]}
     />
   );
 };
