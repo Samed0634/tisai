@@ -34,11 +34,18 @@ const ProcedureStatus = () => {
   const [sortBy, setSortBy] = useState<string>("İŞYERİ ADI");
 
   const filteredAndSortedWorkplaces = React.useMemo(() => {
-    let filtered = workplaces?.filter(workplace => 
-      workplace["İŞYERİ ADI"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      workplace["SORUMLU UZMAN"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      workplace["BAĞLI OLDUĞU ŞUBE"]?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
+    if (!workplaces) return [];
+    
+    const normalizedSearchTerm = searchTerm.toLowerCase().trim();
+    
+    let filtered = workplaces.filter(workplace => {
+      // Case-insensitive search by converting both search term and data to lowercase
+      return (
+        (workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm))
+      );
+    });
 
     return [...filtered].sort((a, b) => {
       const aValue = (a[sortBy] || "").toString().toLowerCase();
