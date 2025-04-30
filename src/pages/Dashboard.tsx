@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -105,7 +104,7 @@ const Dashboard = () => {
   const imzalananTislerData = getListItems('imzalanan_tisler_view');
   const grevYasagiData = getListItems('grev_yasağı_olan_view');
 
-  // Remove durum and updated_at columns from the dashboard card tables
+  // Define consistent default columns to use across all tables
   const defaultColumns = ["İŞYERİ ADI", "BAĞLI OLDUĞU ŞUBE"]; 
 
   return <div className="space-y-6">
