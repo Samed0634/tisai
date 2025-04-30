@@ -40,8 +40,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <h2 className="text-3xl font-bold tracking-tight">Gösterge Paneli</h2>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="ml-auto flex items-center gap-2">
-            <Filter className="h-4 w-4" />
+          <Button variant="outline" size="sm" className="ml-auto flex items-center gap-2 group">
+            <Filter className="h-4 w-4 transition-transform duration-300 ease-in-out group-hover:-translate-y-1 group-hover:translate-y-1 animate-pulse" />
             Kartları Filtrele
           </Button>
         </DropdownMenuTrigger>
