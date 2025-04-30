@@ -20,6 +20,24 @@ export const useTableColumns = ({ tableType, defaultColumns }: UseTableColumnsPr
     localStorage.setItem(storageKey, JSON.stringify(visibleColumns));
   }, [visibleColumns, tableType]);
 
+  useEffect(() => {
+    // Add durum and updated_at to visible columns if they're not already there
+    setVisibleColumns(prevColumns => {
+      const hasDurum = prevColumns.includes("durum");
+      const hasUpdatedAt = prevColumns.includes("updated_at");
+      
+      if (!hasDurum && !hasUpdatedAt) {
+        return [...prevColumns, "durum", "updated_at"];
+      } else if (!hasDurum) {
+        return [...prevColumns, "durum"];
+      } else if (!hasUpdatedAt) {
+        return [...prevColumns, "updated_at"];
+      }
+      
+      return prevColumns;
+    });
+  }, []);
+
   const toggleColumn = (column: string) => {
     setVisibleColumns(prevColumns =>
       prevColumns.includes(column)

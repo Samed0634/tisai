@@ -6,6 +6,8 @@ import { EditableTableCell } from "./EditableTableCell";
 import { Workplace } from "@/types/workplace";
 import { ColumnType } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
 interface TableBodyProps {
   data: Workplace[];
@@ -40,6 +42,17 @@ export const TableBody: React.FC<TableBodyProps> = ({
     );
   }
 
+  // Function to format date values
+  const formatCellValue = (value: any, columnId: string) => {
+    if (columnId === "updated_at" && value) {
+      return formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr });
+    } else if (columnId.includes("TARİHİ") && value) {
+      return formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr });
+    } else {
+      return value;
+    }
+  };
+
   return (
     <>
       {data.map((item) => (
@@ -66,7 +79,9 @@ export const TableBody: React.FC<TableBodyProps> = ({
                 )}
               >
                 <EditableTableCell 
-                  value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
+                  value={editData && editingId === item.ID 
+                    ? editData[column.id] 
+                    : formatCellValue(item[column.id], column.id)}
                   isEditing={editingId === item.ID}
                   isEditable={isEditable}
                   field={column.id}

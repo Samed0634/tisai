@@ -90,32 +90,37 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
 };
 
 const getDefaultColumns = (tableType: string): string[] => {
+  const baseColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
+  const statusColumns = ["durum", "updated_at"];
+
   switch (tableType) {
     case "oylamaColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV OYLAMASI TARİHİ"];
+      return [...baseColumns, "GREV OYLAMASI TARİHİ", ...statusColumns];
     case "cagriColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÇAĞRI TARİHİ"];
+      return [...baseColumns, "ÇAĞRI TARİHİ", ...statusColumns];
     case "yetkiTespitColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YETKİ BELGESİ TEBLİĞ TARİHİ"];
+      return [...baseColumns, "YETKİ BELGESİ TEBLİĞ TARİHİ", ...statusColumns];
     case "yetkiBelgesiColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÇAĞRI TARİHİ"];
+      return [...baseColumns, "ÇAĞRI TARİHİ", ...statusColumns];
     case "yerGunTespitColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YER VE GÜN TESPİT TARİHİ"];
+      return [...baseColumns, "YER VE GÜN TESPİT TARİHİ", ...statusColumns];
     case "ilkOturumColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"];
+      return [...baseColumns, "İLK OTURUM TARİHİ", ...statusColumns];
     case "muzakereSuresiColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "MÜZAKERE SÜRESİ SON TARİH"];
+      return [...baseColumns, "MÜZAKERE SÜRESİ SON TARİH", ...statusColumns];
     case "uyusmazlikColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "UYUŞMAZLIK TARİHİ"];
+      return [...baseColumns, "UYUŞMAZLIK TARİHİ", ...statusColumns];
     case "yhkColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YHK GÖNDERİM TARİHİ"];
+      return [...baseColumns, "YHK GÖNDERİM TARİHİ", ...statusColumns];
     case "imzalananTislerColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "TİS GELİŞ TARİHİ"];
-    case "grevYasagiColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU"];
+      return [...baseColumns, "TİS GELİŞ TARİHİ", ...statusColumns];
+    case "grevYasakColumns":
+      return [...baseColumns, "GREV YASAĞI DURUMU", ...statusColumns];
     case "grevKarariColumns":
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV KARARI TARİHİ"];
+      return [...baseColumns, "GREV KARARI TARİHİ", ...statusColumns];
+    case "oncedenBelirlenenColumns":
+      return [...baseColumns, "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ", ...statusColumns];
     default:
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"];
+      return [...baseColumns, "İŞÇİ SAYISI", "ÜYE SAYISI", ...statusColumns];
   }
 };

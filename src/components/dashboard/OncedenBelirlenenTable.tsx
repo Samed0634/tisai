@@ -7,12 +7,14 @@ interface OncedenBelirlenenTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
+  defaultColumns?: string[];
 }
 
 export const OncedenBelirlenenTable: React.FC<OncedenBelirlenenTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch
+  refetch,
+  defaultColumns
 }) => {
   return (
     <EditableTableBase 
@@ -22,6 +24,7 @@ export const OncedenBelirlenenTable: React.FC<OncedenBelirlenenTableProps> = ({
       tableType="oncedenBelirlenenColumns"
       editableField="ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"
       title="Önceden Belirlenen İlk Oturum İşyerleri"
+      defaultColumns={defaultColumns}
     />
   );
 };

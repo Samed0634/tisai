@@ -12,7 +12,9 @@ const DEFAULT_VISIBLE_COLUMNS = [
   "BAĞLI OLDUĞU ŞUBE",
   "İŞYERİ ADI",
   "İŞÇİ SAYISI",
-  "ÜYE SAYISI"
+  "ÜYE SAYISI",
+  "durum",
+  "updated_at"
 ];
 
 type SortOption = {
@@ -23,7 +25,9 @@ type SortOption = {
 const sortOptions: SortOption[] = [
   { value: "İŞYERİ ADI", label: "İşyeri Adı" },
   { value: "SORUMLU UZMAN", label: "Sorumlu Uzman" },
-  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" }
+  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" },
+  { value: "durum", label: "Durum" },
+  { value: "updated_at", label: "Son Güncelleme" }
 ];
 
 const ProcedureStatus = () => {
@@ -43,11 +47,19 @@ const ProcedureStatus = () => {
       return (
         (workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
         (workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm))
+        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm))
       );
     });
 
     return [...filtered].sort((a, b) => {
+      // Special handling for date fields
+      if (sortBy === "updated_at") {
+        const dateA = a[sortBy] ? new Date(a[sortBy]).getTime() : 0;
+        const dateB = b[sortBy] ? new Date(b[sortBy]).getTime() : 0;
+        return dateB - dateA; // Sort by most recent first
+      }
+      
       const aValue = (a[sortBy] || "").toString().toLowerCase();
       const bValue = (b[sortBy] || "").toString().toLowerCase();
       return aValue.localeCompare(bValue);
@@ -62,7 +74,7 @@ const ProcedureStatus = () => {
         <SearchBox 
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
-          placeholder="İşyeri veya uzman ara..."
+          placeholder="İşyeri, uzman veya duruma göre ara..."
         />
         
         <DropdownMenu>
