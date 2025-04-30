@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -22,6 +21,8 @@ import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTabl
 import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { GrevKarariTable } from "@/components/dashboard/GrevKarariTable";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -40,21 +41,9 @@ const Dashboard = () => {
     refetch
   } = useDashboardData();
 
-  // Default columns configuration for all tables
-  const defaultColumns = {
-    grevKarari: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV KARARI TARİHİ"],
-    grevOylamasi: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV OYLAMASI TARİHİ"],
-    cagri: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÇAĞRI TARİHİ"],
-    yetkiTespit: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YETKİ TESPİT İSTEM TARİHİ"],
-    yetkiBelgesi: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YETKİ BELGESİ TEBLİĞ TARİHİ"],
-    yerGunTespit: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YER VE GÜN TESPİT TARİHİ"],
-    oncedenBelirlenen: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"],
-    ilkOturum: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"],
-    muzakereSuresi: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "MÜZAKERE SÜRESİ SON TARİH"],
-    uyusmazlik: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "UYUŞMAZLIK TARİHİ"],
-    yhk: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YHK GÖNDERİM TARİHİ"],
-    imzalananTisler: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "TİS GELİŞ TARİHİ"],
-    grevYasagi: ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU"],
+  const formatUpdatedAt = (date: string) => {
+    if (!date) return "";
+    return formatInTimeZone(new Date(date), 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr });
   };
 
   const getListItems = (listName: string) => {
@@ -65,7 +54,10 @@ const Dashboard = () => {
   const allDashboardData = staticDashboardData.map(item => ({
     ...item,
     value: getListItems(item.dataSource).length,
-    items: getListItems(item.dataSource)
+    items: getListItems(item.dataSource).map(workplace => ({
+      ...workplace,
+      formattedUpdatedAt: formatUpdatedAt(workplace.updated_at)
+    }))
   }));
 
   const handleCardClick = (categoryId: string) => {
@@ -112,138 +104,45 @@ const Dashboard = () => {
   const imzalananTislerData = getListItems('imzalanan_tisler_view');
   const grevYasagiData = getListItems('grev_yasağı_olan_view');
 
-  return (
-    <div className="space-y-6">
+  // Define consistent default columns to use across all tables
+  const defaultColumns = ["İŞYERİ ADI", "BAĞLI OLDUĞU ŞUBE"]; 
+
+  return <div className="space-y-6">
       <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
 
-      {showEditableTable ? (
-        <div className="space-y-4">
+      {showEditableTable ? <div className="space-y-4">
           <div className="flex justify-between items-center">
             <Button variant="outline" onClick={() => setShowEditableTable(false)}>
               Gösterge Paneline Dön
             </Button>
           </div>
           
-          {selectedCategory === 'grevKarari' && 
-            <GrevKarariTable 
-              data={grevKarariData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.grevKarari} 
-            />
-          }
+          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
           
-          {selectedCategory === 'grevOylamasi' && 
-            <GrevOylamasiTable 
-              data={grevOylamasiData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.grevOylamasi} 
-            />
-          }
+          {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'cagri' && 
-            <CagriYapilacakTable 
-              data={cagriYapilacakData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.cagri} 
-            />
-          }
+          {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yetkiTespit' && 
-            <YetkiTespitTable 
-              data={yetkiTespitData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.yetkiTespit} 
-            />
-          }
+          {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yetkiBelgesi' && 
-            <YetkiBelgesiTable 
-              data={yetkiBelgesiData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.yetkiBelgesi} 
-            />
-          }
+          {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yerGunTespit' && 
-            <YerGunTespitTable 
-              data={yerGunTespitData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.yerGunTespit} 
-            />
-          }
+          {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
           
-          {selectedCategory === 'oncedenBelirlenen' && 
-            <OncedenBelirlenenTable 
-              data={oncedenBelirlenenData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.oncedenBelirlenen} 
-            />
-          }
+          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'ilkOturum' && 
-            <IlkOturumTable 
-              data={ilkOturumData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.ilkOturum} 
-            />
-          }
+          {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'muzakereSuresi' && 
-            <MuzakereSuresiTable 
-              data={muzakereSuresiData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.muzakereSuresi} 
-            />
-          }
+          {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'uyusmazlik' && 
-            <UyusmazlikTable 
-              data={uyusmazlikData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.uyusmazlik} 
-            />
-          }
+          {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'yhk' && 
-            <YhkGonderimTable 
-              data={yhkGonderimData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.yhk} 
-            />
-          }
+          {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'imzalananTisler' && 
-            <ImzalananTislerTable 
-              data={imzalananTislerData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.imzalananTisler} 
-            />
-          }
+          {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
 
-          {selectedCategory === 'grevYasagi' && 
-            <GrevYasakTable 
-              data={grevYasagiData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-              defaultColumns={defaultColumns.grevYasagi} 
-            />
-          }
-        </div>
-      ) : (
-        <DashboardGrid items={filteredDashboardData} onCardClick={handleCardClick} />
-      )}
+          {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} defaultColumns={defaultColumns} />}
+        </div> : <DashboardGrid items={filteredDashboardData} onCardClick={handleCardClick} />}
 
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden">
@@ -253,8 +152,7 @@ const Dashboard = () => {
           {selectedItem && <WorkplaceItemDetails item={selectedItem} />}
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 };
 
 export default Dashboard;

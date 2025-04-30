@@ -14,7 +14,7 @@ export const MuzakereSuresiTable: React.FC<MuzakereSuresiTableProps> = ({
   data, 
   isLoading = false,
   refetch,
-  defaultColumns
+  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"]
 }) => {
   return (
     <EditableTableBase 
@@ -24,7 +24,7 @@ export const MuzakereSuresiTable: React.FC<MuzakereSuresiTableProps> = ({
       tableType="muzakereSuresiColumns"
       editableField="UYUŞMAZLIK TARİHİ"
       title="Müzakere Süresi Dolan İşyerleri"
-      defaultColumns={defaultColumns || ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"]}
+      defaultColumns={defaultColumns}
     />
   );
 };

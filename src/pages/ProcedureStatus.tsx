@@ -6,14 +6,15 @@ import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
+import { formatInTimeZone } from "date-fns-tz";
+import { tr } from "date-fns/locale";
 
+// Update column order to match requirements: İşyeri Adı, Bağlı Olduğu Şube, Durum, Son Güncelleme
 const DEFAULT_VISIBLE_COLUMNS = [
-  "İŞLEM",
-  "SORUMLU UZMAN",
-  "BAĞLI OLDUĞU ŞUBE",
   "İŞYERİ ADI",
-  "İŞÇİ SAYISI",
-  "ÜYE SAYISI"
+  "BAĞLI OLDUĞU ŞUBE",
+  "durum",
+  "updated_at"
 ];
 
 type SortOption = {
@@ -24,7 +25,9 @@ type SortOption = {
 const sortOptions: SortOption[] = [
   { value: "İŞYERİ ADI", label: "İşyeri Adı" },
   { value: "SORUMLU UZMAN", label: "Sorumlu Uzman" },
-  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" }
+  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" },
+  { value: "durum", label: "Durum" },
+  { value: "updated_at", label: "Son Güncelleme" }
 ];
 
 const ProcedureStatus = () => {
@@ -44,19 +47,26 @@ const ProcedureStatus = () => {
       return (
         (workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
         (workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm))
+        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm))
       );
     });
 
     return [...filtered].sort((a, b) => {
-      const aValue = (a[sortBy] || "").toString().toLowerCase();
-      const bValue = (b[sortBy] || "").toString().toLowerCase();
-      return aValue.localeCompare(bValue);
+      if (sortBy === "updated_at") {
+        const aDate = a.updated_at ? new Date(a.updated_at).getTime() : 0;
+        const bDate = b.updated_at ? new Date(b.updated_at).getTime() : 0;
+        return bDate - aDate; // Sort by date descending (newest first)
+      } else {
+        const aValue = (a[sortBy] || "").toString().toLowerCase();
+        const bValue = (b[sortBy] || "").toString().toLowerCase();
+        return aValue.localeCompare(bValue);
+      }
     });
   }, [workplaces, searchTerm, sortBy]);
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto py-4 space-y-4 h-[calc(100vh-6rem)]">
       <h1 className="text-2xl font-bold tracking-tight">Prosedür Durumu</h1>
       
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -85,7 +95,7 @@ const ProcedureStatus = () => {
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border shadow-sm overflow-hidden">
+      <div className="rounded-md border shadow-sm overflow-hidden h-[calc(100vh-15rem)]">
         <EditableTableBase
           data={filteredAndSortedWorkplaces}
           isLoading={isLoading}
@@ -99,8 +109,14 @@ const ProcedureStatus = () => {
           currentPage={currentPage}
           setPageSize={setPageSize}
           setCurrentPage={setCurrentPage}
-          pageSizeOptions={[10, 20, 30, 40, 50]}
           showHorizontalScrollbar={true}
+          columnLabels={{
+            "durum": "Durum",
+            "updated_at": "Son Güncelleme"
+          }}
+          formatters={{
+            "updated_at": (value) => value ? formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr }) : ""
+          }}
         />
       </div>
     </div>

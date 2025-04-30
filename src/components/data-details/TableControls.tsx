@@ -28,12 +28,9 @@ export const TableControls: React.FC<TableControlsProps> = ({
             <Settings className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[300px]">
-          <ScrollArea className="h-[300px] overflow-y-auto">
-            {COLUMNS.filter(column => 
-              column.id !== "updated_at" && 
-              column.id !== "durum"
-            ).map((column) => (
+        <DropdownMenuContent align="end" className="w-[300px] max-h-[400px]">
+          <ScrollArea className="max-h-[400px]">
+            {COLUMNS.filter(column => column.id !== "durum" && column.id !== "updated_at").map((column) => (
               <DropdownMenuCheckboxItem
                 key={column.id}
                 checked={visibleColumns.includes(column.id)}

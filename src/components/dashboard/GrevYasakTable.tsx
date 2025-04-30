@@ -14,17 +14,17 @@ export const GrevYasakTable: React.FC<GrevYasakTableProps> = ({
   data, 
   isLoading = false,
   refetch,
-  defaultColumns
+  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"]
 }) => {
   return (
     <EditableTableBase 
       data={data}
       isLoading={isLoading}
       refetch={refetch}
-      tableType="grevYasagiColumns"
+      tableType="grevYasakColumns"
       editableField="GREV YASAĞI DURUMU"
       title="Grev Yasağı Olan İşyerleri"
-      defaultColumns={defaultColumns || ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU"]}
+      defaultColumns={defaultColumns}
     />
   );
 };

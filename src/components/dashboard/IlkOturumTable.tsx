@@ -14,7 +14,7 @@ export const IlkOturumTable: React.FC<IlkOturumTableProps> = ({
   data, 
   isLoading = false,
   refetch,
-  defaultColumns
+  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"]
 }) => {
   return (
     <EditableTableBase 
@@ -24,7 +24,7 @@ export const IlkOturumTable: React.FC<IlkOturumTableProps> = ({
       tableType="ilkOturumColumns"
       editableField="İLK OTURUM TARİHİ"
       title="İlk Oturum Gereken İşyerleri"
-      defaultColumns={defaultColumns || ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"]}
+      defaultColumns={defaultColumns}
     />
   );
 };

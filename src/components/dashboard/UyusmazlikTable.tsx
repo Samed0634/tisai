@@ -14,7 +14,7 @@ export const UyusmazlikTable: React.FC<UyusmazlikTableProps> = ({
   data, 
   isLoading = false,
   refetch,
-  defaultColumns
+  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"]
 }) => {
   return (
     <EditableTableBase 
@@ -24,7 +24,7 @@ export const UyusmazlikTable: React.FC<UyusmazlikTableProps> = ({
       tableType="uyusmazlikColumns"
       editableField="UYUŞMAZLIK TARİHİ"
       title="Uyuşmazlık Gereken İşyerleri"
-      defaultColumns={defaultColumns || ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "UYUŞMAZLIK TARİHİ"]}
+      defaultColumns={defaultColumns}
     />
   );
 };
