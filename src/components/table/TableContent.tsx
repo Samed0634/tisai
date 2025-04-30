@@ -33,8 +33,6 @@ interface TableContentProps {
   title: string;
   titleClassName?: string;
   editableField: string;
-  columnLabels?: Record<string, string>;
-  formatters?: Record<string, (value: any) => string>;
 }
 
 export const TableContent: React.FC<TableContentProps> = ({
@@ -55,8 +53,6 @@ export const TableContent: React.FC<TableContentProps> = ({
   title,
   titleClassName,
   editableField,
-  columnLabels = {},
-  formatters = {},
 }) => {
   if (isLoading) {
     return (
@@ -68,22 +64,7 @@ export const TableContent: React.FC<TableContentProps> = ({
 
   const visibleColumnDefinitions = COLUMNS.filter(col => 
     visibleColumns.includes(col.id)
-  ).map(col => ({
-    ...col,
-    title: columnLabels[col.id] || col.title
-  }));
-
-  // Add custom columns that might not be in COLUMNS
-  visibleColumns.forEach(colId => {
-    const exists = visibleColumnDefinitions.some(def => def.id === colId);
-    if (!exists) {
-      visibleColumnDefinitions.push({
-        id: colId,
-        title: columnLabels[colId] || colId,
-        editable: true
-      });
-    }
-  });
+  );
 
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);
@@ -118,7 +99,6 @@ export const TableContent: React.FC<TableContentProps> = ({
         toggleColumn={toggleColumn}
         pageSize={pageSize}
         onPageSizeChange={handlePageSizeChange}
-        columnLabels={columnLabels}
       />
       
       <div className="border rounded-md overflow-hidden">
@@ -144,7 +124,6 @@ export const TableContent: React.FC<TableContentProps> = ({
                   handleChange={handleChange}
                   handleSave={handleSave}
                   editableField={editableField}
-                  formatters={formatters}
                 />
               </TableBodyUI>
             </Table>

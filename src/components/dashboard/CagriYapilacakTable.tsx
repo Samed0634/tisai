@@ -7,14 +7,12 @@ interface CagriYapilacakTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
-  defaultColumns?: string[];
 }
 
 export const CagriYapilacakTable: React.FC<CagriYapilacakTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch,
-  defaultColumns = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"]
+  refetch
 }) => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +30,6 @@ export const CagriYapilacakTable: React.FC<CagriYapilacakTableProps> = ({
       setPageSize={setPageSize}
       setCurrentPage={setCurrentPage}
       showHorizontalScrollbar={true}
-      defaultColumns={defaultColumns}
     />
   );
 };

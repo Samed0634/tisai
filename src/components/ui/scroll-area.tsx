@@ -29,7 +29,6 @@ const ScrollArea = React.forwardRef<
         <ScrollBar orientation="horizontal" />
       </div>
     )}
-    <ScrollBar />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
 ))

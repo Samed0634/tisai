@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { COLUMNS } from "@/constants/tableColumns";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface TableControlsProps {
   visibleColumns: string[];
@@ -28,19 +27,17 @@ export const TableControls: React.FC<TableControlsProps> = ({
             <Settings className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[300px] max-h-[400px]">
-          <ScrollArea className="max-h-[400px]">
-            {COLUMNS.filter(column => column.id !== "durum" && column.id !== "updated_at").map((column) => (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                checked={visibleColumns.includes(column.id)}
-                onCheckedChange={() => toggleColumn(column.id)}
-                className="whitespace-normal break-words"
-              >
-                {column.title}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </ScrollArea>
+        <DropdownMenuContent align="end" className="w-[300px] max-h-[400px] overflow-y-auto">
+          {COLUMNS.map((column) => (
+            <DropdownMenuCheckboxItem
+              key={column.id}
+              checked={visibleColumns.includes(column.id)}
+              onCheckedChange={() => toggleColumn(column.id)}
+              className="whitespace-normal break-words"
+            >
+              {column.title}
+            </DropdownMenuCheckboxItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
