@@ -10,6 +10,7 @@ import { useColumnVisibility } from "@/hooks/useColumnVisibility";
 import { useTableSort } from "@/hooks/useTableSort";
 import UpdateWorkplaceDialog from "@/components/UpdateWorkplaceDialog";
 import { COLUMNS } from "@/constants/tableColumns";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const categoryTitles: Record<string, string> = {
   "authorization-requests": "Yetki Tespiti İstenecek İşyerleri",
@@ -159,11 +160,13 @@ const DataDetails = () => {
       />
 
       <Card>
-        <WorkplaceTable
-          data={sortedData} 
-          onUpdateClick={openUpdateDialog}
-          visibleColumns={visibleColumns}
-        />
+        <ScrollArea className="w-full" showTopScrollbar={true}>
+          <WorkplaceTable
+            data={sortedData} 
+            onUpdateClick={openUpdateDialog}
+            visibleColumns={visibleColumns}
+          />
+        </ScrollArea>
       </Card>
 
       <UpdateWorkplaceDialog

@@ -29,6 +29,7 @@ const ScrollArea = React.forwardRef<
         <ScrollBar orientation="horizontal" />
       </div>
     )}
+    <ScrollBar className="absolute right-0.5 w-2.5" />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
 ))

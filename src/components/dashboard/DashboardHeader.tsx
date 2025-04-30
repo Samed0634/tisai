@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Filter } from "lucide-react";
 import { DashboardItem } from "./dashboardTypes";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DashboardHeaderProps {
   allDashboardData: DashboardItem[];
@@ -46,15 +47,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
-          {allDashboardData.map((card) => (
-            <DropdownMenuCheckboxItem
-              key={card.id}
-              checked={selectedCards.includes(card.id)}
-              onCheckedChange={() => onToggleCard(card.id)}
-            >
-              {card.title}
-            </DropdownMenuCheckboxItem>
-          ))}
+          <ScrollArea className="h-[300px]">
+            {allDashboardData.map((card) => (
+              <DropdownMenuCheckboxItem
+                key={card.id}
+                checked={selectedCards.includes(card.id)}
+                onCheckedChange={() => onToggleCard(card.id)}
+              >
+                {card.title}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </ScrollArea>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

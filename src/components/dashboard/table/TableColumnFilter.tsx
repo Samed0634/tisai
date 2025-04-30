@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface TableColumnFilterProps {
   availableColumns: string[];
@@ -32,15 +33,17 @@ export const TableColumnFilter: React.FC<TableColumnFilterProps> = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[200px]">
-        {availableColumns.map(column => (
-          <DropdownMenuCheckboxItem
-            key={column}
-            checked={visibleColumns.includes(column)}
-            onCheckedChange={() => toggleColumn(column)}
-          >
-            {column}
-          </DropdownMenuCheckboxItem>
-        ))}
+        <ScrollArea className="h-[300px]">
+          {availableColumns.map(column => (
+            <DropdownMenuCheckboxItem
+              key={column}
+              checked={visibleColumns.includes(column)}
+              onCheckedChange={() => toggleColumn(column)}
+            >
+              {column}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </ScrollArea>
       </DropdownMenuContent>
     </DropdownMenu>
   );
