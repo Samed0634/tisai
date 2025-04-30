@@ -84,22 +84,24 @@ const ProcedureStatus = () => {
         </DropdownMenu>
       </div>
 
-      <EditableTableBase
-        data={filteredAndSortedWorkplaces}
-        isLoading={isLoading}
-        refetch={refetch}
-        tableType="default"
-        editableField=""
-        title="Prosedür Durumu"
-        defaultColumns={DEFAULT_VISIBLE_COLUMNS}
-        titleClassName="text-xl"
-        pageSize={pageSize}
-        currentPage={currentPage}
-        setPageSize={setPageSize}
-        setCurrentPage={setCurrentPage}
-        pageSizeOptions={[10, 20, 30, 40, 50]}
-        showHorizontalScrollbar={true}
-      />
+      <div className="rounded-md border shadow-sm overflow-hidden">
+        <EditableTableBase
+          data={filteredAndSortedWorkplaces}
+          isLoading={isLoading}
+          refetch={refetch}
+          tableType="default"
+          editableField=""
+          title="Prosedür Durumu"
+          defaultColumns={DEFAULT_VISIBLE_COLUMNS}
+          titleClassName="text-xl"
+          pageSize={pageSize}
+          currentPage={currentPage}
+          setPageSize={setPageSize}
+          setCurrentPage={setCurrentPage}
+          pageSizeOptions={[10, 20, 30, 40, 50]}
+          showHorizontalScrollbar={true}
+        />
+      </div>
     </div>
   );
 };

@@ -25,6 +25,9 @@
   background: rgba(0, 0, 0, 0.12);
 }
 
+/* Import table styles */
+@import './styles/table-styles.css';
+
 /* Subtle Background Pattern */
 body::before {
   content: '';
