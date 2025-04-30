@@ -8,6 +8,7 @@ import { ColumnType } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
 import { formatInTimeZone } from "date-fns-tz";
 import { tr } from "date-fns/locale";
+import { StatusBadge } from "@/components/data-details/StatusBadge";
 
 interface TableBodyProps {
   data: Workplace[];
@@ -105,16 +106,20 @@ export const TableBody: React.FC<TableBodyProps> = ({
                   column.id === editableField && "bg-yellow-50"
                 )}
               >
-                <EditableTableCell 
-                  value={editData && editingId === item.ID 
-                    ? editData[column.id] 
-                    : formatCellValue(item[column.id], column.id)}
-                  isEditing={editingId === item.ID}
-                  isEditable={isEditable}
-                  field={column.id}
-                  rowId={item.ID}
-                  onChange={handleChange}
-                />
+                {column.id === "durum" ? (
+                  <StatusBadge status={item[column.id]?.toString() || ''} />
+                ) : (
+                  <EditableTableCell 
+                    value={editData && editingId === item.ID 
+                      ? editData[column.id] 
+                      : formatCellValue(item[column.id], column.id)}
+                    isEditing={editingId === item.ID}
+                    isEditable={isEditable}
+                    field={column.id}
+                    rowId={item.ID}
+                    onChange={handleChange}
+                  />
+                )}
               </TableCell>
             );
           })}
