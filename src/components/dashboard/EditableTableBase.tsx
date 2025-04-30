@@ -24,6 +24,8 @@ interface EditableTableBaseProps {
   setCurrentPage?: (page: number) => void;
   pageSizeOptions?: number[];
   showHorizontalScrollbar?: boolean;
+  columnLabels?: Record<string, string>;
+  formatters?: Record<string, (value: any) => React.ReactNode>;
 }
 
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
@@ -41,7 +43,9 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   setPageSize: externalSetPageSize,
   setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
-  showHorizontalScrollbar = false
+  showHorizontalScrollbar = false,
+  columnLabels = {},
+  formatters = {}
 }) => {
   const { visibleColumns, toggleColumn } = useTableColumns({
     tableType,
@@ -85,6 +89,8 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       title={title}
       titleClassName={titleClassName}
       editableField={editableField}
+      columnLabels={columnLabels}
+      formatters={formatters}
     />
   );
 };

@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      eissywebtalep: {
+        Row: {
+          "Ad ve Soyad": string
+          "E-Mail": string | null
+          id: number
+          İşyeri: string | null
+          "Telefon No": number
+        }
+        Insert: {
+          "Ad ve Soyad": string
+          "E-Mail"?: string | null
+          id?: number
+          İşyeri?: string | null
+          "Telefon No": number
+        }
+        Update: {
+          "Ad ve Soyad"?: string
+          "E-Mail"?: string | null
+          id?: number
+          İşyeri?: string | null
+          "Telefon No"?: number
+        }
+        Relationships: []
+      }
       "İşlem Geçmişi": {
         Row: {
           id: number
@@ -38,6 +62,7 @@ export type Database = {
           "ARABULUCU RAPORU TEBLİĞ TARİHİ": string | null
           "BAĞLI OLDUĞU ŞUBE": string | null
           "ÇAĞRI TARİHİ": string | null
+          durum: string | null
           "FİİLİ GREV KARARI TARİHİ": string | null
           "GREV KARARI TARİHİ": string | null
           "GREV OYLAMASI TARİHİ": string | null
@@ -60,6 +85,7 @@ export type Database = {
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
           "TİS İMZA TARİHİ": string | null
+          updated_at: string | null
           "ÜYE SAYISI": number | null
           "UYUŞMAZLIK TARİHİ": string | null
           "YER VE GÜN TESPİT TARİHİ": string | null
@@ -71,6 +97,7 @@ export type Database = {
           "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
           "BAĞLI OLDUĞU ŞUBE"?: string | null
           "ÇAĞRI TARİHİ"?: string | null
+          durum?: string | null
           "FİİLİ GREV KARARI TARİHİ"?: string | null
           "GREV KARARI TARİHİ"?: string | null
           "GREV OYLAMASI TARİHİ"?: string | null
@@ -93,6 +120,7 @@ export type Database = {
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
           "TİS İMZA TARİHİ"?: string | null
+          updated_at?: string | null
           "ÜYE SAYISI"?: number | null
           "UYUŞMAZLIK TARİHİ"?: string | null
           "YER VE GÜN TESPİT TARİHİ"?: string | null
@@ -104,6 +132,7 @@ export type Database = {
           "ARABULUCU RAPORU TEBLİĞ TARİHİ"?: string | null
           "BAĞLI OLDUĞU ŞUBE"?: string | null
           "ÇAĞRI TARİHİ"?: string | null
+          durum?: string | null
           "FİİLİ GREV KARARI TARİHİ"?: string | null
           "GREV KARARI TARİHİ"?: string | null
           "GREV OYLAMASI TARİHİ"?: string | null
@@ -126,6 +155,7 @@ export type Database = {
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
           "TİS İMZA TARİHİ"?: string | null
+          updated_at?: string | null
           "ÜYE SAYISI"?: number | null
           "UYUŞMAZLIK TARİHİ"?: string | null
           "YER VE GÜN TESPİT TARİHİ"?: string | null

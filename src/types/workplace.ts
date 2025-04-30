@@ -31,4 +31,7 @@ export interface Workplace {
   "TİS İMZA TARİHİ": string | null;
   "TİS BAŞLANGIÇ TARİHİ": string | null;
   "TİS BİTİŞ TARİHİ": string | null;
+  "durum": string | null;
+  "updated_at": string | null;
+  [key: string]: any;
 }
