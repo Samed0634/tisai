@@ -8,6 +8,7 @@ import { ColumnType } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
 import { formatInTimeZone } from "date-fns-tz";
 import { tr } from "date-fns/locale";
+import { isValid } from "date-fns";
 
 interface TableBodyProps {
   data: Workplace[];
@@ -42,12 +43,39 @@ export const TableBody: React.FC<TableBodyProps> = ({
     );
   }
 
-  // Function to format date values
-  const formatCellValue = (value: any, columnId: string) => {
+  // Helper function to check if a value is a valid date
+  const isValidDate = (dateValue: any): boolean => {
+    if (dateValue === null || dateValue === undefined || dateValue === '') {
+      return false;
+    }
+    
+    // Try to create a date object
+    const date = new Date(dateValue);
+    return isValid(date) && !isNaN(date.getTime());
+  };
+
+  // Function to format date values safely
+  const formatCellValue = (value: any, columnId: string): any => {
+    if (!value) return value;
+
     if (columnId === "updated_at" && value) {
-      return formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr });
+      if (!isValidDate(value)) return value;
+      
+      try {
+        return formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr });
+      } catch (error) {
+        console.error(`Error formatting date ${value}:`, error);
+        return value;
+      }
     } else if (columnId.includes("TARİHİ") && value) {
-      return formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr });
+      if (!isValidDate(value)) return value;
+      
+      try {
+        return formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr });
+      } catch (error) {
+        console.error(`Error formatting date ${value}:`, error);
+        return value;
+      }
     } else {
       return value;
     }
