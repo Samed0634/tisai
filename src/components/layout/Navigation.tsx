@@ -21,7 +21,7 @@ export function Navigation() {
 
       <NavigationLink to="/new-data" onClick={handleLinkClick}>
         <Building2 className="h-4 w-4" />
-        <span className="truncate">Yeni İşyeri Girişi</span>
+        <span className="truncate">Süreç Başlat (Veri Girişi)</span>
       </NavigationLink>
 
       <NavigationLink to="/upload-tis" onClick={handleLinkClick}>
