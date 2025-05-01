@@ -120,15 +120,13 @@ const Dashboard = () => {
   const grevYasagiData = filterItemsBySearchTerm(getListItems('grev_yasağı_olan_view'));
 
   return <div className="space-y-6">
-      <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
-      
-      <div className="container mx-auto">
-        <SearchBox 
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          placeholder="İşyeri, uzman veya durum ara..."
-        />
-      </div>
+      <DashboardHeader 
+        allDashboardData={allDashboardData} 
+        selectedCards={selectedCards} 
+        onToggleCard={toggleCard}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm} 
+      />
 
       {showEditableTable ? <div className="space-y-4">
           <div className="flex justify-between items-center">
