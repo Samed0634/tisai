@@ -141,7 +141,7 @@ const UploadTis = () => {
                     <span className="ml-2">Yükleniyor...</span>
                   </> : <>
                     <Upload className="h-4 w-4" />
-                    <span className="ml-2">TİS Dosyasını Yükle</span>
+                    <span className="ml-2">Yükle</span>
                   </>}
               </Button>
             </form>
