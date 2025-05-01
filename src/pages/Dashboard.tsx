@@ -22,6 +22,7 @@ import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTabl
 import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { GrevKarariTable } from "@/components/dashboard/GrevKarariTable";
+import { SearchBox } from "@/components/data-details/SearchBox";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -34,6 +35,8 @@ const Dashboard = () => {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [showEditableTable, setShowEditableTable] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  
   const {
     data: dashboardData,
     isLoading,
@@ -45,11 +48,32 @@ const Dashboard = () => {
     return dashboardData[listName] as any[] || [];
   };
 
-  const allDashboardData = staticDashboardData.map(item => ({
-    ...item,
-    value: getListItems(item.dataSource).length,
-    items: getListItems(item.dataSource)
-  }));
+  // Filter workplaces based on search term
+  const filterItemsBySearchTerm = (items: any[]) => {
+    if (!searchTerm.trim()) return items;
+    
+    const normalizedSearchTerm = searchTerm.toLowerCase().trim();
+    
+    return items.filter(item => {
+      return (
+        (item["İŞYERİ ADI"] && item["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (item["SORUMLU UZMAN"] && item["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (item["BAĞLI OLDUĞU ŞUBE"] && item["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (item["durum"] && item["durum"].toString().toLowerCase().includes(normalizedSearchTerm))
+      );
+    });
+  };
+
+  const allDashboardData = staticDashboardData.map(item => {
+    const originalItems = getListItems(item.dataSource);
+    const filteredItems = filterItemsBySearchTerm(originalItems);
+    
+    return {
+      ...item,
+      value: filteredItems.length,
+      items: filteredItems
+    };
+  });
 
   const handleCardClick = (categoryId: string) => {
     const category = allDashboardData.find(item => item.id === categoryId);
@@ -81,22 +105,30 @@ const Dashboard = () => {
     return <div>Yükleniyor...</div>;
   }
 
-  const grevKarariData = getListItems('grev_kararı_alınması_gereken_view');
-  const grevOylamasiData = getListItems('grev_oylaması_yapılması_gereken_view');
-  const cagriYapilacakData = getListItems('çağrı_yapılacak_view');
-  const yetkiTespitData = getListItems('yetki_tespit_istenecek_view');
-  const yetkiBelgesiData = getListItems('yetki_belgesi_tebliğ_yapılan_view');
-  const yerGunTespitData = getListItems('yer_ve_gün_tespit_tarihli_view');
-  const oncedenBelirlenenData = getListItems('önceden_belirlenen_ilk_oturum_view');
-  const ilkOturumData = getListItems('ilk_oturum_tutulması_gereken_view');
-  const muzakereSuresiData = getListItems('müzakere_süresi_dolan_view');
-  const uyusmazlikData = getListItems('uyuşmazlık_bildirimi_yapılması_gereken_view');
-  const yhkGonderimData = getListItems('yhk_gönderim_gereken_view');
-  const imzalananTislerData = getListItems('imzalanan_tisler_view');
-  const grevYasagiData = getListItems('grev_yasağı_olan_view');
+  const grevKarariData = filterItemsBySearchTerm(getListItems('grev_kararı_alınması_gereken_view'));
+  const grevOylamasiData = filterItemsBySearchTerm(getListItems('grev_oylaması_yapılması_gereken_view'));
+  const cagriYapilacakData = filterItemsBySearchTerm(getListItems('çağrı_yapılacak_view'));
+  const yetkiTespitData = filterItemsBySearchTerm(getListItems('yetki_tespit_istenecek_view'));
+  const yetkiBelgesiData = filterItemsBySearchTerm(getListItems('yetki_belgesi_tebliğ_yapılan_view'));
+  const yerGunTespitData = filterItemsBySearchTerm(getListItems('yer_ve_gün_tespit_tarihli_view'));
+  const oncedenBelirlenenData = filterItemsBySearchTerm(getListItems('önceden_belirlenen_ilk_oturum_view'));
+  const ilkOturumData = filterItemsBySearchTerm(getListItems('ilk_oturum_tutulması_gereken_view'));
+  const muzakereSuresiData = filterItemsBySearchTerm(getListItems('müzakere_süresi_dolan_view'));
+  const uyusmazlikData = filterItemsBySearchTerm(getListItems('uyuşmazlık_bildirimi_yapılması_gereken_view'));
+  const yhkGonderimData = filterItemsBySearchTerm(getListItems('yhk_gönderim_gereken_view'));
+  const imzalananTislerData = filterItemsBySearchTerm(getListItems('imzalanan_tisler_view'));
+  const grevYasagiData = filterItemsBySearchTerm(getListItems('grev_yasağı_olan_view'));
 
   return <div className="space-y-6">
       <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
+      
+      <div className="container mx-auto">
+        <SearchBox 
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          placeholder="İşyeri, uzman veya durum ara..."
+        />
+      </div>
 
       {showEditableTable ? <div className="space-y-4">
           <div className="flex justify-between items-center">
