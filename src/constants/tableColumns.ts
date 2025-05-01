@@ -1,3 +1,4 @@
+
 export type ColumnType = {
   id: string;
   title: string;
@@ -36,5 +37,6 @@ export const COLUMNS: ColumnType[] = [
   { id: 'TİS GELİŞ TARİHİ', title: 'TİS GELİŞ TARİHİ', editable: true },
   { id: 'TİS İMZA TARİHİ', title: 'TİS İMZA TARİHİ' },
   { id: 'TİS BAŞLANGIÇ TARİHİ', title: 'TİS BAŞLANGIÇ TARİHİ' },
-  { id: 'TİS BİTİŞ TARİHİ', title: 'TİS BİTİŞ TARİHİ' }
+  { id: 'TİS BİTİŞ TARİHİ', title: 'TİS BİTİŞ TARİHİ' },
+  { id: 'durum', title: 'Durum', editable: true }
 ];
