@@ -51,14 +51,17 @@ const ProcedureStatus = () => {
         }
       }
 
-      // Text search filter
-      return (
-        !normalizedSearchTerm ||
-        (workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm))
-      );
+      // Text search filter - case insensitive
+      if (normalizedSearchTerm) {
+        return (
+          (workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+          (workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+          (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+          (workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm))
+        );
+      }
+      
+      return true;
     });
 
     return [...filtered].sort((a, b) => {
