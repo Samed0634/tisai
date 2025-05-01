@@ -5,10 +5,11 @@ import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, Filter } from "lucide-react";
+import { ArrowDown, FileExcel, Filter } from "lucide-react";
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
+import { exportToExcel } from "@/utils/exportUtils";
 
 const DEFAULT_VISIBLE_COLUMNS = [
   "SORUMLU UZMAN",
@@ -77,11 +78,29 @@ const ProcedureStatus = () => {
     setCurrentPage(1); // Reset to first page when filters change
   };
 
+  const handleExportToExcel = () => {
+    if (filteredAndSortedWorkplaces.length > 0) {
+      exportToExcel(filteredAndSortedWorkplaces, "Prosedür_Durumu");
+    }
+  };
+
   const statusFilterCount = selectedStatuses.length;
 
   return (
     <div className="container mx-auto py-6 space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">Prosedür Durumu</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold tracking-tight">Prosedür Durumu</h1>
+        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex items-center gap-2" 
+          onClick={handleExportToExcel}
+        >
+          <FileExcel className="h-4 w-4" />
+          <span>Excel İndir</span>
+        </Button>
+      </div>
       
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 flex-col sm:flex-row gap-2 sm:items-center">

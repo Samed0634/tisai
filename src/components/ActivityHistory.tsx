@@ -7,12 +7,16 @@ import { useActivityHistory } from "@/hooks/useActivityHistory";
 import { useActivityFilters } from "@/hooks/useActivityFilters";
 import { ActivityFilter } from "@/components/activity/ActivityFilter";
 import { ActivityTable } from "@/components/activity/ActivityTable";
+import { Button } from "@/components/ui/button";
+import { FilePdf } from "lucide-react";
+import { exportToPDF } from "@/utils/exportUtils";
 
 const ActivityHistory: React.FC = () => {
   const { activities, loading } = useActivityHistory();
   
   const {
     paginatedActivities,
+    filteredActivities,
     searchTerm,
     timeFilter,
     pageSize,
@@ -25,6 +29,18 @@ const ActivityHistory: React.FC = () => {
     setCurrentPage
   } = useActivityFilters(activities);
 
+  const handleExportToPDF = () => {
+    const columns = [
+      { title: "Tarih", field: "Tarih" },
+      { title: "Saat", field: "Saat" },
+      { title: "İşlem Adı", field: "İşlem Adı" },
+      { title: "İşlemi Yapan", field: "İşlem Yapan Kullanıcı" }
+    ];
+    
+    // Export all filtered activities, not just the current page
+    exportToPDF(filteredActivities, columns, "İşlem Geçmişi");
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -35,16 +51,27 @@ const ActivityHistory: React.FC = () => {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
         <CardTitle>İşlem Geçmişi</CardTitle>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-2" 
+            onClick={handleExportToPDF}
+          >
+            <FilePdf className="h-4 w-4" />
+            <span>PDF İndir</span>
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
         <ActivityFilter 
           searchTerm={searchTerm}
           onSearchChange={handleSearchChange}
           timeFilter={timeFilter}
           onFilterChange={handleFilterChange}
         />
-      </CardHeader>
-      <CardContent>
         <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
           <ActivityTable 
             activities={paginatedActivities}
