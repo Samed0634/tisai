@@ -5,17 +5,15 @@ import * as XLSX from 'xlsx';
 import { formatInTimeZone } from 'date-fns-tz';
 import { tr } from 'date-fns/locale';
 
-// Define type for jsPDF with autotable
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
+// Define interface for dynamic jspdf-autotable
+interface JsPDFWithAutoTable extends jsPDF {
+  autoTable: (options: any) => jsPDF;
 }
 
 export const exportToPDF = (data: any[], columns: { title: string; field: string }[], title: string) => {
   if (!data || data.length === 0) return;
 
-  const doc = new jsPDF();
+  const doc = new jsPDF() as JsPDFWithAutoTable;
   const now = new Date();
   const dateStr = formatInTimeZone(now, 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr });
   

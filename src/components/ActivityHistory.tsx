@@ -8,7 +8,7 @@ import { useActivityFilters } from "@/hooks/useActivityFilters";
 import { ActivityFilter } from "@/components/activity/ActivityFilter";
 import { ActivityTable } from "@/components/activity/ActivityTable";
 import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react"; // Changed from FilePdf to FileDown
+import { FileDown } from "lucide-react";
 import { exportToPDF } from "@/utils/exportUtils";
 
 const ActivityHistory: React.FC = () => {
