@@ -31,7 +31,7 @@ export function Navigation() {
 
       <NavigationLink to="/download-tis" onClick={handleLinkClick}>
         <Download className="h-4 w-4" />
-        <span className="truncate">TİS İndir</span>
+        <span className="truncate">Belge/TİS İndir</span>
       </NavigationLink>
       
       <NavigationLink to="/activity-history" onClick={handleLinkClick}>
