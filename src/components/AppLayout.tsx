@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Sidebar, SidebarHeader, SidebarProvider, SidebarContent } from "@/components/ui/sidebar";
@@ -5,7 +6,12 @@ import { Outlet } from "react-router-dom";
 import { AppHeader } from "./layout/AppHeader";
 import { Navigation } from "./layout/Navigation";
 import { UserFooter } from "./layout/UserFooter";
+import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
+
 const AppLayout = () => {
+  // Initialize inactivity timeout
+  useInactivityTimeout();
+  
   return <SidebarProvider>
       <div className="flex h-screen w-full bg-background">
         <Sidebar className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
