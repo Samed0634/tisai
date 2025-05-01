@@ -1,17 +1,14 @@
-
 import { BarChart3, Building2, History, Upload, FileText, ChartPie, Download } from "lucide-react";
 import { NavigationLink } from "./NavigationLink";
 import { useSidebar } from "@/components/ui/sidebar";
-
 export function Navigation() {
-  const { setOpenMobile } = useSidebar();
-  
+  const {
+    setOpenMobile
+  } = useSidebar();
   const handleLinkClick = () => {
     setOpenMobile(false);
   };
-  
-  return (
-    <nav className="space-y-1 px-3 py-4">
+  return <nav className="space-y-1 px-3 py-4">
       <NavigationLink to="/" onClick={handleLinkClick}>
         <BarChart3 className="h-4 w-4" />
         <span className="truncate">Gösterge Paneli</span>
@@ -44,8 +41,7 @@ export function Navigation() {
 
       <NavigationLink to="/statistics" onClick={handleLinkClick}>
         <ChartPie className="h-4 w-4" />
-        <span className="truncate">İstatistikler</span>
+        <span className="truncate">Raporlama</span>
       </NavigationLink>
-    </nav>
-  );
+    </nav>;
 }
