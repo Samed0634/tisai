@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { usePagination } from '@/hooks/usePagination';
@@ -115,7 +114,9 @@ const getDefaultColumns = (tableType: string): string[] => {
       return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU"];
     case "grevKarariColumns":
       return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV KARARI TARİHİ"];
+    case "grevYasakColumns":
+      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU", "durum"];
     default:
-      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"];
+      return ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI", "durum"];
   }
 };

@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Table,
@@ -62,9 +61,21 @@ export const TableContent: React.FC<TableContentProps> = ({
     );
   }
 
+  // Make sure we have the "durum" column in our column definitions if it's not there
   const visibleColumnDefinitions = COLUMNS.filter(col => 
     visibleColumns.includes(col.id)
   );
+
+  // Ensure the durum column is defined
+  const durumColumnExists = visibleColumnDefinitions.some(col => col.id === 'durum');
+  
+  if (!durumColumnExists && visibleColumns.includes('durum')) {
+    visibleColumnDefinitions.push({
+      id: 'durum',
+      title: 'Durum',
+      editable: true
+    });
+  }
 
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);

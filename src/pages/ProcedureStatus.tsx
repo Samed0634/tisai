@@ -12,7 +12,8 @@ const DEFAULT_VISIBLE_COLUMNS = [
   "BAĞLI OLDUĞU ŞUBE",
   "İŞYERİ ADI",
   "İŞÇİ SAYISI",
-  "ÜYE SAYISI"
+  "ÜYE SAYISI",
+  "durum"
 ];
 
 type SortOption = {
@@ -23,7 +24,8 @@ type SortOption = {
 const sortOptions: SortOption[] = [
   { value: "İŞYERİ ADI", label: "İşyeri Adı" },
   { value: "SORUMLU UZMAN", label: "Sorumlu Uzman" },
-  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" }
+  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" },
+  { value: "durum", label: "Durum" }
 ];
 
 const ProcedureStatus = () => {
@@ -43,7 +45,8 @@ const ProcedureStatus = () => {
       return (
         (workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
         (workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm))
+        (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
+        (workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm))
       );
     });
 
@@ -62,7 +65,7 @@ const ProcedureStatus = () => {
         <SearchBox 
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
-          placeholder="İşyeri veya uzman ara..."
+          placeholder="İşyeri, uzman veya durum ara..."
         />
         
         <DropdownMenu>
@@ -90,7 +93,7 @@ const ProcedureStatus = () => {
           isLoading={isLoading}
           refetch={refetch}
           tableType="default"
-          editableField=""
+          editableField="durum"
           title="Prosedür Durumu"
           defaultColumns={DEFAULT_VISIBLE_COLUMNS}
           titleClassName="text-xl"
