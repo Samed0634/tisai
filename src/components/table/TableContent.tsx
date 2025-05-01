@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   Table,
@@ -77,6 +78,17 @@ export const TableContent: React.FC<TableContentProps> = ({
     });
   }
 
+  // Reorder columns to place 'durum' at the beginning, right after actions column
+  const reorderedColumnDefinitions = [...visibleColumnDefinitions];
+  
+  // Find and remove durum from current position
+  const durumIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'durum');
+  if (durumIndex !== -1) {
+    const [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
+    // Insert durum at the beginning of the array (position 0)
+    reorderedColumnDefinitions.unshift(durumColumn);
+  }
+
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
@@ -119,7 +131,7 @@ export const TableContent: React.FC<TableContentProps> = ({
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">İşlem</TableHead>
-                  {visibleColumnDefinitions.map(column => (
+                  {reorderedColumnDefinitions.map(column => (
                     <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
                   ))}
                 </TableRow>
@@ -127,7 +139,7 @@ export const TableContent: React.FC<TableContentProps> = ({
               <TableBodyUI>
                 <TableBody 
                   data={paginatedData}
-                  visibleColumnDefinitions={visibleColumnDefinitions}
+                  visibleColumnDefinitions={reorderedColumnDefinitions}
                   editingId={editingId}
                   editData={editData}
                   handleEdit={handleEdit}
