@@ -103,7 +103,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                   </TableCell>
                   {visibleColumnDefinitions.map(column => (
                     <TableCell key={column.id}>
-                      {column.id === 'durum' ? (
+                      {column.id === 'SON DURUM' ? (
                         <StatusBadge status={item[column.id] || 'Bekliyor'} />
                       ) : column.id === 'updated_at' ? (
                         formatDateValue(item[column.id], true)

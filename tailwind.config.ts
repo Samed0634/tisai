@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -89,19 +88,6 @@ export default {
           "accent-foreground": "#FFFFFF",
           border: "rgba(255,255,255,0.1)",
           ring: "#9b87f5",
-        },
-        purple: {
-          100: "#ede9fe",
-          800: "#5b21b6",
-        },
-        amber: {
-          50: "#fffbeb",
-          100: "#fef3c7",
-          800: "#92400e",
-        },
-        pink: {
-          100: "#fce7f3",
-          800: "#9d174d",
         },
       },
       borderRadius: {

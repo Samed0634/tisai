@@ -1,12 +1,11 @@
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
-import { StatusFilter, ALL_STATUS_OPTIONS } from "@/components/data-details/StatusFilter";
 
 const DEFAULT_VISIBLE_COLUMNS = [
   "SORUMLU UZMAN",
@@ -37,22 +36,15 @@ const ProcedureStatus = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<string>("İŞYERİ ADI");
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([...ALL_STATUS_OPTIONS]);
 
-  const filteredAndSortedWorkplaces = useMemo(() => {
+  const filteredAndSortedWorkplaces = React.useMemo(() => {
     if (!workplaces) return [];
     
     const normalizedSearchTerm = searchTerm.toLowerCase().trim();
     
     let filtered = workplaces.filter(workplace => {
-      // First filter by selected statuses
-      const statusMatch = selectedStatuses.includes(workplace["durum"] || "");
-      
-      if (!statusMatch) return false;
-      
-      // Then filter by search term
+      // Case-insensitive search by converting both search term and data to lowercase
       return (
-        searchTerm === "" || 
         (workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
         (workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
         (workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
@@ -72,12 +64,7 @@ const ProcedureStatus = () => {
       const bValue = (b[sortBy] || "").toString().toLowerCase();
       return aValue.localeCompare(bValue);
     });
-  }, [workplaces, searchTerm, sortBy, selectedStatuses]);
-
-  // Reset to page 1 when filters change
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, selectedStatuses]);
+  }, [workplaces, searchTerm, sortBy]);
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -90,30 +77,23 @@ const ProcedureStatus = () => {
           placeholder="İşyeri, uzman veya duruma göre ara..."
         />
         
-        <div className="flex flex-col sm:flex-row gap-2">
-          <StatusFilter 
-            selectedStatuses={selectedStatuses}
-            onStatusChange={setSelectedStatuses}
-          />
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-[240px]">
-                <ArrowDown className="mr-2 h-4 w-4" />
-                Sıralama: {sortOptions.find(opt => opt.value === sortBy)?.label}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[240px]">
-              <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
-                {sortOptions.map((option) => (
-                  <DropdownMenuRadioItem key={option.value} value={option.value}>
-                    {option.label}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-[240px]">
+              <ArrowDown className="mr-2 h-4 w-4" />
+              Sıralama: {sortOptions.find(opt => opt.value === sortBy)?.label}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[240px]">
+            <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+              {sortOptions.map((option) => (
+                <DropdownMenuRadioItem key={option.value} value={option.value}>
+                  {option.label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="rounded-md border shadow-sm overflow-hidden">
