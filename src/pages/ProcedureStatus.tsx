@@ -5,7 +5,7 @@ import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, FileExcel, Filter } from "lucide-react";
+import { ArrowDown, FileDown, Filter } from "lucide-react"; // Changed from FileExcel to FileDown
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
@@ -97,7 +97,7 @@ const ProcedureStatus = () => {
           className="flex items-center gap-2" 
           onClick={handleExportToExcel}
         >
-          <FileExcel className="h-4 w-4" />
+          <FileDown className="h-4 w-4" />
           <span>Excel İndir</span>
         </Button>
       </div>

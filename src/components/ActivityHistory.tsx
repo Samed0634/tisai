@@ -8,7 +8,7 @@ import { useActivityFilters } from "@/hooks/useActivityFilters";
 import { ActivityFilter } from "@/components/activity/ActivityFilter";
 import { ActivityTable } from "@/components/activity/ActivityTable";
 import { Button } from "@/components/ui/button";
-import { FilePdf } from "lucide-react";
+import { FileDown } from "lucide-react"; // Changed from FilePdf to FileDown
 import { exportToPDF } from "@/utils/exportUtils";
 
 const ActivityHistory: React.FC = () => {
@@ -60,7 +60,7 @@ const ActivityHistory: React.FC = () => {
             className="flex items-center gap-2" 
             onClick={handleExportToPDF}
           >
-            <FilePdf className="h-4 w-4" />
+            <FileDown className="h-4 w-4" />
             <span>PDF İndir</span>
           </Button>
         </div>
