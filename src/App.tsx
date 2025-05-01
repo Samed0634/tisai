@@ -23,26 +23,43 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   
   useEffect(() => {
-    // First set up the auth state change listener
+    // Make sure authentication state is properly initialized and tracked
+    console.log("Setting up auth state tracking...");
+    
+    // Set up the auth state change listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-      
-      // Log the auth state change for debugging
       console.log(`Auth state changed: ${event}`, session ? "Session active" : "No session");
+      
+      // Update authentication state based on session presence
+      setIsAuthenticated(!!session);
     });
     
     // Then check for existing session
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      setIsAuthenticated(!!data.session);
-      
-      // Log the initial session state for debugging
-      console.log("Initial session check:", data.session ? "Session active" : "No session");
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Session check error:", error);
+          setIsAuthenticated(false);
+          return;
+        }
+        
+        console.log("Initial session check:", data.session ? "Session active" : "No session");
+        setIsAuthenticated(!!data.session);
+      } catch (err) {
+        console.error("Unexpected error during session check:", err);
+        setIsAuthenticated(false);
+      }
     };
     
     checkAuth();
     
-    return () => subscription.unsubscribe();
+    // Cleanup subscription on component unmount
+    return () => {
+      console.log("Cleaning up auth subscription");
+      subscription.unsubscribe();
+    };
   }, []);
   
   // Show loading state while checking authentication
@@ -51,9 +68,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   if (!isAuthenticated) {
+    console.log("User not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
   
+  console.log("User authenticated, rendering protected content");
   return <>{children}</>;
 };
 

@@ -16,27 +16,22 @@ export const UserFooter = () => {
     setIsLoading(true);
     
     try {
-      // First check if there's an active session
-      const { data: sessionData } = await supabase.auth.getSession();
+      // First perform a simple signOut without checking for session
+      // This is more reliable and will clear any local auth state
+      const { error } = await supabase.auth.signOut();
       
-      // Only attempt to sign out if there's an active session
-      if (sessionData && sessionData.session) {
-        const { error } = await supabase.auth.signOut();
-        if (error) throw error;
-        
+      if (error) {
+        console.error("Sign out error:", error);
+        throw error;
+      } else {
+        console.log("Sign out successful");
         toast({
           title: "Çıkış başarılı",
           description: "Güvenli bir şekilde çıkış yapıldı."
         });
-      } else {
-        // If no session exists, just redirect to login
-        toast({
-          title: "Oturum bulunamadı",
-          description: "Oturum zaten sonlanmış. Giriş sayfasına yönlendiriliyorsunuz."
-        });
       }
       
-      // Redirect to login page regardless of session status
+      // Redirect to login page after successful logout
       setTimeout(() => {
         navigate('/login');
       }, 500);
@@ -47,6 +42,12 @@ export const UserFooter = () => {
         description: error?.message || "Bir hata oluştu.",
         variant: "destructive"
       });
+      
+      // Even if there's an error, still redirect to login page
+      // This ensures user isn't stuck if session is already invalid
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
     } finally {
       setIsLoading(false);
     }
