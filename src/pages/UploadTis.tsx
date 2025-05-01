@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { FileUp, Loader2, Upload } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 const UploadTis = () => {
   const [file, setFile] = useState<File | null>(null);
   const [company, setCompany] = useState("");
@@ -15,25 +13,24 @@ const UploadTis = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file || !company || !tisType || !startDate || !endDate) {
       toast({
         title: "Eksik Bilgi",
         description: "Lütfen tüm alanları doldurunuz ve bir dosya seçiniz.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setIsLoading(true);
 
     // Form verilerini oluştur
@@ -43,24 +40,22 @@ const UploadTis = () => {
     formData.append("tisType", tisType);
     formData.append("startDate", startDate);
     formData.append("endDate", endDate);
-
     try {
       // API'ye form verilerini gönderme simülasyonu
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
       toast({
         title: "Başarılı",
         description: "TİS dosyası başarıyla yüklendi.",
-        variant: "default",
+        variant: "default"
       });
-      
+
       // Formu sıfırla
       setFile(null);
       setCompany("");
       setTisType("");
       setStartDate("");
       setEndDate("");
-      
+
       // File input'unu temizle
       const fileInput = document.getElementById("tis-file") as HTMLInputElement;
       if (fileInput) fileInput.value = "";
@@ -68,16 +63,14 @@ const UploadTis = () => {
       toast({
         title: "Hata",
         description: "Dosya yüklenirken bir sorun oluştu.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsLoading(false);
     }
   };
-
-  return (
-    <div className="space-y-6">
-      <h1 className="heading-1">Bağıtlanan TİS Yükleme</h1>
+  return <div className="space-y-6">
+      <h1 className="heading-1">Belge/Tis Yükleme</h1>
       <p className="text-secondary-600">
         Bağıtlanan Toplu İş Sözleşmesi (TİS) dosyalarını sisteme yükleyebilirsiniz.
       </p>
@@ -98,17 +91,8 @@ const UploadTis = () => {
               <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label htmlFor="tis-file">Sözleşme Dosyası</Label>
                 <div className="border rounded-md p-4 cursor-pointer hover:bg-secondary-50 transition-colors">
-                  <Input
-                    id="tis-file"
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                  <Label
-                    htmlFor="tis-file"
-                    className="flex flex-col items-center gap-2 cursor-pointer"
-                  >
+                  <Input id="tis-file" type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleFileChange} />
+                  <Label htmlFor="tis-file" className="flex flex-col items-center gap-2 cursor-pointer">
                     <Upload className="h-8 w-8 text-secondary-400" />
                     <span className="text-sm font-medium">
                       {file ? file.name : "Dosya seçmek için tıklayın"}
@@ -122,12 +106,7 @@ const UploadTis = () => {
 
               <div className="space-y-1.5">
                 <Label htmlFor="company">İşyeri Adı</Label>
-                <Input
-                  id="company"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  placeholder="İşyeri adını girin"
-                />
+                <Input id="company" value={company} onChange={e => setCompany(e.target.value)} placeholder="İşyeri adını girin" />
               </div>
 
               <div className="space-y-1.5">
@@ -147,37 +126,23 @@ const UploadTis = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="start-date">Başlangıç Tarihi</Label>
-                  <Input
-                    id="start-date"
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
+                  <Input id="start-date" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                 </div>
 
                 <div className="space-y-1.5">
                   <Label htmlFor="end-date">Bitiş Tarihi</Label>
-                  <Input
-                    id="end-date"
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
+                  <Input id="end-date" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                 </div>
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <>
+                {isLoading ? <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="ml-2">Yükleniyor...</span>
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     <Upload className="h-4 w-4" />
                     <span className="ml-2">TİS Dosyasını Yükle</span>
-                  </>
-                )}
+                  </>}
               </Button>
             </form>
           </CardContent>
@@ -214,8 +179,6 @@ const UploadTis = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default UploadTis;
