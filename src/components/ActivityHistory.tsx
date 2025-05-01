@@ -9,7 +9,7 @@ import { ActivityFilter } from "@/components/activity/ActivityFilter";
 import { ActivityTable } from "@/components/activity/ActivityTable";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import { exportToPDF } from "@/utils/exportUtils";
+import { exportToExcel } from "@/utils/exportUtils";
 
 const ActivityHistory: React.FC = () => {
   const { activities, loading } = useActivityHistory();
@@ -29,16 +29,9 @@ const ActivityHistory: React.FC = () => {
     setCurrentPage
   } = useActivityFilters(activities);
 
-  const handleExportToPDF = () => {
-    const columns = [
-      { title: "Tarih", field: "Tarih" },
-      { title: "Saat", field: "Saat" },
-      { title: "İşlem Adı", field: "İşlem Adı" },
-      { title: "İşlemi Yapan", field: "İşlem Yapan Kullanıcı" }
-    ];
-    
+  const handleExportToExcel = () => {
     // Export all filtered activities, not just the current page
-    exportToPDF(filteredActivities, columns, "İşlem Geçmişi");
+    exportToExcel(filteredActivities, "İşlem_Geçmişi");
   };
 
   if (loading) {
@@ -58,10 +51,10 @@ const ActivityHistory: React.FC = () => {
             variant="outline" 
             size="sm" 
             className="flex items-center gap-2" 
-            onClick={handleExportToPDF}
+            onClick={handleExportToExcel}
           >
             <FileDown className="h-4 w-4" />
-            <span>PDF İndir</span>
+            <span>Excel İndir</span>
           </Button>
         </div>
       </CardHeader>
