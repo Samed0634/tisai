@@ -58,6 +58,7 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           
+          {/* Redirect root path to login if not authenticated */}
           <Route path="/" element={
             <ProtectedRoute>
               <AppLayout />

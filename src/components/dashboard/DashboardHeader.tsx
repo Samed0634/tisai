@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Filter } from "lucide-react";
 import { DashboardItem } from "./dashboardTypes";
+import { useFilterMemory } from "@/hooks/useFilterMemory";
 
 interface DashboardHeaderProps {
   allDashboardData: DashboardItem[];
@@ -16,24 +17,25 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   selectedCards,
   onToggleCard
 }) => {
-  // Load saved selections from localStorage when component mounts
+  // Use our filterMemory hook instead of localStorage directly
+  const [savedSelections, setSavedSelections] = useFilterMemory('dashboardCardFilters', [] as string[]);
+
+  // Load saved selections from memory hook when component mounts
   useEffect(() => {
-    const savedSelections = localStorage.getItem('dashboardCardFilters');
-    if (savedSelections) {
-      const parsedSelections = JSON.parse(savedSelections);
+    if (savedSelections.length > 0) {
       // Update each card selection based on saved state
       allDashboardData.forEach(card => {
-        if (parsedSelections.includes(card.id) !== selectedCards.includes(card.id)) {
+        if (savedSelections.includes(card.id) !== selectedCards.includes(card.id)) {
           onToggleCard(card.id);
         }
       });
     }
   }, []); // Only run once on mount
 
-  // Save selections to localStorage whenever they change
+  // Save selections to memory hook whenever they change
   useEffect(() => {
-    localStorage.setItem('dashboardCardFilters', JSON.stringify(selectedCards));
-  }, [selectedCards]);
+    setSavedSelections(selectedCards);
+  }, [selectedCards, setSavedSelections]);
 
   return (
     <div className="flex justify-between items-center mb-6">

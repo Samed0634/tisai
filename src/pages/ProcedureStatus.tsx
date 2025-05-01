@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, Filter } from "lucide-react";
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { useFilterMemory } from "@/hooks/useFilterMemory";
 
 const DEFAULT_VISIBLE_COLUMNS = [
   "SORUMLU UZMAN",
@@ -32,11 +33,11 @@ const sortOptions: SortOption[] = [
 
 const ProcedureStatus = () => {
   const { workplaces, isLoading, refetch } = useWorkplaceData();
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<string>("İŞYERİ ADI");
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [pageSize, setPageSize] = useFilterMemory("procedureStatus_pageSize", 10);
+  const [currentPage, setCurrentPage] = useFilterMemory("procedureStatus_currentPage", 1);
+  const [searchTerm, setSearchTerm] = useFilterMemory("procedureStatus_searchTerm", "");
+  const [sortBy, setSortBy] = useFilterMemory("procedureStatus_sortBy", "İŞYERİ ADI");
+  const [selectedStatuses, setSelectedStatuses] = useFilterMemory("procedureStatus_selectedStatuses", [] as string[]);
 
   const filteredAndSortedWorkplaces = React.useMemo(() => {
     if (!workplaces) return [];
