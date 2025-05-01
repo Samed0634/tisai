@@ -9,7 +9,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Çağrı Yapılacak İşyerleri",
       value: 0,
       icon: MessageSquare,
-      color: "#0ea5e9",
+      color: "#00FFFF", // Aqua
       dataSource: "çağrı_yapılacak_view"
     },
     {
@@ -17,7 +17,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Yetki Tespiti İstenen İşyerleri",
       value: 0,
       icon: ScrollText,
-      color: "#10b981",
+      color: "#87CEEB", // Bordro (Sky Blue)
       dataSource: "yetki_tespit_istenecek_view"
     },
     {
@@ -25,7 +25,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Yetki Belgesi Tebliğ Yapılan İşyerleri",
       value: 0,
       icon: CheckCircle,
-      color: "#6366f1",
+      color: "#FFC0CB", // Pembe (Pink)
       dataSource: "yetki_belgesi_tebliğ_yapılan_view"
     },
     {
@@ -33,7 +33,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Yer ve Gün Tespiti Yapılan İşyerleri",
       value: 0,
       icon: Calendar,
-      color: "#ec4899",
+      color: "#8A2BE2", // BlueViolet
       dataSource: "yer_ve_gün_tespit_tarihli_view"
     },
     {
@@ -41,7 +41,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Önceden Belirlenen İlk Oturum",
       value: 0,
       icon: Calendar,
-      color: "#a855f7",
+      color: "#F5F5DC", // Beige
       dataSource: "önceden_belirlenen_ilk_oturum_view"
     },
     {
@@ -49,7 +49,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "İlk Oturum Gereken İşyerleri",
       value: 0,
       icon: Building,
-      color: "#f59e0b",
+      color: "#0000FF", // Blue
       dataSource: "ilk_oturum_tutulması_gereken_view"
     },
     {
@@ -57,7 +57,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Müzakere Süresi Dolan İşyerleri",
       value: 0,
       icon: Briefcase,
-      color: "#ef4444",
+      color: "#FFA500", // Orange
       dataSource: "müzakere_süresi_dolan_view"
     },
     {
@@ -65,7 +65,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Uyuşmazlık Gereken İşyerleri",
       value: 0,
       icon: ShieldAlert,
-      color: "#84cc16",
+      color: "#FF0000", // Red
       dataSource: "uyuşmazlık_bildirimi_yapılması_gereken_view"
     },
     {
@@ -73,7 +73,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Grev Kararı Alınması Gereken İşyerleri",
       value: 0,
       icon: AlertCircle,
-      color: "#f43f5e",
+      color: "#FFFF00", // Sarı (Yellow)
       dataSource: "grev_kararı_alınması_gereken_view"
     },
     {
@@ -81,7 +81,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Grev Oylaması Yapılması Gereken İşyerleri",
       value: 0,
       icon: Vote,
-      color: "#0284c7",
+      color: "#ADD8E6", // Açık Mavi (Light Blue)
       dataSource: "grev_oylaması_yapılması_gereken_view"
     },
     {
@@ -89,7 +89,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "YHK Gönderimi Gereken İşyerleri",
       value: 0,
       icon: Scale,
-      color: "#0d9488",
+      color: "#7FFFD4", // Aquamarine
       dataSource: "yhk_gönderim_gereken_view"
     },
     {
@@ -97,7 +97,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "İmzalanan Tisler",
       value: 0,
       icon: BarChart3,
-      color: "#8b5cf6",
+      color: "#00FF00", // Yeşil (Green)
       dataSource: "imzalanan_tisler_view"
     },
     {
@@ -105,7 +105,7 @@ export const getDashboardData = (): DashboardItem[] => {
       title: "Grev Yasağı Olan İşyerleri",
       value: 0,
       icon: ShieldAlert,
-      color: "#dc2626",
+      color: "#E0FFFF", // LightCyan
       dataSource: "grev_yasağı_olan_view"
     },
   ];

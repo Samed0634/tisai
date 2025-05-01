@@ -21,6 +21,9 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   color,
   className
 }) => {
+  // Extract text color class for highlighting red items
+  const isHighlightedRed = className?.includes("text-destructive");
+
   return (
     <Card 
       onClick={onClick} 
@@ -30,6 +33,10 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         "cursor-pointer group",
         className
       )}
+      style={{ 
+        borderTop: `3px solid ${color}`,
+        boxShadow: `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px ${color}25`
+      }}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className={cn(
@@ -39,10 +46,14 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
           {title}
         </CardTitle>
         <div className={cn(
-          "rounded-xl bg-primary/10 p-2.5 text-primary",
+          "rounded-xl p-2.5",
           "transition-all duration-300 ease-in-out",
-          "group-hover:scale-110 group-hover:bg-primary/15 group-hover:rotate-[-5deg]"
-        )}>
+          "group-hover:scale-110 group-hover:rotate-[-5deg]"
+        )}
+        style={{ 
+          backgroundColor: `${color}20`,
+          color: color
+        }}>
           <Icon className="h-5 w-5" />
         </div>
       </CardHeader>
@@ -50,9 +61,11 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         <div className={cn(
           "text-2xl font-bold tracking-tight",
           "transition-colors duration-300",
-          "group-hover:text-primary",
           className
-        )}>
+        )}
+        style={{ 
+          color: isHighlightedRed ? "var(--destructive)" : color 
+        }}>
           {value.toLocaleString('tr-TR')}
         </div>
         <p className={cn(
