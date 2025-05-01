@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarFooter } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -20,8 +19,8 @@ export const UserFooter = () => {
       // First check if there's an active session
       const { data: sessionData } = await supabase.auth.getSession();
       
+      // Only attempt to sign out if there's an active session
       if (sessionData && sessionData.session) {
-        // Only attempt to sign out if there's an active session
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
         
@@ -33,11 +32,11 @@ export const UserFooter = () => {
         // If no session exists, just redirect to login
         toast({
           title: "Oturum bulunamadı",
-          description: "Zaten çıkış yapılmış durumda. Giriş sayfasına yönlendiriliyorsunuz."
+          description: "Oturum zaten sonlanmış. Giriş sayfasına yönlendiriliyorsunuz."
         });
       }
       
-      // Redirect to login page regardless of whether there was an active session
+      // Redirect to login page regardless of session status
       setTimeout(() => {
         navigate('/login');
       }, 500);

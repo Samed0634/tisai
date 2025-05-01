@@ -23,16 +23,24 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   
   useEffect(() => {
+    // First set up the auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+      
+      // Log the auth state change for debugging
+      console.log(`Auth state changed: ${event}`, session ? "Session active" : "No session");
+    });
+    
+    // Then check for existing session
     const checkAuth = async () => {
       const { data } = await supabase.auth.getSession();
       setIsAuthenticated(!!data.session);
+      
+      // Log the initial session state for debugging
+      console.log("Initial session check:", data.session ? "Session active" : "No session");
     };
     
     checkAuth();
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session);
-    });
     
     return () => subscription.unsubscribe();
   }, []);
