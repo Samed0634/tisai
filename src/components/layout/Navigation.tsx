@@ -41,7 +41,7 @@ export function Navigation() {
 
       <NavigationLink to="/statistics" onClick={handleLinkClick}>
         <ChartPie className="h-4 w-4" />
-        <span className="truncate">Raporlama</span>
+        <span className="truncate">İstatistik &amp; Raporlama</span>
       </NavigationLink>
     </nav>;
 }
