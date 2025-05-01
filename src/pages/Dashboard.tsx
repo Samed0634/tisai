@@ -119,70 +119,60 @@ const Dashboard = () => {
   const imzalananTislerData = filterItemsBySearchTerm(getListItems('imzalanan_tisler_view'));
   const grevYasagiData = filterItemsBySearchTerm(getListItems('grev_yasağı_olan_view'));
 
-  return (
-    <div className="flex space-x-4">
-      {/* Fixed left side search panel */}
-      <div className="w-72 min-w-72 sticky top-0 h-screen pt-4 pr-4">
+  return <div className="space-y-6">
+      <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
+      
+      <div className="container mx-auto">
         <SearchBox 
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           placeholder="İşyeri, uzman veya durum ara..."
         />
       </div>
-      
-      {/* Main content area */}
-      <div className="flex-1 space-y-6">
-        <DashboardHeader allDashboardData={allDashboardData} selectedCards={selectedCards} onToggleCard={toggleCard} />
-        
-        {showEditableTable ? (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <Button variant="outline" onClick={() => setShowEditableTable(false)}>
-                Gösterge Paneline Dön
-              </Button>
-            </div>
-            
-            {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} />}
-            
-            {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} />}
 
-            {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} />}
-            
-            {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} />}
-
-            {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} />}
+      {showEditableTable ? <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <Button variant="outline" onClick={() => setShowEditableTable(false)}>
+              Gösterge Paneline Dön
+            </Button>
           </div>
-        ) : (
-          <DashboardGrid items={filteredDashboardData} onCardClick={handleCardClick} />
-        )}
+          
+          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} />}
+          
+          {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} />}
 
-        <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
-          <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden">
-            <DialogHeader>
-              <DialogTitle>İşyeri Detayları</DialogTitle>
-            </DialogHeader>
-            {selectedItem && <WorkplaceItemDetails item={selectedItem} />}
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
-  );
+          {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} />}
+          
+          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} />}
+
+          {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} />}
+        </div> : <DashboardGrid items={filteredDashboardData} onCardClick={handleCardClick} />}
+
+      <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle>İşyeri Detayları</DialogTitle>
+          </DialogHeader>
+          {selectedItem && <WorkplaceItemDetails item={selectedItem} />}
+        </DialogContent>
+      </Dialog>
+    </div>;
 };
 
 export default Dashboard;
