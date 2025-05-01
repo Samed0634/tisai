@@ -82,17 +82,6 @@ export const EditableTable = ({
     setVisibleColumns(newVisibleColumns);
   };
 
-  // Helper function to check if a value is a valid date
-  const isValidDate = (dateValue: any): boolean => {
-    if (dateValue === null || dateValue === undefined || dateValue === '') {
-      return false;
-    }
-    
-    // Try to create a date object
-    const date = new Date(dateValue);
-    return !isNaN(date.getTime());
-  };
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -119,7 +108,7 @@ export const EditableTable = ({
                 checked={visibleColumns.includes(column)}
                 onCheckedChange={() => toggleColumn(column)}
               >
-                {column === 'updated_at' ? 'Son Güncelleme' : column}
+                {column}
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>
@@ -131,9 +120,7 @@ export const EditableTable = ({
           <TableHeader>
             <TableRow>
               {visibleColumns.map(column => (
-                <TableHead key={column}>
-                  {column === 'updated_at' ? 'Son Güncelleme' : column}
-                </TableHead>
+                <TableHead key={column}>{column}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -160,11 +147,9 @@ export const EditableTable = ({
                         autoFocus
                       />
                     ) : (
-                      column === 'updated_at' && isValidDate(workplace[column])
-                        ? formatInTimeZone(new Date(workplace[column]), 'Europe/Istanbul', 'dd.MM.yyyy HH:mm', { locale: tr })
-                        : column.includes("TARİHİ") && isValidDate(workplace[column])
-                          ? formatInTimeZone(new Date(workplace[column]), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })
-                          : workplace[column]
+                      column.includes("TARİHİ") && workplace[column]
+                        ? formatInTimeZone(new Date(workplace[column]), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })
+                        : workplace[column]
                     )}
                   </TableCell>
                 ))}

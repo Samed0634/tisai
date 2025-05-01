@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Filter } from "lucide-react";
 import { DashboardItem } from "./dashboardTypes";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DashboardHeaderProps {
   allDashboardData: DashboardItem[];
@@ -41,23 +40,21 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <h2 className="text-3xl font-bold tracking-tight">Gösterge Paneli</h2>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="ml-auto flex items-center gap-2 group">
-            <Filter className="h-4 w-4 transition-transform duration-300 ease-in-out group-hover:translate-y-[2px] group-hover:-translate-y-[2px] animate-pulse" />
+          <Button variant="outline" size="sm" className="ml-auto flex items-center gap-2">
+            <Filter className="h-4 w-4" />
             Kartları Filtrele
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
-          <ScrollArea className="h-[300px]">
-            {allDashboardData.map((card) => (
-              <DropdownMenuCheckboxItem
-                key={card.id}
-                checked={selectedCards.includes(card.id)}
-                onCheckedChange={() => onToggleCard(card.id)}
-              >
-                {card.title}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </ScrollArea>
+          {allDashboardData.map((card) => (
+            <DropdownMenuCheckboxItem
+              key={card.id}
+              checked={selectedCards.includes(card.id)}
+              onCheckedChange={() => onToggleCard(card.id)}
+            >
+              {card.title}
+            </DropdownMenuCheckboxItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

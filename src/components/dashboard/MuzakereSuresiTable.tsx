@@ -7,15 +7,20 @@ interface MuzakereSuresiTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
-  defaultColumns?: string[];
 }
 
 export const MuzakereSuresiTable: React.FC<MuzakereSuresiTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch,
-  defaultColumns
+  refetch
 }) => {
+  const defaultColumns = [
+    "SORUMLU UZMAN",
+    "BAĞLI OLDUĞU ŞUBE",
+    "İŞYERİ ADI",
+    "İLK OTURUM TARİHİ"
+  ];
+
   return (
     <EditableTableBase 
       data={data}
@@ -24,14 +29,7 @@ export const MuzakereSuresiTable: React.FC<MuzakereSuresiTableProps> = ({
       tableType="muzakereSuresiColumns"
       editableField="UYUŞMAZLIK TARİHİ"
       title="Müzakere Süresi Dolan İşyerleri"
-      defaultColumns={defaultColumns || [
-        "SORUMLU UZMAN",
-        "BAĞLI OLDUĞU ŞUBE",
-        "İŞYERİ ADI",
-        "İLK OTURUM TARİHİ",
-        "durum",
-        "updated_at"
-      ]}
+      defaultColumns={defaultColumns}
     />
   );
 };

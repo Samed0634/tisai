@@ -7,24 +7,21 @@ interface YhkGonderimTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
-  defaultColumns?: string[];
 }
 
 export const YhkGonderimTable: React.FC<YhkGonderimTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch,
-  defaultColumns
+  refetch
 }) => {
   return (
     <EditableTableBase 
       data={data}
       isLoading={isLoading}
       refetch={refetch}
-      tableType="yhkColumns"
+      tableType="yhkGonderimColumns"
       editableField="YHK GÖNDERİM TARİHİ"
-      title="YHK Gönderimi Gereken İşyerleri"
-      defaultColumns={defaultColumns}
+      title="YHK Gönderim Gereken İşyerleri"
     />
   );
 };

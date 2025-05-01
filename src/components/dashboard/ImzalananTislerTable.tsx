@@ -7,14 +7,12 @@ interface ImzalananTislerTableProps {
   data: Workplace[];
   isLoading?: boolean;
   refetch: () => void;
-  defaultColumns?: string[];
 }
 
 export const ImzalananTislerTable: React.FC<ImzalananTislerTableProps> = ({ 
   data, 
   isLoading = false,
-  refetch,
-  defaultColumns
+  refetch
 }) => {
   return (
     <EditableTableBase 
@@ -24,7 +22,6 @@ export const ImzalananTislerTable: React.FC<ImzalananTislerTableProps> = ({
       tableType="imzalananTislerColumns"
       editableField="TİS GELİŞ TARİHİ"
       title="İmzalanan Tisler"
-      defaultColumns={defaultColumns}
     />
   );
 };

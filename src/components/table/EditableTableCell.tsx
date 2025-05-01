@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useFormToSupabase } from "@/utils/formToSupabase";
 import { getDataDbColumn } from "@/utils/columnMappings";
+import { format, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { tr } from "date-fns/locale";
 
@@ -42,36 +43,10 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
     }
   };
 
-  // Helper function to check if a value is a valid date
-  const isValidDate = (dateValue: any): boolean => {
-    if (dateValue === null || dateValue === undefined || dateValue === '') {
-      return false;
-    }
-
-    // Try to create a date object
-    const date = new Date(dateValue);
-    return !isNaN(date.getTime());
-  };
-
-  // Format date safely
-  const formatDateSafely = (dateValue: any, formatString: string): string => {
-    if (!isValidDate(dateValue)) {
-      return '';
-    }
-
-    try {
-      return formatInTimeZone(new Date(dateValue), 'Europe/Istanbul', formatString, { locale: tr });
-    } catch (error) {
-      console.error(`Error formatting date ${dateValue}:`, error);
-      return '';
-    }
-  };
-
   if (isEditing && isEditable) {
     // For date fields, use date input type
     if (field.includes('TARİHİ')) {
-      const dateValue = value && isValidDate(value) ? 
-        new Date(value).toISOString().split('T')[0] : '';
+      const dateValue = value ? new Date(value).toISOString().split('T')[0] : '';
       
       return (
         <Input 
@@ -99,10 +74,8 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
   return (
     <span className={cn(className)}>
       {field.includes('TARİHİ') && value
-        ? formatDateSafely(value, 'dd.MM.yyyy')
-        : field === "updated_at" && value
-          ? formatDateSafely(value, 'dd.MM.yyyy HH:mm')
-          : value}
+        ? formatInTimeZone(new Date(value), 'Europe/Istanbul', 'dd.MM.yyyy', { locale: tr })
+        : value}
     </span>
   );
 };
