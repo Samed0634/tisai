@@ -1,15 +1,19 @@
-
 import React from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
-import { TableActions } from "./TableActions";
 import { EditableTableCell } from "./EditableTableCell";
+import { TableActions } from "./TableActions";
 import { Workplace } from "@/types/workplace";
-import { ColumnType } from "@/constants/tableColumns";
-import { cn } from "@/lib/utils";
+
+interface ColumnDefinition {
+  id: string;
+  title: string;
+  editable?: boolean;
+  renderCell?: (item: Workplace) => React.ReactNode;
+}
 
 interface TableBodyProps {
   data: Workplace[];
-  visibleColumnDefinitions: ColumnType[];
+  visibleColumnDefinitions: ColumnDefinition[];
   editingId: number | null;
   editData: Workplace | null;
   handleEdit: (item: Workplace) => void;
@@ -28,12 +32,12 @@ export const TableBody: React.FC<TableBodyProps> = ({
   handleCancel,
   handleChange,
   handleSave,
-  editableField,
+  editableField
 }) => {
   if (data.length === 0) {
     return (
       <TableRow>
-        <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6 text-xs">
+        <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
           Görüntülenecek veri bulunamadı
         </TableCell>
       </TableRow>
@@ -43,36 +47,41 @@ export const TableBody: React.FC<TableBodyProps> = ({
   return (
     <>
       {data.map((item) => (
-        <TableRow key={item.ID} className="hover:bg-muted/50 text-xs">
-          <TableCell className="sticky left-0 bg-background z-10 text-xs">
-            <TableActions 
+        <TableRow key={item.ID}>
+          <TableCell>
+            <TableActions
+              item={item}
               isEditing={editingId === item.ID}
-              onEdit={() => handleEdit(item)}
-              onSave={handleSave}
+              onEdit={handleEdit}
               onCancel={handleCancel}
+              onSave={handleSave}
             />
           </TableCell>
           
           {visibleColumnDefinitions.map(column => {
-            // Make all fields editable
-            const isEditable = true;
+            // If the column has a custom render function, use it
+            if (column.renderCell) {
+              return (
+                <TableCell key={column.id}>
+                  {column.renderCell(item)}
+                </TableCell>
+              );
+            }
+            
+            // Otherwise, handle as normal column
+            const isEditable = column.editable && column.id === editableField;
+            const isCurrentlyEditing = editingId === item.ID;
             
             return (
-              <TableCell 
-                key={`${item.ID}-${column.id}`}
-                className={cn(
-                  "text-xs",
-                  column.id === editableField && "bg-yellow-50"
+              <TableCell key={column.id}>
+                {isEditable && isCurrentlyEditing ? (
+                  <EditableTableCell
+                    value={editData?.[column.id]}
+                    onChange={(value) => handleChange(column.id, value)}
+                  />
+                ) : (
+                  item[column.id]
                 )}
-              >
-                <EditableTableCell 
-                  value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
-                  isEditing={editingId === item.ID}
-                  isEditable={isEditable}
-                  field={column.id}
-                  rowId={item.ID}
-                  onChange={handleChange}
-                />
               </TableCell>
             );
           })}

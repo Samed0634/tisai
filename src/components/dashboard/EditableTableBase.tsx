@@ -8,6 +8,15 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useTableEdit } from '@/hooks/useTableEdit';
 import { TableColumnFilter } from './table/TableColumnFilter';
 
+interface CustomColumn {
+  position: number;
+  render: (item: Workplace) => React.ReactNode;
+}
+
+interface CustomColumnsConfig {
+  [key: string]: CustomColumn;
+}
+
 interface EditableTableBaseProps {
   data: Workplace[];
   isLoading?: boolean;
@@ -24,6 +33,7 @@ interface EditableTableBaseProps {
   setCurrentPage?: (page: number) => void;
   pageSizeOptions?: number[];
   showHorizontalScrollbar?: boolean;
+  customColumns?: CustomColumnsConfig;
 }
 
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
@@ -41,7 +51,8 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   setPageSize: externalSetPageSize,
   setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
-  showHorizontalScrollbar = false
+  showHorizontalScrollbar = false,
+  customColumns = {}
 }) => {
   const { visibleColumns, toggleColumn } = useTableColumns({
     tableType,
@@ -85,6 +96,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       title={title}
       titleClassName={titleClassName}
       editableField={editableField}
+      customColumns={customColumns}
     />
   );
 };
