@@ -12,7 +12,6 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { TableBody } from "./TableBody";
 import { TableHeader as TableHeaderComponent } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Workplace } from "@/types/workplace";
 import { COLUMNS } from "@/constants/tableColumns";
 
@@ -151,20 +150,20 @@ export const TableContent: React.FC<TableContentProps> = ({
             </TableBodyUI>
           </Table>
         </TableContainer>
+        
+        {data.length > 0 && (
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={data.length}
+            startIndex={startIndex}
+            onPageSizeChange={handlePageSizeChange}
+            onPreviousPage={handlePreviousPage}
+            onNextPage={handleNextPage}
+          />
+        )}
       </div>
-
-      {data.length > 0 && (
-        <TablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          pageSize={pageSize}
-          totalItems={data.length}
-          startIndex={startIndex}
-          onPageSizeChange={handlePageSizeChange}
-          onPreviousPage={handlePreviousPage}
-          onNextPage={handleNextPage}
-        />
-      )}
     </div>
   );
 };

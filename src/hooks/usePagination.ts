@@ -17,14 +17,15 @@ export const usePagination = ({ data, pageSize, currentPage }: UsePaginationProp
   }
 
   const totalPages = Math.ceil(data.length / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
+  const adjustedCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (adjustedCurrentPage - 1) * pageSize;
   const paginatedData = pageSize ? data.slice(startIndex, startIndex + pageSize) : data;
 
   return {
     totalPages,
     startIndex,
     paginatedData,
-    hasNextPage: currentPage < totalPages,
-    hasPreviousPage: currentPage > 1
+    hasNextPage: adjustedCurrentPage < totalPages,
+    hasPreviousPage: adjustedCurrentPage > 1
   };
 };
