@@ -114,3 +114,14 @@ th.action-column, td.action-column {
   display: flex;
   flex-direction: column;
 }
+
+/* Full width container for procedure status page */
+.full-width-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}

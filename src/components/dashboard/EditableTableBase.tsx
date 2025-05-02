@@ -66,7 +66,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   }
 
   return (
-    <div className="fill-container flex flex-col h-full">
+    <div className="w-full h-full flex flex-col overflow-hidden">
       <TableContent
         data={data}
         isLoading={isLoading}
