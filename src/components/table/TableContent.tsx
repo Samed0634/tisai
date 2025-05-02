@@ -6,6 +6,7 @@ import {
   TableHead,
   TableRow,
   TableBody as TableBodyUI,
+  TableContainer,
 } from "@/components/ui/table";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { TableBody } from "./TableBody";
@@ -114,7 +115,7 @@ export const TableContent: React.FC<TableContentProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full flex flex-col">
       <TableHeaderComponent 
         title={title}
         titleClassName={titleClassName}
@@ -124,34 +125,32 @@ export const TableContent: React.FC<TableContentProps> = ({
         onPageSizeChange={handlePageSizeChange}
       />
       
-      <div className="border rounded-md overflow-hidden">
-        <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
-          <div className="min-w-max">
-            <Table className="text-xs">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">İşlem</TableHead>
-                  {reorderedColumnDefinitions.map(column => (
-                    <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBodyUI>
-                <TableBody 
-                  data={paginatedData}
-                  visibleColumnDefinitions={reorderedColumnDefinitions}
-                  editingId={editingId}
-                  editData={editData}
-                  handleEdit={handleEdit}
-                  handleCancel={handleCancel}
-                  handleChange={handleChange}
-                  handleSave={handleSave}
-                  editableField={editableField}
-                />
-              </TableBodyUI>
-            </Table>
-          </div>
-        </ScrollArea>
+      <div className="border rounded-md overflow-hidden flex-grow flex flex-col">
+        <TableContainer className="h-full">
+          <Table className="text-xs">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">İşlem</TableHead>
+                {reorderedColumnDefinitions.map(column => (
+                  <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBodyUI>
+              <TableBody 
+                data={paginatedData}
+                visibleColumnDefinitions={reorderedColumnDefinitions}
+                editingId={editingId}
+                editData={editData}
+                handleEdit={handleEdit}
+                handleCancel={handleCancel}
+                handleChange={handleChange}
+                handleSave={handleSave}
+                editableField={editableField}
+              />
+            </TableBodyUI>
+          </Table>
+        </TableContainer>
       </div>
 
       {data.length > 0 && (

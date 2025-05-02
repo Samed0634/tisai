@@ -5,7 +5,7 @@ import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, FileDown, Filter } from "lucide-react"; // Changed from FileExcel to FileDown
+import { ArrowDown, FileDown, Filter } from "lucide-react"; 
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
@@ -87,7 +87,7 @@ const ProcedureStatus = () => {
   const statusFilterCount = selectedStatuses.length;
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto py-6 space-y-6 h-full flex flex-col">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Prosedür Durumu</h1>
         
@@ -150,7 +150,7 @@ const ProcedureStatus = () => {
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border shadow-sm overflow-hidden">
+      <div className="rounded-md border shadow-sm overflow-hidden flex-grow flex flex-col">
         <EditableTableBase
           data={filteredAndSortedWorkplaces}
           isLoading={isLoading}

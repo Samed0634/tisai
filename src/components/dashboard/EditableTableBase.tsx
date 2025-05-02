@@ -67,25 +67,27 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   }
 
   return (
-    <TableContent
-      data={data}
-      isLoading={isLoading}
-      visibleColumns={visibleColumns}
-      toggleColumn={toggleColumn}
-      editingId={editingId}
-      editData={editData}
-      handleEdit={handleEdit}
-      handleCancel={handleCancel}
-      handleChange={handleChange}
-      handleSave={handleSave}
-      pageSize={pageSize}
-      setPageSize={setPageSizeInternal}
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPageInternal}
-      title={title}
-      titleClassName={titleClassName}
-      editableField={editableField}
-    />
+    <div className="fill-container">
+      <TableContent
+        data={data}
+        isLoading={isLoading}
+        visibleColumns={visibleColumns}
+        toggleColumn={toggleColumn}
+        editingId={editingId}
+        editData={editData}
+        handleEdit={handleEdit}
+        handleCancel={handleCancel}
+        handleChange={handleChange}
+        handleSave={handleSave}
+        pageSize={pageSize}
+        setPageSize={setPageSizeInternal}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPageInternal}
+        title={title}
+        titleClassName={titleClassName}
+        editableField={editableField}
+      />
+    </div>
   );
 };
 

@@ -165,27 +165,6 @@ export type Database = {
         }
         Relationships: []
       }
-      vectordata: {
-        Row: {
-          ID: number
-          "İŞYERİ ADI": string | null
-          "MADDE 1: AMAÇ": string | null
-          "YÜRÜRLÜK SÜRESİ": string | null
-        }
-        Insert: {
-          ID?: number
-          "İŞYERİ ADI"?: string | null
-          "MADDE 1: AMAÇ"?: string | null
-          "YÜRÜRLÜK SÜRESİ"?: string | null
-        }
-        Update: {
-          ID?: number
-          "İŞYERİ ADI"?: string | null
-          "MADDE 1: AMAÇ"?: string | null
-          "YÜRÜRLÜK SÜRESİ"?: string | null
-        }
-        Relationships: []
-      }
     }
     Views: {
       çağrı_yapılacak_view: {
