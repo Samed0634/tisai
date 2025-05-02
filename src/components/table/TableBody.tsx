@@ -1,3 +1,4 @@
+
 import React from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { EditableTableCell } from "./EditableTableCell";
@@ -78,6 +79,10 @@ export const TableBody: React.FC<TableBodyProps> = ({
                   <EditableTableCell
                     value={editData?.[column.id]}
                     onChange={(value) => handleChange(column.id, value)}
+                    isEditing={isCurrentlyEditing}
+                    isEditable={isEditable}
+                    field={column.id}
+                    rowId={item.ID}
                   />
                 ) : (
                   item[column.id]
