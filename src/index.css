@@ -46,6 +46,11 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
   }
+  
+  /* Make all images fill their container and scale automatically */
+  img {
+    @apply w-full h-full object-cover;
+  }
 }
 
 @layer components {
@@ -79,5 +84,27 @@
 
   .text-small {
     @apply text-sm font-medium leading-none;
+  }
+  
+  /* Responsive image container class */
+  .img-container {
+    @apply relative w-full h-full;
+  }
+  
+  .img-container img {
+    @apply absolute inset-0 w-full h-full object-cover;
+  }
+  
+  /* Aspect ratio containers for different image types */
+  .img-square {
+    @apply aspect-square;
+  }
+  
+  .img-wide {
+    @apply aspect-video;
+  }
+  
+  .img-banner {
+    @apply aspect-[21/9];
   }
 }

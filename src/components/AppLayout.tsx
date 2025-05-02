@@ -12,12 +12,19 @@ const AppLayout = () => {
   // Initialize inactivity timeout
   useInactivityTimeout();
   
-  return <SidebarProvider>
+  return (
+    <SidebarProvider>
       <div className="flex h-screen w-full bg-background">
         <Sidebar className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
           <SidebarHeader className="flex items-center gap-2 px-6 py-4 border-b border-sidebar-border">
             <div className="flex items-center gap-2">
-              <img alt="TISAI Logo" className="h-8 w-8 object-contain" src="/lovable-uploads/6e25183a-c0c6-4bc5-81cb-1862000a1413.png" />
+              <div className="h-8 w-8 relative overflow-hidden">
+                <img 
+                  alt="TISAI Logo" 
+                  src="/lovable-uploads/6e25183a-c0c6-4bc5-81cb-1862000a1413.png" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <span className="font-semibold text-lg text-white">TISAI</span>
             </div>
           </SidebarHeader>
@@ -36,6 +43,8 @@ const AppLayout = () => {
         </div>
         <Toaster />
       </div>
-    </SidebarProvider>;
+    </SidebarProvider>
+  );
 };
+
 export default AppLayout;

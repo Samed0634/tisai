@@ -9,39 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      belgeler: {
-        Row: {
-          belge_konusu: string | null
-          created_at: string | null
-          id: string
-          imza_tarihi: string | null
-          isyeri_adi: string | null
-          storage_path: string
-          user_id: string
-          yururluk_suresi: string | null
-        }
-        Insert: {
-          belge_konusu?: string | null
-          created_at?: string | null
-          id?: string
-          imza_tarihi?: string | null
-          isyeri_adi?: string | null
-          storage_path: string
-          user_id: string
-          yururluk_suresi?: string | null
-        }
-        Update: {
-          belge_konusu?: string | null
-          created_at?: string | null
-          id?: string
-          imza_tarihi?: string | null
-          isyeri_adi?: string | null
-          storage_path?: string
-          user_id?: string
-          yururluk_suresi?: string | null
-        }
-        Relationships: []
-      }
       eissywebtalep: {
         Row: {
           "Ad ve Soyad": string
