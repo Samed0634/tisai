@@ -4,40 +4,39 @@ import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, FileDown, Filter } from "lucide-react"; // Changed from FileExcel to FileDown
+import { ArrowDown, FileDown, Filter } from "lucide-react";
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
 import { exportToExcel } from "@/utils/exportUtils";
+
 const DEFAULT_VISIBLE_COLUMNS = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI", "durum"];
+
 type SortOption = {
   value: string;
   label: string;
 };
-const sortOptions: SortOption[] = [{
-  value: "İŞYERİ ADI",
-  label: "İşyeri Adı"
-}, {
-  value: "SORUMLU UZMAN",
-  label: "Sorumlu Uzman"
-}, {
-  value: "BAĞLI OLDUĞU ŞUBE",
-  label: "Bağlı Olduğu Şube"
-}, {
-  value: "durum",
-  label: "Durum"
-}];
+
+const sortOptions: SortOption[] = [
+  { value: "İŞYERİ ADI", label: "İşyeri Adı" },
+  { value: "SORUMLU UZMAN", label: "Sorumlu Uzman" },
+  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" },
+  { value: "durum", label: "Durum" }
+];
+
 const ProcedureStatus = () => {
   const {
     workplaces,
     isLoading,
     refetch
   } = useWorkplaceData();
+  
   const [pageSize, setPageSize] = useFilterMemory("procedureStatus_pageSize", 10);
   const [currentPage, setCurrentPage] = useFilterMemory("procedureStatus_currentPage", 1);
   const [searchTerm, setSearchTerm] = useFilterMemory("procedureStatus_searchTerm", "");
   const [sortBy, setSortBy] = useFilterMemory("procedureStatus_sortBy", "İŞYERİ ADI");
   const [selectedStatuses, setSelectedStatuses] = useFilterMemory("procedureStatus_selectedStatuses", [] as string[]);
+
   const filteredAndSortedWorkplaces = React.useMemo(() => {
     if (!workplaces) return [];
     const normalizedSearchTerm = searchTerm.toLowerCase().trim();
@@ -61,20 +60,23 @@ const ProcedureStatus = () => {
       return aValue.localeCompare(bValue);
     });
   }, [workplaces, searchTerm, sortBy, selectedStatuses]);
+
   const handleStatusChange = (statuses: string[]) => {
     setSelectedStatuses(statuses);
     setCurrentPage(1); // Reset to first page when filters change
   };
+
   const handleExportToExcel = () => {
     if (filteredAndSortedWorkplaces.length > 0) {
       exportToExcel(filteredAndSortedWorkplaces, "Prosedür_Durumu");
     }
   };
+
   const statusFilterCount = selectedStatuses.length;
-  return <div className="container mx-auto py-6 space-y-6">
+
+  return (
+    <div className="container mx-auto py-6 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        
-        
         <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleExportToExcel}>
           <FileDown className="h-4 w-4" />
           <span>Excel İndir</span>
@@ -119,8 +121,26 @@ const ProcedureStatus = () => {
       </div>
 
       <div className="rounded-md border shadow-sm overflow-hidden">
-        <EditableTableBase data={filteredAndSortedWorkplaces} isLoading={isLoading} refetch={refetch} tableType="default" editableField="durum" title="Prosedür Durumu" defaultColumns={DEFAULT_VISIBLE_COLUMNS} titleClassName="text-xl" pageSize={pageSize} currentPage={currentPage} setPageSize={setPageSize} setCurrentPage={setCurrentPage} pageSizeOptions={[10, 20, 30, 40, 50]} showHorizontalScrollbar={true} />
+        <EditableTableBase 
+          data={filteredAndSortedWorkplaces} 
+          isLoading={isLoading} 
+          refetch={refetch} 
+          tableType="default" 
+          editableField="durum" 
+          title="Prosedür Durumu" 
+          defaultColumns={DEFAULT_VISIBLE_COLUMNS} 
+          titleClassName="text-xl" 
+          pageSize={pageSize} 
+          currentPage={currentPage} 
+          setPageSize={setPageSize} 
+          setCurrentPage={setCurrentPage} 
+          pageSizeOptions={[10, 20, 30, 40, 50]} 
+          showHorizontalScrollbar={true}
+          logActions={true}
+        />
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ProcedureStatus;

@@ -23,6 +23,7 @@ export const ImzalananTislerTable: React.FC<ImzalananTislerTableProps> = ({
       editableField="TİS GELİŞ TARİHİ"
       title="İmzalanan Tisler"
       showTisUploader={true}
+      logActions={true}
     />
   );
 };
