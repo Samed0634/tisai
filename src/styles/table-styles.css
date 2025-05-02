@@ -4,18 +4,8 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem; /* 14px - slightly smaller for compact design */
-  margin-bottom: 0;
+  margin-bottom: 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  table-layout: fixed;
-}
-
-/* Table Container */
-.table-container {
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  flex: 1;
-  min-height: 0;
 }
 
 /* Table Header Styling */
@@ -49,8 +39,6 @@ tbody td {
   padding: 0.6rem 1rem;
   color: #334155;
   vertical-align: middle;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 /* Data alignment */
@@ -96,32 +84,4 @@ th.action-column, td.action-column {
   left: 0;
   z-index: 5;
   box-shadow: 2px 0 5px -2px rgba(0,0,0,0.05);
-}
-
-/* Make sure table fills container */
-.fill-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-height: 0;
-}
-
-.fill-container > div {
-  flex-grow: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Full width container for procedure status page */
-.full-width-container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
 }

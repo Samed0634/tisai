@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { usePagination } from '@/hooks/usePagination';
@@ -66,27 +67,25 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   }
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden">
-      <TableContent
-        data={data}
-        isLoading={isLoading}
-        visibleColumns={visibleColumns}
-        toggleColumn={toggleColumn}
-        editingId={editingId}
-        editData={editData}
-        handleEdit={handleEdit}
-        handleCancel={handleCancel}
-        handleChange={handleChange}
-        handleSave={handleSave}
-        pageSize={pageSize}
-        setPageSize={setPageSizeInternal}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPageInternal}
-        title={title}
-        titleClassName={titleClassName}
-        editableField={editableField}
-      />
-    </div>
+    <TableContent
+      data={data}
+      isLoading={isLoading}
+      visibleColumns={visibleColumns}
+      toggleColumn={toggleColumn}
+      editingId={editingId}
+      editData={editData}
+      handleEdit={handleEdit}
+      handleCancel={handleCancel}
+      handleChange={handleChange}
+      handleSave={handleSave}
+      pageSize={pageSize}
+      setPageSize={setPageSizeInternal}
+      currentPage={currentPage}
+      setCurrentPage={setCurrentPageInternal}
+      title={title}
+      titleClassName={titleClassName}
+      editableField={editableField}
+    />
   );
 };
 

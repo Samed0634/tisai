@@ -7,7 +7,7 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="w-full h-full overflow-auto">
+  <div className="relative w-full overflow-auto">
     <table
       ref={ref}
       className={cn("w-full caption-bottom text-sm", className)}
@@ -106,19 +106,6 @@ const TableCaption = React.forwardRef<
 ))
 TableCaption.displayName = "TableCaption"
 
-// Responsive table container component
-const TableContainer = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("w-full h-full overflow-auto flex-grow min-h-0", className)}
-    {...props}
-  />
-))
-TableContainer.displayName = "TableContainer"
-
 export {
   Table,
   TableHeader,
@@ -128,5 +115,4 @@ export {
   TableRow,
   TableCell,
   TableCaption,
-  TableContainer,
 }

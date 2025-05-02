@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -5,6 +6,7 @@ import { Filter } from "lucide-react";
 import { DashboardItem } from "./dashboardTypes";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
 import { SearchBox } from "@/components/data-details/SearchBox";
+
 interface DashboardHeaderProps {
   allDashboardData: DashboardItem[];
   selectedCards: string[];
@@ -12,6 +14,7 @@ interface DashboardHeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
 }
+
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   allDashboardData,
   selectedCards,
@@ -38,9 +41,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   useEffect(() => {
     setSavedSelections(selectedCards);
   }, [selectedCards, setSavedSelections]);
-  return <div className="mb-6">
+
+  return (
+    <div className="mb-6">
       <div className="flex justify-between items-center">
-        
+        <h2 className="text-3xl font-bold tracking-tight">Gösterge Paneli</h2>
         <div className="flex flex-col items-end gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -50,17 +55,29 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[200px]">
-              {allDashboardData.map(card => <DropdownMenuCheckboxItem key={card.id} checked={selectedCards.includes(card.id)} onCheckedChange={() => onToggleCard(card.id)}>
+              {allDashboardData.map((card) => (
+                <DropdownMenuCheckboxItem
+                  key={card.id}
+                  checked={selectedCards.includes(card.id)}
+                  onCheckedChange={() => onToggleCard(card.id)}
+                >
                   {card.title}
-                </DropdownMenuCheckboxItem>)}
+                </DropdownMenuCheckboxItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
           
           <div className="w-[260px]">
-            <SearchBox searchTerm={searchTerm} onSearchChange={onSearchChange} placeholder="İşyeri, uzman veya durum ara..." />
+            <SearchBox 
+              searchTerm={searchTerm}
+              onSearchChange={onSearchChange}
+              placeholder="İşyeri, uzman veya durum ara..."
+            />
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default DashboardHeader;

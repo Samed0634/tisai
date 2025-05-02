@@ -9,7 +9,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableContainer
 } from "@/components/ui/table";
 import { StatusBadge } from "./StatusBadge";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -46,52 +45,50 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   );
 
   return (
-    <div className="rounded-md border h-full flex flex-col min-h-0">
-      <TableContainer>
-        <Table>
-          <TableHeader>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-[#ea384c]">İşlem</TableHead>
+            {visibleColumnDefinitions.map(column => (
+              <TableHead key={column.id}>{column.title}</TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.length === 0 ? (
             <TableRow>
-              <TableHead className="text-[#ea384c]">İşlem</TableHead>
-              {visibleColumnDefinitions.map(column => (
-                <TableHead key={column.id}>{column.title}</TableHead>
-              ))}
+              <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
+                Görüntülenecek veri bulunamadı
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
-                  Görüntülenecek veri bulunamadı
+          ) : (
+            data.map((item) => (
+              <TableRow key={item.id} className="hover:bg-muted/50">
+                <TableCell>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => onUpdateClick(item)}
+                    className="hover:bg-primary hover:text-white"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
                 </TableCell>
-              </TableRow>
-            ) : (
-              data.map((item) => (
-                <TableRow key={item.id} className="hover:bg-muted/50">
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => onUpdateClick(item)}
-                      className="hover:bg-primary hover:text-white"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
+                {visibleColumnDefinitions.map(column => (
+                  <TableCell key={column.id}>
+                    {column.id === 'SON DURUM' ? (
+                      <StatusBadge status={item[column.id] || 'Bekliyor'} />
+                    ) : (
+                      item[column.id]
+                    )}
                   </TableCell>
-                  {visibleColumnDefinitions.map(column => (
-                    <TableCell key={column.id}>
-                      {column.id === 'SON DURUM' ? (
-                        <StatusBadge status={item[column.id] || 'Bekliyor'} />
-                      ) : (
-                        item[column.id]
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                ))}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 };
