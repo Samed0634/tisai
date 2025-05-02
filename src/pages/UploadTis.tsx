@@ -70,7 +70,7 @@ const UploadTis = () => {
     }
   };
   return <div className="space-y-6">
-      <h1 className="heading-1">Belge/Tis Yükleme</h1>
+      <h1 className="heading-1">Tis Yükleme</h1>
       <p className="text-secondary-600">
         Bağıtlanan Toplu İş Sözleşmesi (TİS) dosyalarını sisteme yükleyebilirsiniz.
       </p>
