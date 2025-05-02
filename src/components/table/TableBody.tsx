@@ -35,7 +35,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
   editableField,
   showTisUploader = false,
   refetch,
-  logActions = false,
+  logActions = true, // Default to true to ensure all actions are logged
 }) => {
   if (data.length === 0) {
     return (

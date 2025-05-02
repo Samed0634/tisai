@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Workplace } from "@/types/workplace";
 import { useActionHistory } from "./useActionHistory";
 
-export const useTableEdit = (refetch: () => void, logActions: boolean = false) => {
+export const useTableEdit = (refetch: () => void, logActions: boolean = true) => {
   const { toast } = useToast();
   const { logAction } = useActionHistory();
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -86,7 +86,7 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = false) =
         throw saveError;
       }
 
-      // Only log actions if logActions is true
+      // Always log actions since we want to track all changes
       if (logActions) {
         // Find changed fields and their values
         const changedFields = Object.entries(editData).filter(([key, value]) => {

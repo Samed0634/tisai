@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ActionHistory } from "@/types/actionHistory";
 import { useToast } from "@/hooks/use-toast";
@@ -9,8 +9,10 @@ export const useActivityHistory = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     try {
+      setLoading(true);
+      
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -62,7 +64,11 @@ export const useActivityHistory = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  const refreshActivities = useCallback(() => {
+    fetchActivities();
+  }, [fetchActivities]);
 
   useEffect(() => {
     fetchActivities();
@@ -86,7 +92,7 @@ export const useActivityHistory = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [fetchActivities]);
 
-  return { activities, loading };
+  return { activities, loading, refreshActivities };
 };

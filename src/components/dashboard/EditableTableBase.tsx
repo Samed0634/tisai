@@ -45,7 +45,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   pageSizeOptions = [10, 20, 30, 40, 50],
   showHorizontalScrollbar = false,
   showTisUploader = false,
-  logActions = false
+  logActions = true // Default to true to ensure all actions are logged
 }) => {
   const { visibleColumns, toggleColumn } = useTableColumns({
     tableType,

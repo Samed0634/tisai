@@ -8,11 +8,11 @@ import { useActivityFilters } from "@/hooks/useActivityFilters";
 import { ActivityFilter } from "@/components/activity/ActivityFilter";
 import { ActivityTable } from "@/components/activity/ActivityTable";
 import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
+import { FileDown, RefreshCw } from "lucide-react";
 import { exportToExcel } from "@/utils/exportUtils";
 
 const ActivityHistory: React.FC = () => {
-  const { activities, loading } = useActivityHistory();
+  const { activities, loading, refreshActivities } = useActivityHistory();
   
   const {
     paginatedActivities,
@@ -47,6 +47,15 @@ const ActivityHistory: React.FC = () => {
       <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
         <CardTitle>İşlem Geçmişi</CardTitle>
         <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-2" 
+            onClick={refreshActivities}
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Yenile</span>
+          </Button>
           <Button 
             variant="outline" 
             size="sm" 

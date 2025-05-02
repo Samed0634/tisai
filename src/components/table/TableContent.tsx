@@ -56,7 +56,7 @@ export const TableContent: React.FC<TableContentProps> = ({
   titleClassName,
   editableField,
   showTisUploader = false,
-  logActions = false,
+  logActions = true, // Default to true to ensure all actions are logged
 }) => {
   if (isLoading) {
     return (
@@ -155,7 +155,7 @@ export const TableContent: React.FC<TableContentProps> = ({
                   handleSave={handleSave}
                   editableField={editableField}
                   showTisUploader={showTisUploader}
-                  refetch={() => {}} // We'll handle refetch from the parent
+                  refetch={() => {}} 
                   logActions={logActions}
                 />
               </TableBodyUI>

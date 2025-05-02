@@ -69,7 +69,7 @@ export const TisUploadButton: React.FC<TisUploadButtonProps> = ({
 
       if (updateError) throw updateError;
 
-      // Log the action
+      // Always log the action
       await logAction(`"${workplaceName}" işyeri için TİS dosyası yüklendi.`);
 
       toast({
