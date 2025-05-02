@@ -32,8 +32,8 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   onNextPage,
 }) => {
   return (
-    <div className="flex items-center justify-between py-2 border-t text-xs">
-      <div className="flex items-center gap-1">
+    <div className="flex justify-between items-center gap-2 py-2 text-xs">
+      <div className="flex gap-2">
         <button
           onClick={onPreviousPage}
           disabled={currentPage === 1}
@@ -42,28 +42,23 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
           Önceki
         </button>
         <span className="px-2 py-1 rounded bg-primary text-white text-xs">
-          {currentPage} / {totalPages || 1}
+          {currentPage} / {totalPages}
         </span>
         <button
           onClick={onNextPage}
-          disabled={currentPage === totalPages || totalPages === 0}
+          disabled={currentPage === totalPages}
           className="px-2 py-1 rounded border border-gray-300 disabled:opacity-50 text-xs"
         >
           Sonraki
         </button>
       </div>
-      
-      <span className="text-xs text-muted-foreground hidden sm:inline">
-        Toplam {totalItems} kayıttan {startIndex + 1}-{Math.min(startIndex + pageSize, totalItems)} arası gösteriliyor
-      </span>
-      
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <span className="text-xs text-muted-foreground">Sayfa başına:</span>
         <Select
           value={pageSize.toString()}
           onValueChange={onPageSizeChange}
         >
-          <SelectTrigger className="h-7 w-[60px] text-xs">
+          <SelectTrigger className="w-[80px] text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -74,6 +69,9 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
           </SelectContent>
         </Select>
       </div>
+      <span className="text-xs text-muted-foreground">
+        Toplam {totalItems} kayıttan {startIndex + 1}-{Math.min(startIndex + pageSize, totalItems)} arası gösteriliyor
+      </span>
     </div>
   );
 };

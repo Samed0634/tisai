@@ -125,17 +125,3 @@ th.action-column, td.action-column {
   flex-direction: column;
   flex-grow: 1;
 }
-
-/* Compact pagination styling */
-.pagination-compact {
-  border-top: 1px solid #e2e8f0;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f8fafc;
-}
-
-.pagination-compact button {
-  min-height: 1.75rem;
-}
