@@ -26,7 +26,7 @@ export function Navigation() {
 
       <NavigationLink to="/upload-tis" onClick={handleLinkClick}>
         <Upload className="h-4 w-4" />
-        <span className="truncate">Belge/TİS Yükle</span>
+        <span className="truncate">TİS Yükle</span>
       </NavigationLink>
 
       <NavigationLink to="/download-tis" onClick={handleLinkClick}>
