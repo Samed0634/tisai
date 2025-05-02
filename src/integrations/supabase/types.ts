@@ -85,7 +85,6 @@ export type Database = {
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
           "TİS İMZA TARİHİ": string | null
-          tis_url: string | null
           updated_at: string | null
           "ÜYE SAYISI": number | null
           "UYUŞMAZLIK TARİHİ": string | null
@@ -121,7 +120,6 @@ export type Database = {
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
           "TİS İMZA TARİHİ"?: string | null
-          tis_url?: string | null
           updated_at?: string | null
           "ÜYE SAYISI"?: number | null
           "UYUŞMAZLIK TARİHİ"?: string | null
@@ -157,7 +155,6 @@ export type Database = {
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
           "TİS İMZA TARİHİ"?: string | null
-          tis_url?: string | null
           updated_at?: string | null
           "ÜYE SAYISI"?: number | null
           "UYUŞMAZLIK TARİHİ"?: string | null
@@ -165,6 +162,27 @@ export type Database = {
           "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
           "YETKİ TESPİT İSTEM TARİHİ"?: string | null
           "YHK GÖNDERİM TARİHİ"?: string | null
+        }
+        Relationships: []
+      }
+      vectordata: {
+        Row: {
+          ID: number
+          "İŞYERİ ADI": string | null
+          "MADDE 1: AMAÇ": string | null
+          "YÜRÜRLÜK SÜRESİ": string | null
+        }
+        Insert: {
+          ID?: number
+          "İŞYERİ ADI"?: string | null
+          "MADDE 1: AMAÇ"?: string | null
+          "YÜRÜRLÜK SÜRESİ"?: string | null
+        }
+        Update: {
+          ID?: number
+          "İŞYERİ ADI"?: string | null
+          "MADDE 1: AMAÇ"?: string | null
+          "YÜRÜRLÜK SÜRESİ"?: string | null
         }
         Relationships: []
       }

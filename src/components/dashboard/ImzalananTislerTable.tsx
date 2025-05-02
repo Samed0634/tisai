@@ -2,7 +2,6 @@
 import React from "react";
 import { EditableTableBase } from "./EditableTableBase";
 import { Workplace } from "@/types/workplace";
-import { TisUploadButton } from "./TisUploadButton";
 
 interface ImzalananTislerTableProps {
   data: Workplace[];
@@ -15,16 +14,6 @@ export const ImzalananTislerTable: React.FC<ImzalananTislerTableProps> = ({
   isLoading = false,
   refetch
 }) => {
-  // Custom render function for the TİS Upload column
-  const renderTisUploadCell = (item: Workplace) => {
-    return (
-      <TisUploadButton 
-        workplaceId={item.ID} 
-        workplaceName={item["İŞYERİ ADI"] || ""}
-      />
-    );
-  };
-
   return (
     <EditableTableBase 
       data={data}
@@ -33,12 +22,6 @@ export const ImzalananTislerTable: React.FC<ImzalananTislerTableProps> = ({
       tableType="imzalananTislerColumns"
       editableField="TİS GELİŞ TARİHİ"
       title="İmzalanan Tisler"
-      customColumns={{
-        "TİS Yükleme": {
-          position: 1, // Position after the "İşlem" column
-          render: renderTisUploadCell
-        }
-      }}
     />
   );
 };

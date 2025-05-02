@@ -4,15 +4,13 @@ import { Edit, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface TableActionsProps {
-  item: any;
   isEditing: boolean;
-  onEdit: (item: any) => void;
+  onEdit: () => void;
   onSave: () => void;
   onCancel: () => void;
 }
 
 export const TableActions: React.FC<TableActionsProps> = ({
-  item,
   isEditing,
   onEdit,
   onSave,
@@ -45,7 +43,7 @@ export const TableActions: React.FC<TableActionsProps> = ({
     <Button
       variant="outline"
       size="icon"
-      onClick={() => onEdit(item)}
+      onClick={onEdit}
       className="hover:bg-primary hover:text-white"
     >
       <Edit className="h-4 w-4" />

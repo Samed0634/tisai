@@ -1,20 +1,15 @@
 
 import React from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
-import { EditableTableCell } from "./EditableTableCell";
 import { TableActions } from "./TableActions";
+import { EditableTableCell } from "./EditableTableCell";
 import { Workplace } from "@/types/workplace";
-
-interface ColumnDefinition {
-  id: string;
-  title: string;
-  editable?: boolean;
-  renderCell?: (item: Workplace) => React.ReactNode;
-}
+import { ColumnType } from "@/constants/tableColumns";
+import { cn } from "@/lib/utils";
 
 interface TableBodyProps {
   data: Workplace[];
-  visibleColumnDefinitions: ColumnDefinition[];
+  visibleColumnDefinitions: ColumnType[];
   editingId: number | null;
   editData: Workplace | null;
   handleEdit: (item: Workplace) => void;
@@ -33,12 +28,12 @@ export const TableBody: React.FC<TableBodyProps> = ({
   handleCancel,
   handleChange,
   handleSave,
-  editableField
+  editableField,
 }) => {
   if (data.length === 0) {
     return (
       <TableRow>
-        <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6">
+        <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6 text-xs">
           Görüntülenecek veri bulunamadı
         </TableCell>
       </TableRow>
@@ -48,45 +43,36 @@ export const TableBody: React.FC<TableBodyProps> = ({
   return (
     <>
       {data.map((item) => (
-        <TableRow key={item.ID}>
-          <TableCell>
-            <TableActions
-              item={item}
+        <TableRow key={item.ID} className="hover:bg-muted/50 text-xs">
+          <TableCell className="sticky left-0 bg-background z-10 text-xs">
+            <TableActions 
               isEditing={editingId === item.ID}
-              onEdit={handleEdit}
-              onCancel={handleCancel}
+              onEdit={() => handleEdit(item)}
               onSave={handleSave}
+              onCancel={handleCancel}
             />
           </TableCell>
           
           {visibleColumnDefinitions.map(column => {
-            // If the column has a custom render function, use it
-            if (column.renderCell) {
-              return (
-                <TableCell key={column.id}>
-                  {column.renderCell(item)}
-                </TableCell>
-              );
-            }
-            
-            // Otherwise, handle as normal column
-            const isEditable = column.editable && column.id === editableField;
-            const isCurrentlyEditing = editingId === item.ID;
+            // Make all fields editable
+            const isEditable = true;
             
             return (
-              <TableCell key={column.id}>
-                {isEditable && isCurrentlyEditing ? (
-                  <EditableTableCell
-                    value={editData?.[column.id]}
-                    onChange={(value) => handleChange(column.id, value)}
-                    isEditing={isCurrentlyEditing}
-                    isEditable={isEditable}
-                    field={column.id}
-                    rowId={item.ID}
-                  />
-                ) : (
-                  item[column.id]
+              <TableCell 
+                key={`${item.ID}-${column.id}`}
+                className={cn(
+                  "text-xs",
+                  column.id === editableField && "bg-yellow-50"
                 )}
+              >
+                <EditableTableCell 
+                  value={editData && editingId === item.ID ? editData[column.id] : item[column.id]}
+                  isEditing={editingId === item.ID}
+                  isEditable={isEditable}
+                  field={column.id}
+                  rowId={item.ID}
+                  onChange={handleChange}
+                />
               </TableCell>
             );
           })}

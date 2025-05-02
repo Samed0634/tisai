@@ -15,15 +15,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Workplace } from "@/types/workplace";
 import { COLUMNS } from "@/constants/tableColumns";
 
-interface CustomColumn {
-  position: number;
-  render: (item: Workplace) => React.ReactNode;
-}
-
-interface CustomColumnsConfig {
-  [key: string]: CustomColumn;
-}
-
 interface TableContentProps {
   data: Workplace[];
   isLoading: boolean;
@@ -42,7 +33,6 @@ interface TableContentProps {
   title: string;
   titleClassName?: string;
   editableField: string;
-  customColumns?: CustomColumnsConfig;
 }
 
 export const TableContent: React.FC<TableContentProps> = ({
@@ -63,7 +53,6 @@ export const TableContent: React.FC<TableContentProps> = ({
   title,
   titleClassName,
   editableField,
-  customColumns = {},
 }) => {
   if (isLoading) {
     return (
@@ -99,23 +88,6 @@ export const TableContent: React.FC<TableContentProps> = ({
     // Insert durum at the beginning of the array (position 0)
     reorderedColumnDefinitions.unshift(durumColumn);
   }
-
-  // Create custom column definitions
-  const customColumnDefinitions = Object.entries(customColumns).map(([title, config]) => ({
-    id: title,
-    title,
-    editable: false,
-    position: config.position,
-    renderCell: config.render
-  }));
-
-  // Combine all column definitions
-  let allColumnDefinitions = [...reorderedColumnDefinitions];
-  
-  // Insert custom columns at their specified positions
-  customColumnDefinitions.forEach(customCol => {
-    allColumnDefinitions.splice(customCol.position, 0, customCol);
-  });
 
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);
@@ -159,7 +131,7 @@ export const TableContent: React.FC<TableContentProps> = ({
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">İşlem</TableHead>
-                  {allColumnDefinitions.map(column => (
+                  {reorderedColumnDefinitions.map(column => (
                     <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
                   ))}
                 </TableRow>
@@ -167,7 +139,7 @@ export const TableContent: React.FC<TableContentProps> = ({
               <TableBodyUI>
                 <TableBody 
                   data={paginatedData}
-                  visibleColumnDefinitions={allColumnDefinitions}
+                  visibleColumnDefinitions={reorderedColumnDefinitions}
                   editingId={editingId}
                   editData={editData}
                   handleEdit={handleEdit}

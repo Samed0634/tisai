@@ -5,20 +5,20 @@ import { StatusBadge } from "../data-details/StatusBadge";
 
 interface EditableTableCellProps {
   value: any;
-  onChange: (value: string | number) => void;
-  isEditing?: boolean;
-  isEditable?: boolean;
-  field?: string;
-  rowId?: number;
+  isEditing: boolean;
+  isEditable: boolean;
+  field: string;
+  rowId: number;
+  onChange: (field: string, value: string | number) => void;
 }
 
 export const EditableTableCell: React.FC<EditableTableCellProps> = ({
   value,
+  isEditing,
+  isEditable,
+  field,
+  rowId,
   onChange,
-  isEditing = true,
-  isEditable = true,
-  field = "",
-  rowId = 0,
 }) => {
   if (isEditing && isEditable) {
     if (field.includes('TARİHİ')) {
@@ -26,7 +26,7 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
         <Input
           type="date"
           value={value ? new Date(value).toISOString().split('T')[0] : ''}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(field, e.target.value)}
           className="w-40 text-xs"
         />
       );
@@ -35,7 +35,7 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
         <Input
           type="text"
           value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(field, e.target.value)}
           className="w-40 text-xs"
         />
       );
