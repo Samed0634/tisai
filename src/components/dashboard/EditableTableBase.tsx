@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { usePagination } from '@/hooks/usePagination';
@@ -67,7 +66,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   }
 
   return (
-    <div className="fill-container">
+    <div className="fill-container flex flex-col h-full">
       <TableContent
         data={data}
         isLoading={isLoading}

@@ -46,7 +46,7 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
   );
 
   return (
-    <div className="rounded-md border h-full flex-grow">
+    <div className="rounded-md border h-full flex flex-col min-h-0">
       <TableContainer>
         <Table>
           <TableHeader>

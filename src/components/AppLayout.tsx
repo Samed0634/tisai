@@ -37,8 +37,8 @@ const AppLayout = () => {
         
         <div className="flex-1 flex flex-col overflow-hidden bg-gray-50">
           <AppHeader />
-          <main className="flex-1 overflow-y-auto p-4 flex flex-col">
-            <div className="flex-grow flex flex-col">
+          <main className="flex-1 overflow-hidden p-4 flex flex-col">
+            <div className="flex-grow flex flex-col min-h-0">
               <Outlet />
             </div>
           </main>

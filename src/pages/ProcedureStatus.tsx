@@ -87,8 +87,8 @@ const ProcedureStatus = () => {
   const statusFilterCount = selectedStatuses.length;
 
   return (
-    <div className="container mx-auto py-6 space-y-6 h-full flex flex-col">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="container mx-auto py-6 flex flex-col h-full">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <h1 className="text-2xl font-bold tracking-tight">Prosedür Durumu</h1>
         
         <Button 
@@ -102,7 +102,7 @@ const ProcedureStatus = () => {
         </Button>
       </div>
       
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
         <div className="flex flex-1 flex-col sm:flex-row gap-2 sm:items-center">
           <SearchBox 
             searchTerm={searchTerm}
@@ -150,7 +150,7 @@ const ProcedureStatus = () => {
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border shadow-sm overflow-hidden flex-grow flex flex-col">
+      <div className="flex-grow flex flex-col border rounded-md shadow-sm overflow-hidden">
         <EditableTableBase
           data={filteredAndSortedWorkplaces}
           isLoading={isLoading}

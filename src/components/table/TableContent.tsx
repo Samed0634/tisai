@@ -57,7 +57,7 @@ export const TableContent: React.FC<TableContentProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="rounded-md border p-8">
+      <div className="rounded-md border p-8 flex items-center justify-center h-64">
         <LoadingSpinner />
       </div>
     );
@@ -115,7 +115,7 @@ export const TableContent: React.FC<TableContentProps> = ({
   };
 
   return (
-    <div className="space-y-4 h-full flex flex-col">
+    <div className="flex flex-col h-full">
       <TableHeaderComponent 
         title={title}
         titleClassName={titleClassName}
@@ -125,7 +125,7 @@ export const TableContent: React.FC<TableContentProps> = ({
         onPageSizeChange={handlePageSizeChange}
       />
       
-      <div className="border rounded-md overflow-hidden flex-grow flex flex-col">
+      <div className="border rounded-md overflow-hidden flex-grow flex flex-col min-h-0">
         <TableContainer className="h-full">
           <Table className="text-xs">
             <TableHeader>
