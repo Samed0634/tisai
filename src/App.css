@@ -1,8 +1,23 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+/* Responsive image styling */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Make images fill their containers when needed */
+.img-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Modern Scrollbar */
