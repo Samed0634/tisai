@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useTableColumns } from '@/hooks/useTableColumns';
 import { usePagination } from '@/hooks/usePagination';
@@ -24,6 +25,7 @@ interface EditableTableBaseProps {
   pageSizeOptions?: number[];
   showHorizontalScrollbar?: boolean;
   showTisUploader?: boolean;
+  logActions?: boolean;
 }
 
 export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
@@ -42,14 +44,15 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
   showHorizontalScrollbar = false,
-  showTisUploader = false
+  showTisUploader = false,
+  logActions = false
 }) => {
   const { visibleColumns, toggleColumn } = useTableColumns({
     tableType,
     defaultColumns: defaultColumns || getDefaultColumns(tableType)
   });
 
-  const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave } = useTableEdit(refetch);
+  const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave } = useTableEdit(refetch, logActions);
 
   const [internalPageSize, setInternalPageSize] = useState(externalPageSize);
   const [internalCurrentPage, setInternalCurrentPage] = useState(externalCurrentPage);
@@ -87,6 +90,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
       titleClassName={titleClassName}
       editableField={editableField}
       showTisUploader={showTisUploader}
+      logActions={logActions}
     />
   );
 };

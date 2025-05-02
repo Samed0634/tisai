@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   Table,
@@ -33,6 +34,7 @@ interface TableContentProps {
   titleClassName?: string;
   editableField: string;
   showTisUploader?: boolean;
+  logActions?: boolean;
 }
 
 export const TableContent: React.FC<TableContentProps> = ({
@@ -54,6 +56,7 @@ export const TableContent: React.FC<TableContentProps> = ({
   titleClassName,
   editableField,
   showTisUploader = false,
+  logActions = false,
 }) => {
   if (isLoading) {
     return (
@@ -153,6 +156,7 @@ export const TableContent: React.FC<TableContentProps> = ({
                   editableField={editableField}
                   showTisUploader={showTisUploader}
                   refetch={() => {}} // We'll handle refetch from the parent
+                  logActions={logActions}
                 />
               </TableBodyUI>
             </Table>

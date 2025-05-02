@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Workplace } from "@/types/workplace";
 import { useActionHistory } from "./useActionHistory";
 
-export const useTableEdit = (refetch: () => void) => {
+export const useTableEdit = (refetch: () => void, logActions: boolean = false) => {
   const { toast } = useToast();
   const { logAction } = useActionHistory();
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -86,27 +86,30 @@ export const useTableEdit = (refetch: () => void) => {
         throw saveError;
       }
 
-      // Find changed fields and their values
-      const changedFields = Object.entries(editData).filter(([key, value]) => {
-        return previousData[key as keyof Workplace] !== value;
-      });
+      // Only log actions if logActions is true
+      if (logActions) {
+        // Find changed fields and their values
+        const changedFields = Object.entries(editData).filter(([key, value]) => {
+          return previousData[key as keyof Workplace] !== value;
+        });
 
-      // Create detailed action message for each changed field
-      for (const [field, newValue] of changedFields) {
-        const oldValue = previousData[field as keyof Workplace];
-        let displayValue = newValue;
-        let oldDisplayValue = oldValue;
+        // Create detailed action message for each changed field
+        for (const [field, newValue] of changedFields) {
+          const oldValue = previousData[field as keyof Workplace];
+          let displayValue = newValue;
+          let oldDisplayValue = oldValue;
 
-        // Format dates for display
-        if (field.includes('TARİHİ') && newValue) {
-          displayValue = new Date(newValue).toLocaleDateString('tr-TR');
-          if (oldValue) {
-            oldDisplayValue = new Date(oldValue).toLocaleDateString('tr-TR');
+          // Format dates for display
+          if (field.includes('TARİHİ') && newValue) {
+            displayValue = new Date(newValue).toLocaleDateString('tr-TR');
+            if (oldValue) {
+              oldDisplayValue = new Date(oldValue).toLocaleDateString('tr-TR');
+            }
           }
-        }
 
-        const actionMessage = `"${editData["İŞYERİ ADI"] || 'Yeni işyeri'}" işyerinin "${field}" değeri "${oldDisplayValue || 'boş'}" -> "${displayValue}" olarak güncellenmiştir.`;
-        await logAction(actionMessage);
+          const actionMessage = `"${editData["İŞYERİ ADI"] || 'Yeni işyeri'}" işyerinin "${field}" değeri "${oldDisplayValue || 'boş'}" -> "${displayValue}" olarak güncellenmiştir.`;
+          await logAction(actionMessage);
+        }
       }
       
       toast({

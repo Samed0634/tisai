@@ -20,6 +20,7 @@ interface TableBodyProps {
   editableField: string;
   showTisUploader?: boolean;
   refetch: () => void;
+  logActions?: boolean;
 }
 
 export const TableBody: React.FC<TableBodyProps> = ({
@@ -34,6 +35,7 @@ export const TableBody: React.FC<TableBodyProps> = ({
   editableField,
   showTisUploader = false,
   refetch,
+  logActions = false,
 }) => {
   if (data.length === 0) {
     return (
