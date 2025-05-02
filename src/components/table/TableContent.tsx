@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Table,
@@ -33,6 +32,7 @@ interface TableContentProps {
   title: string;
   titleClassName?: string;
   editableField: string;
+  showTisUploader?: boolean;
 }
 
 export const TableContent: React.FC<TableContentProps> = ({
@@ -53,6 +53,7 @@ export const TableContent: React.FC<TableContentProps> = ({
   title,
   titleClassName,
   editableField,
+  showTisUploader = false,
 }) => {
   if (isLoading) {
     return (
@@ -130,7 +131,10 @@ export const TableContent: React.FC<TableContentProps> = ({
             <Table className="text-xs">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">İşlem</TableHead>
+                  {showTisUploader && (
+                    <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">TİS Yükleme</TableHead>
+                  )}
+                  <TableHead className={`text-[#ea384c] ${showTisUploader ? '' : 'sticky left-0'} bg-background z-10 text-xs`}>İşlem</TableHead>
                   {reorderedColumnDefinitions.map(column => (
                     <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
                   ))}
@@ -147,6 +151,8 @@ export const TableContent: React.FC<TableContentProps> = ({
                   handleChange={handleChange}
                   handleSave={handleSave}
                   editableField={editableField}
+                  showTisUploader={showTisUploader}
+                  refetch={() => {}} // We'll handle refetch from the parent
                 />
               </TableBodyUI>
             </Table>

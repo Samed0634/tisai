@@ -6,6 +6,7 @@ import { EditableTableCell } from "./EditableTableCell";
 import { Workplace } from "@/types/workplace";
 import { ColumnType } from "@/constants/tableColumns";
 import { cn } from "@/lib/utils";
+import { TisUploadButton } from "@/components/dashboard/TisUploadButton";
 
 interface TableBodyProps {
   data: Workplace[];
@@ -17,6 +18,8 @@ interface TableBodyProps {
   handleChange: (field: string, value: string | number) => void;
   handleSave: () => void;
   editableField: string;
+  showTisUploader?: boolean;
+  refetch: () => void;
 }
 
 export const TableBody: React.FC<TableBodyProps> = ({
@@ -29,11 +32,13 @@ export const TableBody: React.FC<TableBodyProps> = ({
   handleChange,
   handleSave,
   editableField,
+  showTisUploader = false,
+  refetch,
 }) => {
   if (data.length === 0) {
     return (
       <TableRow>
-        <TableCell colSpan={visibleColumnDefinitions.length + 1} className="text-center py-6 text-xs">
+        <TableCell colSpan={visibleColumnDefinitions.length + (showTisUploader ? 2 : 1)} className="text-center py-6 text-xs">
           Görüntülenecek veri bulunamadı
         </TableCell>
       </TableRow>
@@ -44,7 +49,17 @@ export const TableBody: React.FC<TableBodyProps> = ({
     <>
       {data.map((item) => (
         <TableRow key={item.ID} className="hover:bg-muted/50 text-xs">
-          <TableCell className="sticky left-0 bg-background z-10 text-xs">
+          {showTisUploader && (
+            <TableCell className="sticky left-0 bg-background z-10 text-xs">
+              <TisUploadButton 
+                workplaceId={item.ID}
+                workplaceName={item["İŞYERİ ADI"] || ""}
+                onSuccess={refetch}
+              />
+            </TableCell>
+          )}
+          
+          <TableCell className={`${showTisUploader ? '' : 'sticky left-0 bg-background z-10'} text-xs`}>
             <TableActions 
               isEditing={editingId === item.ID}
               onEdit={() => handleEdit(item)}
