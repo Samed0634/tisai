@@ -27,7 +27,7 @@ const DownloadTis = () => {
   return <div className="container mx-auto p-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Belge/Tis İndir</CardTitle>
+          <CardTitle className="text-2xl font-bold">Tis İndir</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 mb-6">
