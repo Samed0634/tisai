@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -57,20 +56,46 @@ const Signup = () => {
   const onSubmit = async (data: SignupFormValues) => {
     setIsLoading(true);
     console.log("Form verisi:", data);
+    
+    // Temizlenmiş token değeri (baştaki ve sondaki boşlukları kaldır)
+    const cleanToken = data.tokenId.trim();
+    console.log("Temizlenmiş token değeri:", cleanToken);
+    console.log("Token uzunluğu:", cleanToken.length);
 
     try {
       // Step 1: Verify token against kurumlar table
-      console.log("Token doğrulaması başlıyor:", data.tokenId);
+      console.log("Token doğrulaması başlıyor:", cleanToken);
       const { data: kurumData, error: kurumError } = await supabase
         .from("kurumlar")
         .select("id, kayit_token, token_aktif_mi")
-        .eq("kayit_token", data.tokenId)
-        .single();
+        .eq("kayit_token", cleanToken)
+        .maybeSingle(); // single() yerine maybeSingle() kullanarak not found hatası engellenebilir
 
       console.log("Token sorgusu sonucu:", { kurumData, kurumError });
+      
+      // Veritabanındaki token ile karşılaştırma detayları
+      if (kurumData) {
+        console.log("Veritabanındaki token:", kurumData.kayit_token);
+        console.log("Token karşılaştırması:", {
+          girilenToken: cleanToken,
+          dbToken: kurumData.kayit_token,
+          esitMi: cleanToken === kurumData.kayit_token
+        });
+      }
 
-      if (kurumError || !kurumData) {
-        console.error("Token doğrulama hatası:", kurumError);
+      if (kurumError) {
+        console.error("Token sorgu hatası:", kurumError);
+        toast({
+          title: "Token Sorgulama Hatası",
+          description: kurumError.message || "Token doğrulama sırasında bir hata oluştu.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      if (!kurumData) {
+        console.error("Token bulunamadı: Token veritabanında mevcut değil.");
         toast({
           title: "Token Doğrulama Hatası",
           description: "Geçersiz kurum token ID. Lütfen geçerli bir token alınız.",
@@ -82,6 +107,7 @@ const Signup = () => {
 
       // Check if token is active
       if (!kurumData.token_aktif_mi) {
+        console.log("Token pasif durumda:", kurumData.token_aktif_mi);
         toast({
           title: "Pasif Token",
           description: "Bu token aktif değil. Lütfen kurum yöneticinizle iletişime geçiniz.",
