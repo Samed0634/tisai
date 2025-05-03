@@ -30,6 +30,15 @@ const signupSchema = z.object({
   path: ["confirmPassword"],
 });
 
+// Define an interface for the kurumData object to ensure type safety
+interface KurumData {
+  id: string;
+  kayit_token: string;
+  token_aktif_mi: boolean;
+  token_kullanım_sayisi?: number; // Optional since it might be null
+  max_kullanim_sayisi?: number;   // Optional since it might be null
+}
+
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 const Signup = () => {
@@ -52,13 +61,13 @@ const Signup = () => {
 
     try {
       // Step 1: Verify token against kurumlar table
-      const { data: kurumData, error: kurumError } = await supabase
+      const { data: rawKurumData, error: kurumError } = await supabase
         .from("kurumlar")
         .select("id, kayit_token, token_aktif_mi, token_kullanım_sayisi, max_kullanim_sayisi")
         .eq("kayit_token", data.tokenId)
         .single();
 
-      if (kurumError || !kurumData) {
+      if (kurumError || !rawKurumData) {
         toast({
           title: "Token Doğrulama Hatası",
           description: "Geçersiz kurum token ID. Lütfen geçerli bir token alınız.",
@@ -67,6 +76,9 @@ const Signup = () => {
         setIsLoading(false);
         return;
       }
+
+      // Safely cast the response data to our expected interface
+      const kurumData = rawKurumData as KurumData;
 
       // Check if token is active
       if (!kurumData.token_aktif_mi) {
@@ -80,8 +92,10 @@ const Signup = () => {
       }
 
       // Check if token usage limit is reached
-      if (kurumData.max_kullanim_sayisi !== null && 
-          kurumData.token_kullanım_sayisi >= kurumData.max_kullanim_sayisi) {
+      const currentUsage = kurumData.token_kullanım_sayisi || 0;
+      const maxUsage = kurumData.max_kullanim_sayisi;
+      
+      if (maxUsage !== null && maxUsage !== undefined && currentUsage >= maxUsage) {
         toast({
           title: "Token Kullanım Limiti",
           description: "Bu token için maksimum kullanım sayısına ulaşılmıştır.",
@@ -119,7 +133,7 @@ const Signup = () => {
       const { error: updateTokenError } = await supabase
         .from("kurumlar")
         .update({ 
-          token_kullanım_sayisi: (kurumData.token_kullanım_sayisi || 0) + 1 
+          token_kullanım_sayisi: (currentUsage + 1) 
         })
         .eq("id", kurumData.id);
 

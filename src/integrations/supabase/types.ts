@@ -226,10 +226,8 @@ export type Database = {
           id: string
           kayit_token: string
           kurum_adi: string
-          max_kullanim_sayisi: number | null
           telefon: string | null
           token_aktif_mi: boolean
-          token_kullanım_sayisi: number
         }
         Insert: {
           adres?: string | null
@@ -237,10 +235,8 @@ export type Database = {
           id?: string
           kayit_token: string
           kurum_adi: string
-          max_kullanim_sayisi?: number | null
           telefon?: string | null
           token_aktif_mi: boolean
-          token_kullanım_sayisi?: number
         }
         Update: {
           adres?: string | null
@@ -248,10 +244,8 @@ export type Database = {
           id?: string
           kayit_token?: string
           kurum_adi?: string
-          max_kullanim_sayisi?: number | null
           telefon?: string | null
           token_aktif_mi?: boolean
-          token_kullanım_sayisi?: number
         }
         Relationships: []
       }
