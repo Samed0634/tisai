@@ -1,11 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const KurumAktivasyon = () => {
@@ -14,6 +14,28 @@ const KurumAktivasyon = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  useEffect(() => {
+    const checkUserKurumConnection = async () => {
+      // Check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        // Check if the user already has a connection to a kurum
+        const { data: connections, error } = await supabase
+          .from('kullanici_kurumlar')
+          .select('*')
+          .eq('user_id', session.user.id);
+          
+        if (connections && connections.length > 0) {
+          // User already has a kurum connection, redirect to dashboard
+          navigate('/');
+        }
+      }
+    };
+    
+    checkUserKurumConnection();
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,17 +49,52 @@ const KurumAktivasyon = () => {
     setMessage("");
     
     try {
+      // Try to get recent signup credentials
+      const signupEmail = localStorage.getItem("recent_signup_email");
+      const signupPassword = localStorage.getItem("recent_signup_password");
+      
       // Check if the user is authenticated
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast({
-          title: "Hata",
-          description: "Önce giriş yapmanız gerekmektedir.",
-          variant: "destructive",
-        });
-        navigate("/login");
-        return;
+        // If not authenticated but we have recent credentials, sign them in
+        if (signupEmail && signupPassword) {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: signupEmail,
+            password: signupPassword
+          });
+          
+          if (signInError) {
+            toast({
+              title: "Hata",
+              description: "Oturum açılamadı, lütfen giriş yapınız.",
+              variant: "destructive",
+            });
+            navigate("/login");
+            return;
+          }
+          
+          // Get the user object after login
+          const { data: { user: newUser } } = await supabase.auth.getUser();
+          if (!newUser) {
+            throw new Error("Kullanıcı bilgisi alınamadı.");
+          }
+        } else {
+          toast({
+            title: "Hata",
+            description: "Önce giriş yapmanız gerekmektedir.",
+            variant: "destructive",
+          });
+          navigate("/login");
+          return;
+        }
+      }
+      
+      // Get user again in case we just logged in
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (!currentUser) {
+        throw new Error("Kullanıcı bilgisi alınamadı.");
       }
       
       // Verify the token by checking the kurumlar table
@@ -76,7 +133,7 @@ const KurumAktivasyon = () => {
       const { error: connectionError } = await supabase
         .from('kullanici_kurumlar')
         .insert({
-          user_id: user.id,
+          user_id: currentUser.id,
           kurum_id: kurumData.id,
         });
         
@@ -106,6 +163,10 @@ const KurumAktivasyon = () => {
         // We should still consider this a success
       }
       
+      // Clear temporary signup credentials
+      localStorage.removeItem("recent_signup_email");
+      localStorage.removeItem("recent_signup_password");
+      
       // Success
       setMessage(`Hesabınız "${kurumData.kurum_adi}" kurumuna başarıyla bağlandı.`);
       toast({
@@ -124,6 +185,10 @@ const KurumAktivasyon = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleBackToSignup = () => {
+    navigate("/signup");
   };
 
   return (
@@ -179,6 +244,16 @@ const KurumAktivasyon = () => {
               ) : (
                 "Hesabımı Aktive Et / Bağlan"
               )}
+            </Button>
+            
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="w-full" 
+              onClick={handleBackToSignup}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Kayıt Ekranına Dön
             </Button>
           </form>
         </CardContent>

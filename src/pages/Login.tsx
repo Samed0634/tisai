@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserPlus, Link as LinkIcon } from "lucide-react";
+import { Loader2, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -193,11 +193,6 @@ const Login = () => {
                 <Link to="/signup" className="text-primary hover:underline text-sm flex items-center justify-center">
                   <UserPlus className="h-4 w-4 mr-1" />
                   Hesabın Yok mu? Kaydol
-                </Link>
-                
-                <Link to="/kurum-aktivasyon" className="text-primary hover:underline text-sm flex items-center justify-center mt-2">
-                  <LinkIcon className="h-4 w-4 mr-1" />
-                  Kurumunuzu Aktive Edin
                 </Link>
               </div>
             </form>
