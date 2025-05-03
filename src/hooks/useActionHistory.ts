@@ -8,6 +8,22 @@ export const useActionHistory = () => {
   const logAction = useCallback(async (actionName: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('No authenticated user found when trying to log action');
+        throw new Error('Authentication required');
+      }
+      
+      // Get user's kurum_id
+      const { data: userData, error: userError } = await supabase
+        .from('kullanici_kurumlar')
+        .select('kurum_id')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (userError || !userData?.kurum_id) {
+        console.error('Error getting kurum_id for user:', userError);
+        throw new Error('User institution data not found');
+      }
       
       const now = new Date();
       const turkishDate = formatInTimeZone(now, 'Europe/Istanbul', 'yyyy-MM-dd');
@@ -20,7 +36,8 @@ export const useActionHistory = () => {
           "İşlem Adı": actionName,
           "İşlem Yapan Kullanıcı": user?.email || 'Sistem',
           "Tarih": turkishDate,
-          "Saat": turkishTime
+          "Saat": turkishTime,
+          "kurum_id": userData.kurum_id
         });
 
       if (error) {
