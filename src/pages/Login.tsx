@@ -1,17 +1,15 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2, UserPlus, Link as LinkIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const loginSchema = z.object({
   email: z.string().email({
@@ -69,7 +67,7 @@ const Login = () => {
     }
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     try {
       // Handle the "Remember Me" feature
@@ -118,7 +116,7 @@ const Login = () => {
       <Card className="w-[350px]">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-2">
-            <img
+            <img 
               alt="TİS Takip Sistemi Logo"
               className="h-16 w-16 object-contain rounded-full border-2 border-primary/20"
               src="/lovable-uploads/733693aa-684f-4a0c-9a55-a65f5b9ee373.png"
@@ -126,7 +124,7 @@ const Login = () => {
           </div>
           <div className="text-center text-2xl font-bold text-foreground mb-2">TISAI</div>
           <CardTitle className="text-sm font-normal text-center text-muted-foreground">
-            Toplu İş Sözleşmesi Otomasyon Sistemi
+            Giriş Yapın
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -189,10 +187,15 @@ const Login = () => {
                 )}
               </Button>
 
-              <div className="text-center mt-4">
+              <div className="text-center mt-4 space-y-2">
                 <Link to="/signup" className="text-primary hover:underline text-sm flex items-center justify-center">
                   <UserPlus className="h-4 w-4 mr-1" />
                   Hesabın Yok mu? Kaydol
+                </Link>
+                
+                <Link to="/kurum-aktivasyon" className="text-primary hover:underline text-sm flex items-center justify-center mt-2">
+                  <LinkIcon className="h-4 w-4 mr-1" />
+                  Kurumunuzu Aktive Edin
                 </Link>
               </div>
             </form>

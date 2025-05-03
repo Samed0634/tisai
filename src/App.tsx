@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import KurumAktivasyon from "./pages/KurumAktivasyon";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
 import UploadTis from "./pages/UploadTis";
@@ -86,6 +87,7 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/kurum-aktivasyon" element={<KurumAktivasyon />} />
           
           {/* Redirect root path to login if not authenticated */}
           <Route path="/" element={
