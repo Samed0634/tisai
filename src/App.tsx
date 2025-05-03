@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import TokenActivation from "./pages/TokenActivation";
@@ -100,39 +100,59 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
 const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
+  const { isActivated, isLoading } = useUserActivationStatus(user?.id);
+  const isMounted = useRef(true);
   
   useEffect(() => {
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUser(data.session?.user || null);
-      setAuthChecked(true);
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (isMounted.current) {
+          setUser(data.session?.user || null);
+          setAuthChecked(true);
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+        if (isMounted.current) {
+          setUser(null);
+          setAuthChecked(true);
+        }
+      }
     };
     
     checkAuth();
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-      setAuthChecked(true);
+      console.log("TokenActivationRoute: Auth state changed", event);
+      if (isMounted.current) {
+        setUser(session?.user || null);
+        setAuthChecked(true);
+      }
     });
     
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted.current = false;
+      subscription.unsubscribe();
+    };
   }, []);
   
-  if (!authChecked || (user && isActivationLoading)) {
+  if (!authChecked || isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
   }
   
   // Not authenticated, redirect to login
   if (!user) {
+    console.log("TokenActivationRoute: User not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
   
   // Already activated, redirect to dashboard
   if (isActivated) {
+    console.log("TokenActivationRoute: User already activated, redirecting to dashboard");
     return <Navigate to="/" replace />;
   }
   
+  console.log("TokenActivationRoute: User authenticated but not activated, showing activation page");
   return <>{children}</>;
 };
 

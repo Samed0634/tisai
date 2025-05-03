@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +12,8 @@ export const useTokenActivation = () => {
   const { validateToken, isValidating } = useTokenValidation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (data: TokenActivationValues) => {
+  const handleSubmit = useCallback(async (data: TokenActivationValues) => {
+    console.log("Token activation started with data:", data);
     setIsSubmitting(true);
     
     try {
@@ -25,11 +26,12 @@ export const useTokenActivation = () => {
           description: "Kullanıcı oturumu bulunamadı. Lütfen tekrar giriş yapınız.",
           variant: "destructive"
         });
-        navigate("/login");
+        navigate("/login", { replace: true });
         return;
       }
       
       const userId = sessionData.session.user.id;
+      console.log("User ID for token activation:", userId);
       
       // Token doğrulama işlemi
       console.log("Token doğrulama başlıyor:", data.tokenId);
@@ -68,10 +70,10 @@ export const useTokenActivation = () => {
         description: "Hesabınız başarıyla aktive edildi. Sisteme yönlendiriliyorsunuz.",
       });
       
-      // Ana sayfaya yönlendir
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
+      // Ana sayfaya yönlendir - Immediate redirection with replace to prevent going back
+      console.log("Redirecting to home page after successful activation");
+      navigate("/", { replace: true });
+      
     } catch (error: any) {
       console.error("Aktivasyon işlemi hatası:", error);
       toast({
@@ -82,7 +84,7 @@ export const useTokenActivation = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [navigate, toast, validateToken]);
 
   const isProcessing = isValidating || isSubmitting;
 
