@@ -104,7 +104,7 @@ const SubscriptionPlans: React.FC = () => {
         >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="monthly">Aylık</TabsTrigger>
-            <TabsTrigger value="annual">Yıllık <span className="ml-1 text-xs text-green-500 font-medium">%17 İndirim</span></TabsTrigger>
+            <TabsTrigger value="annual">Yıllık <span className="ml-1 text-xs text-green-500 font-medium">%13 İndirim</span></TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -114,7 +114,7 @@ const SubscriptionPlans: React.FC = () => {
           <>
             <SubscriptionCard
               title="Plus Plan"
-              price="₺299"
+              price="$150"
               description="Temel özellikler ve sınırlı erişim"
               features={[
                 "Toplu İş Sözleşmesi Oluşturma",
@@ -130,7 +130,7 @@ const SubscriptionPlans: React.FC = () => {
 
             <SubscriptionCard
               title="Pro Plan"
-              price="₺599"
+              price="$70"
               description="Tam özellikler ve sınırsız erişim"
               features={[
                 "Plus planındaki tüm özellikler",
@@ -149,14 +149,15 @@ const SubscriptionPlans: React.FC = () => {
           <>
             <SubscriptionCard
               title="Plus Plan (Yıllık)"
-              price="₺2.988"
+              price="$1600"
               description="Temel özellikler ve sınırlı erişim"
+              interval="/yıl"
               features={[
                 "Toplu İş Sözleşmesi Oluşturma",
                 "Belgelerin PDF olarak indirilmesi",
                 "Temel istatistikler",
                 "E-posta desteği",
-                "Yıllık faturalama ile %17 tasarruf"
+                "Yıllık faturalama ile %13 tasarruf"
               ]}
               isActive={subscribed && subscription_tier === "Plus"}
               buttonText={subscribed && subscription_tier === "Plus" ? "Aktif Plan" : "Planı Seç"}
@@ -166,15 +167,16 @@ const SubscriptionPlans: React.FC = () => {
 
             <SubscriptionCard
               title="Pro Plan (Yıllık)"
-              price="₺5.988"
+              price="$750"
               description="Tam özellikler ve sınırsız erişim"
+              interval="/yıl"
               features={[
                 "Plus planındaki tüm özellikler",
                 "Gelişmiş istatistikler ve raporlama",
                 "Sınırsız belge oluşturma",
                 "Öncelikli destek",
                 "API erişimi",
-                "Yıllık faturalama ile %17 tasarruf"
+                "Yıllık faturalama ile %13 tasarruf"
               ]}
               isActive={subscribed && subscription_tier === "Pro"}
               buttonText={subscribed && subscription_tier === "Pro" ? "Aktif Plan" : "Planı Seç"}

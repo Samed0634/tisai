@@ -27,6 +27,7 @@ interface SubscriptionCardProps {
   buttonText: string;
   onSelect: () => void;
   disabled?: boolean;
+  interval?: string;
 }
 
 const SubscriptionCard = ({
@@ -38,6 +39,7 @@ const SubscriptionCard = ({
   buttonText,
   onSelect,
   disabled = false,
+  interval = "/ay"
 }: SubscriptionCardProps) => {
   return (
     <Card 
@@ -64,7 +66,7 @@ const SubscriptionCard = ({
       <CardContent className="flex-grow">
         <div className="mb-6">
           <span className="text-3xl font-bold">{price}</span>
-          <span className="text-sm text-muted-foreground">/ay</span>
+          <span className="text-sm text-muted-foreground">{interval}</span>
         </div>
         
         <div className="space-y-2">
