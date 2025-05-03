@@ -6,11 +6,11 @@ import { useToast } from "@/hooks/use-toast";
 interface SignupUserParams {
   email: string;
   password: string;
-  kurumId: string;
 }
 
 interface SignupResult {
   success: boolean;
+  userId?: string;
   error?: Error;
 }
 
@@ -18,12 +18,10 @@ export const useSignupUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const signupUser = async ({ email, password, kurumId }: SignupUserParams): Promise<SignupResult> => {
+  const signupUser = async ({ email, password }: SignupUserParams): Promise<SignupResult> => {
     setIsLoading(true);
     try {
-      // Create user in Supabase Auth
       console.log("Kullanıcı oluşturuluyor:", email);
-      console.log("Kullanıcının bağlanacağı kurum ID:", kurumId);
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -47,35 +45,12 @@ export const useSignupUser = () => {
         throw new Error("Kullanıcı oluşturulamadı. Lütfen tekrar deneyiniz.");
       }
 
-      // Create entry in kullanici_kurumlar table
-      console.log("Kurum-kullanıcı ilişkisi oluşturuluyor:", {
-        user_id: authData.user.id,
-        kurum_id: kurumId
-      });
-
-      const { error: relationError } = await supabase
-        .from("kullanici_kurumlar")
-        .insert({
-          user_id: authData.user.id,
-          kurum_id: kurumId,
-        });
-
-      console.log("İlişki oluşturma sonucu:", { relationError });
-
-      if (relationError) {
-        console.error("Kullanıcı-kurum ilişkisi oluşturma hatası:", relationError);
-        
-        // Kullanıcı oluşturuldu ama ilişki eklenemedi
-        console.log("Kullanıcı oluşturuldu ama ilişki eklenemedi, kullanıcıyı manuel olarak düzeltmek gerekebilir");
-        throw new Error("Kullanıcı-kurum ilişkisi oluşturulamadı. Lütfen yöneticinizle iletişime geçiniz.");
-      }
-
       toast({
-        title: "Başarılı",
-        description: "Kaydınız başarıyla oluşturuldu. Giriş yapabilirsiniz.",
+        title: "Hesap Oluşturuldu",
+        description: "Hesabınız oluşturuldu. Şimdi kurum token ID'nizi girerek aktivasyonu tamamlayınız.",
       });
 
-      return { success: true };
+      return { success: true, userId: authData.user.id };
     } catch (error: any) {
       console.error("Kayıt işlemi hatası:", error);
       toast({
