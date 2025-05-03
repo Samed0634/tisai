@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { v4 as uuidv4 } from 'uuid';
 
 const signupSchema = z.object({
   email: z.string().email({
@@ -55,7 +54,7 @@ const Signup = () => {
       // Step 1: Verify token against kurumlar table
       const { data: kurumData, error: kurumError } = await supabase
         .from("kurumlar")
-        .select("id, kayit_token, token_aktif_mi, token_kullanım_sayisi, max_kullanim_sayisi")
+        .select("id, kayit_token, token_aktif_mi, token_kullanim_sayisi, max_kullanim_sayisi")
         .eq("kayit_token", data.tokenId)
         .single();
 
@@ -82,7 +81,7 @@ const Signup = () => {
 
       // Check if token usage limit is reached
       if (kurumData.max_kullanim_sayisi !== null && 
-          kurumData.token_kullanım_sayisi >= kurumData.max_kullanim_sayisi) {
+          kurumData.token_kullanim_sayisi >= kurumData.max_kullanim_sayisi) {
         toast({
           title: "Token Kullanım Limiti",
           description: "Bu token için maksimum kullanım sayısına ulaşılmıştır.",
@@ -120,7 +119,7 @@ const Signup = () => {
       const { error: updateTokenError } = await supabase
         .from("kurumlar")
         .update({ 
-          token_kullanım_sayisi: (kurumData.token_kullanım_sayisi || 0) + 1 
+          token_kullanim_sayisi: (kurumData.token_kullanim_sayisi || 0) + 1 
         })
         .eq("id", kurumData.id);
 
