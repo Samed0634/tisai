@@ -100,7 +100,6 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const { isActivated, isLoading, hasError } = useUserActivationStatus(user?.id);
-  const checkCount = useRef(0);
   const redirected = useRef(false);
   
   useEffect(() => {
@@ -129,18 +128,21 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
   
-  // Only check activation status a limited number of times to avoid infinite loops
   useEffect(() => {
     if (isActivated && !redirected.current) {
-      console.log("TokenActivationRoute: User already activated, preparing to redirect");
+      console.log("TokenActivationRoute: User already activated, redirecting to dashboard");
       redirected.current = true;
+      
+      // Redirect after a small delay to prevent render loop
+      const timer = setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
+      
+      return () => clearTimeout(timer);
     }
-    
-    checkCount.current += 1;
-    console.log(`TokenActivationRoute: Check count: ${checkCount.current}`);
   }, [isActivated]);
   
-  if (!authChecked || (isLoading && checkCount.current < 3)) {
+  if (!authChecked || isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
   }
   

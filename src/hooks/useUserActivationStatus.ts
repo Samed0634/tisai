@@ -9,6 +9,7 @@ export const useUserActivationStatus = (userId: string | undefined) => {
   const isMounted = useRef(true);
   const lastCheckedUserId = useRef<string | undefined>(undefined);
   const lastActivationStatus = useRef<boolean | null>(null);
+  const checkAttempts = useRef(0);
 
   // Memoize the checkActivationStatus function to avoid recreating it on each render
   const checkActivationStatus = useCallback(async (uid: string | undefined) => {
@@ -32,6 +33,17 @@ export const useUserActivationStatus = (userId: string | undefined) => {
     }
 
     lastCheckedUserId.current = uid;
+    checkAttempts.current += 1;
+    
+    // Avoid too many attempts on the same userId
+    if (checkAttempts.current > 3 && lastActivationStatus.current !== null) {
+      console.log(`useUserActivationStatus: Max check attempts reached, using cached result: ${lastActivationStatus.current}`);
+      if (isMounted.current) {
+        setIsActivated(lastActivationStatus.current);
+        setIsLoading(false);
+      }
+      return;
+    }
     
     try {
       console.log(`useUserActivationStatus: Checking activation for user ${uid}`);
@@ -75,6 +87,7 @@ export const useUserActivationStatus = (userId: string | undefined) => {
   useEffect(() => {
     // Component mount status tracking
     isMounted.current = true;
+    checkAttempts.current = 0;
     
     // Only set loading true if we don't have cached result
     if (!(lastCheckedUserId.current === userId && lastActivationStatus.current !== null)) {

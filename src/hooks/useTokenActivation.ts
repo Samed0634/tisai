@@ -12,6 +12,7 @@ export const useTokenActivation = () => {
   const { validateToken, isValidating } = useTokenValidation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activationComplete, setActivationComplete] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const handleSubmit = useCallback(async (data: TokenActivationValues) => {
     // Don't process if already complete or in progress
@@ -19,6 +20,7 @@ export const useTokenActivation = () => {
     
     console.log("Token activation started with data:", data);
     setIsSubmitting(true);
+    setHasError(false);
     
     try {
       // First get the user session info
@@ -43,8 +45,14 @@ export const useTokenActivation = () => {
       
       if (!isValid || !kurumData) {
         console.error("Token validation failed:", error);
+        toast({
+          title: "Token Doğrulama Hatası",
+          description: error || "Hatalı token ID. Lütfen geçerli bir token giriniz.",
+          variant: "destructive"
+        });
+        setHasError(true);
         setIsSubmitting(false);
-        return; // Error messages handled in the validateToken function
+        return;
       }
       
       console.log("Token validation successful, institution data:", kurumData);
@@ -64,6 +72,7 @@ export const useTokenActivation = () => {
           description: "Kullanıcı-kurum ilişkisi oluşturulamadı. Lütfen yöneticinizle iletişime geçiniz.",
           variant: "destructive"
         });
+        setHasError(true);
         setIsSubmitting(false);
         return;
       }
@@ -78,7 +87,9 @@ export const useTokenActivation = () => {
       
       // Navigate after a short delay to ensure state updates and toast display
       console.log("Redirecting to home page after successful activation");
-      navigate("/", { replace: true });
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 1500);
       
     } catch (error: any) {
       console.error("Activation process error:", error);
@@ -87,6 +98,7 @@ export const useTokenActivation = () => {
         description: error?.message || "Aktivasyon sırasında bir hata oluştu. Lütfen tekrar deneyiniz.",
         variant: "destructive"
       });
+      setHasError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -97,6 +109,7 @@ export const useTokenActivation = () => {
   return {
     handleSubmit,
     isProcessing,
-    activationComplete
+    activationComplete,
+    hasError
   };
 };

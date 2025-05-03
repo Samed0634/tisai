@@ -28,12 +28,7 @@ export const useTokenValidation = () => {
       console.log("Token uzunluğu:", cleanToken.length);
 
       if (!cleanToken || cleanToken.length === 0) {
-        toast({
-          title: "Token Hatası",
-          description: "Token boş olamaz. Lütfen geçerli bir kurum token ID giriniz.",
-          variant: "destructive"
-        });
-        return { isValid: false, kurumData: null, error: "Token boş" };
+        return { isValid: false, kurumData: null, error: "Token boş olamaz. Lütfen geçerli bir kurum token ID giriniz." };
       }
 
       // Tüm kurumları çek ve manuel olarak karşılaştır (büyük-küçük harf duyarsız)
@@ -44,12 +39,7 @@ export const useTokenValidation = () => {
 
       if (kurumError) {
         console.error("Token sorgu hatası:", kurumError);
-        toast({
-          title: "Token Sorgulama Hatası",
-          description: kurumError.message || "Token doğrulama sırasında bir hata oluştu.",
-          variant: "destructive"
-        });
-        return { isValid: false, kurumData: null, error: kurumError.message };
+        return { isValid: false, kurumData: null, error: kurumError.message || "Token doğrulama sırasında bir hata oluştu." };
       }
 
       console.log("Veritabanından alınan kayıtlar:", kurumDataList);
@@ -71,35 +61,20 @@ export const useTokenValidation = () => {
 
       if (!kurumData) {
         console.error("Token bulunamadı: Token veritabanında mevcut değil.");
-        toast({
-          title: "Token Doğrulama Hatası",
-          description: "Geçersiz kurum token ID. Lütfen geçerli bir token alınız.",
-          variant: "destructive"
-        });
-        return { isValid: false, kurumData: null, error: "Token bulunamadı" };
+        return { isValid: false, kurumData: null, error: "Geçersiz kurum token ID. Lütfen geçerli bir token alınız." };
       }
 
       // Check if token is active
       if (!kurumData.token_aktif_mi) {
         console.log("Token pasif durumda:", kurumData.token_aktif_mi);
-        toast({
-          title: "Pasif Token",
-          description: "Bu token aktif değil. Lütfen kurum yöneticinizle iletişime geçiniz.",
-          variant: "destructive"
-        });
-        return { isValid: false, kurumData: null, error: "Token pasif durumda" };
+        return { isValid: false, kurumData: null, error: "Bu token aktif değil. Lütfen kurum yöneticinizle iletişime geçiniz." };
       }
 
       console.log("Token doğrulama başarılı:", kurumData);
       return { isValid: true, kurumData };
     } catch (error: any) {
       console.error("Token doğrulama hatası:", error);
-      toast({
-        title: "Token Doğrulama Hatası",
-        description: error?.message || "Token doğrulama sırasında bir hata oluştu.",
-        variant: "destructive"
-      });
-      return { isValid: false, kurumData: null, error: error?.message };
+      return { isValid: false, kurumData: null, error: error?.message || "Token doğrulama sırasında bir hata oluştu." };
     } finally {
       setIsValidating(false);
     }
