@@ -34,9 +34,7 @@ const baseSchema = {
   strikeProhibitionStatus: z.string({
     required_error: "Grev yasağı durumu gereklidir",
   }),
-  authDate: z.date({
-    required_error: "Yetki belgesi tebliğ tarihi gereklidir",
-  }),
+  authDate: z.date().optional(),
 };
 
 export const workplaceFormSchema = z.object({

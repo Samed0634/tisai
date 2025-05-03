@@ -3,11 +3,13 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ActionHistory } from "@/types/actionHistory";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const useActivityHistory = () => {
   const [activities, setActivities] = useState<ActionHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const fetchActivities = useCallback(async () => {
     try {
@@ -22,6 +24,7 @@ export const useActivityHistory = () => {
           description: "Oturum bilgileri alınamadı. Lütfen tekrar giriş yapın.",
           variant: "destructive",
         });
+        navigate("/login");
         setLoading(false);
         return;
       }
@@ -33,6 +36,7 @@ export const useActivityHistory = () => {
           description: "Aktif bir oturum bulunamadı. Lütfen giriş yapın.",
           variant: "destructive",
         });
+        navigate("/login");
         setLoading(false);
         return;
       }
@@ -56,6 +60,16 @@ export const useActivityHistory = () => {
       }
       
       const kurum_id = userData?.kurum_id;
+      if (!kurum_id) {
+        console.error("No kurum_id found for user");
+        toast({
+          title: "Kurum Bilgisi Bulunamadı",
+          description: "Kullanıcı için kurum bilgisi bulunamadı.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
       
       let query = supabase
         .from('İşlem Geçmişi')
@@ -91,7 +105,7 @@ export const useActivityHistory = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, navigate]);
 
   const refreshActivities = useCallback(() => {
     fetchActivities();

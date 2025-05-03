@@ -51,12 +51,23 @@ const NewData = () => {
       }
       
       const user = sessionData.session?.user;
+      if (!user) {
+        console.error("No authenticated user found");
+        toast({
+          title: "Hata",
+          description: "Oturum bilgisi bulunamadı. Lütfen tekrar giriş yapın.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        navigate("/login");
+        return;
+      }
       
       // Get the kurum_id for this user
       const { data: userData, error: userError } = await supabase
         .from('kullanici_kurumlar')
         .select('kurum_id')
-        .eq('user_id', user?.id)
+        .eq('user_id', user.id)
         .maybeSingle();
         
       if (userError) {
@@ -76,6 +87,12 @@ const NewData = () => {
         return;
       }
       
+      // Format dates properly for PostgreSQL (YYYY-MM-DD)
+      const formatDateToYYYYMMDD = (date: Date | undefined) => {
+        if (!date) return null;
+        return date.toISOString().split('T')[0];
+      };
+      
       // Prepare data object for Supabase with Turkish column names
       const insertData = {
         "İŞYERİ ADI": data.companyName,
@@ -88,10 +105,11 @@ const NewData = () => {
         "ÜYE SAYISI": data.memberCount,
         "İŞVEREN SENDİKASI": data.employerUnion,
         "GREV YASAĞI DURUMU": data.strikeProhibitionStatus,
-        "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate ? data.authDate.toISOString() : null,
+        "YETKİ BELGESİ TEBLİĞ TARİHİ": formatDateToYYYYMMDD(data.authDate),
         "İHALE ADI": data.tenderName || null,
-        "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null,
-        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null,
+        "İHALE BAŞLANGIÇ TARİHİ": formatDateToYYYYMMDD(data.tenderStartDate),
+        "İHALE BİTİŞ TARİHİ": formatDateToYYYYMMDD(data.tenderEndDate),
+        // Include kurum_id in the insertData
         kurum_id: kurum_id
       };
       
@@ -115,9 +133,7 @@ const NewData = () => {
       // Add the ID to the insert data
       const finalInsertData = {
         ...insertData,
-        "ID": nextId,
-        // Add user_id if we have authentication data
-        ...(user?.id && { user_id: user.id })
+        "ID": nextId
       };
       
       console.log("Final insert data with ID:", finalInsertData);
@@ -127,7 +143,10 @@ const NewData = () => {
         .from('isyerleri')
         .insert(finalInsertData);
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error inserting data:", error);
+        throw error;
+      }
 
       // Record the action in the history
       await logAction(`"${data.companyName}" adlı yeni işyeri kaydı oluşturuldu.`);

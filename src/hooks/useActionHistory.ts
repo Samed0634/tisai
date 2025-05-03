@@ -2,16 +2,21 @@
 import { useCallback } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { formatInTimeZone } from 'date-fns-tz';
+import { format } from 'date-fns';
 
 export const useActionHistory = () => {
   const logAction = useCallback(async (actionName: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error("No authenticated user found");
+        return;
+      }
       
+      // Get the current date and time in Turkish timezone format
       const now = new Date();
-      const turkishDate = formatInTimeZone(now, 'Europe/Istanbul', 'yyyy-MM-dd');
-      const turkishTime = formatInTimeZone(now, 'Europe/Istanbul', 'HH:mm:ss');
+      const turkishDate = format(now, 'yyyy-MM-dd');
+      const turkishTime = format(now, 'HH:mm:ss');
 
       console.log("Logging action:", {
         action: actionName,
@@ -24,7 +29,7 @@ export const useActionHistory = () => {
       const { data: userData, error: userError } = await supabase
         .from('kullanici_kurumlar')
         .select('kurum_id')
-        .eq('user_id', user?.id)
+        .eq('user_id', user.id)
         .maybeSingle();
 
       if (userError) {
@@ -32,7 +37,16 @@ export const useActionHistory = () => {
         throw userError;
       }
 
-      const kurum_id = userData?.kurum_id || null;
+      const kurum_id = userData?.kurum_id;
+      if (!kurum_id) {
+        console.error("No kurum_id found for user");
+        toast({
+          title: "Hata",
+          description: "Kullanıcı için kurum bilgisi bulunamadı.",
+          variant: "destructive"
+        });
+        return;
+      }
 
       // Log action to İşlem Geçmişi table
       const { error } = await supabase
