@@ -15,6 +15,10 @@ import AppLayout from "./components/AppLayout";
 import ActivityHistory from "./pages/ActivityHistory";
 import ProcedureStatus from "./pages/ProcedureStatus";
 import Statistics from "./pages/Statistics";
+import SubscriptionPlans from "./pages/SubscriptionPlans";
+import SubscriptionSuccessPage from "./pages/subscription/SuccessPage";
+import SubscriptionCancelPage from "./pages/subscription/CancelPage";
+import SubscriptionManagePage from "./pages/subscription/ManagePage";
 import { supabase } from "./integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -98,7 +102,21 @@ const App = () => (
             <Route path="upload-tis" element={<UploadTis />} />
             <Route path="download-tis" element={<DownloadTis />} />
             <Route path="activity-history" element={<ActivityHistory />} />
+            <Route path="subscription" element={<SubscriptionPlans />} />
+            <Route path="subscription/manage" element={<SubscriptionManagePage />} />
           </Route>
+
+          {/* Public subscription success/cancel pages */}
+          <Route path="/subscription/success" element={
+            <ProtectedRoute>
+              <SubscriptionSuccessPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/subscription/cancel" element={
+            <ProtectedRoute>
+              <SubscriptionCancelPage />
+            </ProtectedRoute>
+          } />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
