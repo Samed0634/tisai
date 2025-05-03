@@ -208,16 +208,16 @@ const KurumAktivasyon = () => {
         
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="text-center mb-4 text-muted-foreground">
-              Hesabınızı aktifleştirmek ve kurumunuza bağlanmak için size verilen tokenı girin.
+            <div className="text-center mb-4 text-muted-foreground" id="textDescrption">
+              Hesabınızı aktifleştirmek ve kurumunuza bağlanmak için size verilen Kurum Tokenını girin.
             </div>
             
             <div className="space-y-2">
-              <label htmlFor="token" className="text-sm font-medium">
-                Kurum Bağlantı Tokenı
+              <label htmlFor="inputKurumToken" className="text-sm font-medium">
+                Kurum Tokenı
               </label>
               <Input
-                id="token"
+                id="inputKurumToken"
                 type="text"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
@@ -227,15 +227,18 @@ const KurumAktivasyon = () => {
               />
             </div>
             
-            {message && (
-              <div className={`p-3 rounded-md text-center ${
-                message.includes("başarı") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-              }`}>
-                {message}
-              </div>
-            )}
+            <div id="textMesaj" className={`p-3 rounded-md text-center ${
+              message ? (message.includes("başarı") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700") : "hidden"
+            }`}>
+              {message}
+            </div>
             
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              id="buttonBaglan" 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
