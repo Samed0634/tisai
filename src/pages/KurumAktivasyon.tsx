@@ -1,11 +1,11 @@
 
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const KurumAktivasyon = () => {
@@ -14,33 +14,6 @@ const KurumAktivasyon = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  // Check if user is already authenticated and has an active kurum connection
-  useEffect(() => {
-    const checkUserStatus = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        // No session, redirect to login
-        navigate('/login');
-        return;
-      }
-      
-      // Check if user already has a kurum connection
-      const { data: kurumData } = await supabase
-        .from('kullanici_kurumlar')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-      
-      if (kurumData) {
-        // User already has a kurum connection, redirect to dashboard
-        navigate('/');
-      }
-    };
-    
-    checkUserStatus();
-  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,15 +180,6 @@ const KurumAktivasyon = () => {
                 "Hesabımı Aktive Et / Bağlan"
               )}
             </Button>
-
-            <div className="text-center mt-2">
-              <Link to="/signup">
-                <Button variant="ghost" className="text-sm" type="button">
-                  <ArrowLeft className="mr-1 h-4 w-4" />
-                  Kayıt Ekranına Dön
-                </Button>
-              </Link>
-            </div>
           </form>
         </CardContent>
         
