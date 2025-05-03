@@ -69,9 +69,7 @@ export const useTokenActivation = () => {
       });
       
       // Ana sayfaya yönlendir
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
+      navigate("/");
     } catch (error: any) {
       console.error("Aktivasyon işlemi hatası:", error);
       toast({
@@ -79,7 +77,6 @@ export const useTokenActivation = () => {
         description: error?.message || "Aktivasyon sırasında bir hata oluştu. Lütfen tekrar deneyiniz.",
         variant: "destructive"
       });
-    } finally {
       setIsSubmitting(false);
     }
   };

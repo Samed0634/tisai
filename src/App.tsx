@@ -100,26 +100,34 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
 const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
+  const { isActivated, isLoading } = useUserActivationStatus(user?.id);
   
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUser(data.session?.user || null);
-      setAuthChecked(true);
-    };
-    
-    checkAuth();
-    
+    // First set up the auth state change listener to prevent race conditions
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
       setAuthChecked(true);
     });
     
+    // Then check for existing session
+    const checkAuth = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        setUser(data.session?.user || null);
+        setAuthChecked(true);
+      } catch (err) {
+        console.error("Error checking session:", err);
+        setAuthChecked(true);
+      }
+    };
+    
+    checkAuth();
+    
     return () => subscription.unsubscribe();
   }, []);
   
-  if (!authChecked || (user && isActivationLoading)) {
+  // Show loading state while checking authentication and activation status
+  if (!authChecked || isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
   }
   
@@ -133,6 +141,7 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/" replace />;
   }
   
+  // User is authenticated but not activated, show token activation page
   return <>{children}</>;
 };
 

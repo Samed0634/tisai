@@ -7,10 +7,14 @@ export const useUserActivationStatus = (userId: string | undefined) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const checkActivationStatus = async () => {
       if (!userId) {
-        setIsActivated(false);
-        setIsLoading(false);
+        if (isMounted) {
+          setIsActivated(false);
+          setIsLoading(false);
+        }
         return;
       }
 
@@ -21,21 +25,29 @@ export const useUserActivationStatus = (userId: string | undefined) => {
           .eq("user_id", userId)
           .single();
 
-        if (error) {
-          console.error("Aktivasyon durumu kontrol hatası:", error);
-          setIsActivated(false);
-        } else {
-          setIsActivated(!!data);
+        if (isMounted) {
+          if (error) {
+            console.error("Aktivasyon durumu kontrol hatası:", error);
+            setIsActivated(false);
+          } else {
+            setIsActivated(!!data);
+          }
+          setIsLoading(false);
         }
       } catch (error) {
-        console.error("Beklenmeyen aktivasyon kontrol hatası:", error);
-        setIsActivated(false);
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          console.error("Beklenmeyen aktivasyon kontrol hatası:", error);
+          setIsActivated(false);
+          setIsLoading(false);
+        }
       }
     };
 
     checkActivationStatus();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [userId]);
 
   return { isActivated, isLoading };
