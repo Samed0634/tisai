@@ -77,6 +77,7 @@ export const SignupFormFields: React.FC<SignupFormFieldsProps> = ({ isProcessing
           </FormItem>
         )}
       />
+      {/* We don't need to render the tokenId field as it will be passed in automatically */}
     </>
   );
 };

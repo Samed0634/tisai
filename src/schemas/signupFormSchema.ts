@@ -10,7 +10,8 @@ export const signupSchema = z.object({
   }),
   confirmPassword: z.string().min(6, {
     message: "Şifre en az 6 karakter olmalıdır"
-  })
+  }),
+  tokenId: z.string().optional()
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],

@@ -28,10 +28,19 @@ export const useSignupFormSubmit = () => {
           description: "Hesabınız oluşturuldu. Şimdi kurum token ID ile aktivasyon yapmanız gerekiyor.",
         });
 
-        // Redirect to token activation page
-        navigate("/token-activation");
+        // Redirect to token activation page with the token parameter if provided
+        if (data.tokenId) {
+          navigate(`/token-activation?token=${encodeURIComponent(data.tokenId)}`);
+        } else {
+          navigate("/token-activation");
+        }
       } else {
         console.error("Kayıt işlemi sırasında hata:", signupError);
+        toast({
+          title: "Kayıt Hatası",
+          description: signupError?.message || "Kayıt işlemi sırasında bir hata oluştu.",
+          variant: "destructive"
+        });
       }
     } catch (error: any) {
       console.error("Form işleme sırasında beklenmeyen hata:", error);
