@@ -17,7 +17,7 @@ export const useTokenActivation = () => {
     setIsSubmitting(true);
     
     try {
-      // Önce kullanıcının oturum bilgisini al
+      // First get the user session info
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !sessionData.session || !sessionData.session.user) {
@@ -33,19 +33,19 @@ export const useTokenActivation = () => {
       const userId = sessionData.session.user.id;
       console.log("User ID for token activation:", userId);
       
-      // Token doğrulama işlemi
-      console.log("Token doğrulama başlıyor:", data.tokenId);
+      // Token validation process
+      console.log("Token validation starting:", data.tokenId);
       const { isValid, kurumData, error } = await validateToken(data.tokenId);
       
       if (!isValid || !kurumData) {
-        console.error("Token doğrulama başarısız:", error);
+        console.error("Token validation failed:", error);
         setIsSubmitting(false);
         return; // Error messages handled in the validateToken function
       }
       
-      console.log("Token doğrulama başarılı, kurum bilgileri:", kurumData);
+      console.log("Token validation successful, institution data:", kurumData);
       
-      // Kullanıcı-kurum ilişkisini oluştur
+      // Create user-institution relationship
       const { error: relationError } = await supabase
         .from("kullanici_kurumlar")
         .insert({
@@ -54,7 +54,7 @@ export const useTokenActivation = () => {
         });
       
       if (relationError) {
-        console.error("Kullanıcı-kurum ilişkisi oluşturma hatası:", relationError);
+        console.error("User-institution relationship creation error:", relationError);
         toast({
           title: "Aktivasyon Hatası",
           description: "Kullanıcı-kurum ilişkisi oluşturulamadı. Lütfen yöneticinizle iletişime geçiniz.",
@@ -64,18 +64,20 @@ export const useTokenActivation = () => {
         return;
       }
       
-      // Başarılı aktivasyon
+      // Successful activation
       toast({
         title: "Aktivasyon Başarılı",
         description: "Hesabınız başarıyla aktive edildi. Sisteme yönlendiriliyorsunuz.",
       });
       
-      // Ana sayfaya yönlendir - Immediate redirection with replace to prevent going back
-      console.log("Redirecting to home page after successful activation");
-      navigate("/", { replace: true });
+      // Use a small timeout to ensure state updates are processed before navigation
+      setTimeout(() => {
+        console.log("Redirecting to home page after successful activation");
+        navigate("/", { replace: true });
+      }, 500);
       
     } catch (error: any) {
-      console.error("Aktivasyon işlemi hatası:", error);
+      console.error("Activation process error:", error);
       toast({
         title: "Aktivasyon Hatası",
         description: error?.message || "Aktivasyon sırasında bir hata oluştu. Lütfen tekrar deneyiniz.",

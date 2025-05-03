@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import TokenActivation from "./pages/TokenActivation";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
@@ -104,6 +103,8 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const isMounted = useRef(true);
   
   useEffect(() => {
+    isMounted.current = true;
+    
     const checkAuth = async () => {
       try {
         const { data } = await supabase.auth.getSession();
@@ -164,7 +165,6 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
           <Route path="/token-activation" element={
             <TokenActivationRoute>
               <TokenActivation />
