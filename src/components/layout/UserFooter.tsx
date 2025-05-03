@@ -1,24 +1,25 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { LogOut, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarFooter } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { PasswordChangeDialog } from "@/components/auth/PasswordChangeDialog";
+
 export const UserFooter = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     setIsLoading(true);
     try {
       // First perform a simple signOut without checking for session
       // This is more reliable and will clear any local auth state
-      const {
-        error
-      } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Sign out error:", error);
         throw error;
@@ -51,17 +52,43 @@ export const UserFooter = () => {
       setIsLoading(false);
     }
   };
-  return <SidebarFooter className="border-t border-sidebar-border p-4">
+
+  return (
+    <SidebarFooter className="border-t border-sidebar-border p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img alt="TİS Uzmanı" className="h-10 w-10 rounded-full object-cover border-2 border-sidebar-primary/20" src="/lovable-uploads/d541767c-601b-490e-8633-5d565d96ed7d.jpg" />
+          <img
+            alt="TİS Uzmanı"
+            className="h-10 w-10 rounded-full object-cover border-2 border-sidebar-primary/20"
+            src="/lovable-uploads/d541767c-601b-490e-8633-5d565d96ed7d.jpg"
+          />
           <div className="space-y-0.5">
             <p className="font-medium text-sidebar-foreground text-xs">(Kurum Logo ve Adı)</p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={handleLogout} disabled={isLoading} className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-          <LogOut className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setPasswordDialogOpen(true)}
+            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground mr-2"
+          >
+            <Key className="h-4 w-4" />
+            <span className="sr-only">Şifre Değiştir</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            disabled={isLoading}
+            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="sr-only">Çıkış Yap</span>
+          </Button>
+        </div>
       </div>
-    </SidebarFooter>;
+      <PasswordChangeDialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen} />
+    </SidebarFooter>
+  );
 };
