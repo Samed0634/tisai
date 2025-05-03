@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { useTokenActivation } from "@/hooks/useTokenActivation";
 import { TokenMessage } from "./TokenMessage";
+import { useNavigate } from "react-router-dom";
 
 interface TokenFormProps {
   onBackToSignup: () => void;
@@ -13,10 +14,15 @@ interface TokenFormProps {
 export const TokenForm = ({ onBackToSignup }: TokenFormProps) => {
   const [token, setToken] = useState("");
   const { isLoading, message, activateWithToken } = useTokenActivation();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await activateWithToken(token);
+  };
+
+  const handleBackToSignup = () => {
+    navigate("/signup");
   };
 
   return (
@@ -62,7 +68,7 @@ export const TokenForm = ({ onBackToSignup }: TokenFormProps) => {
         type="button" 
         variant="outline" 
         className="w-full" 
-        onClick={onBackToSignup}
+        onClick={handleBackToSignup}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Kayıt Ekranına Dön

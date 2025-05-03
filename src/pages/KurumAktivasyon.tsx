@@ -1,19 +1,13 @@
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { AuthLogo } from "@/components/auth/AuthLogo";
 import { TokenForm } from "@/components/auth/TokenForm";
 import { useKurumConnection } from "@/hooks/useKurumConnection";
 
 const KurumAktivasyon = () => {
-  const navigate = useNavigate();
   const { isChecking } = useKurumConnection();
   
-  const handleBackToSignup = () => {
-    navigate("/signup");
-  };
-
   if (isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -30,7 +24,7 @@ const KurumAktivasyon = () => {
         </CardHeader>
         
         <CardContent>
-          <TokenForm onBackToSignup={handleBackToSignup} />
+          <TokenForm />
         </CardContent>
         
         <CardFooter className="flex flex-col items-center justify-center space-y-2">
