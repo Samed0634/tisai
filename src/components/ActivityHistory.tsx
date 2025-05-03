@@ -10,6 +10,7 @@ import { ActivityTable } from "@/components/activity/ActivityTable";
 import { Button } from "@/components/ui/button";
 import { FileDown, RefreshCw } from "lucide-react";
 import { exportToExcel } from "@/utils/exportUtils";
+import { supabase } from "@/integrations/supabase/client";
 
 const ActivityHistory: React.FC = () => {
   const { activities, loading, refreshActivities } = useActivityHistory();
@@ -34,6 +35,17 @@ const ActivityHistory: React.FC = () => {
     exportToExcel(filteredActivities, "İşlem_Geçmişi");
   };
 
+  const handleRefreshConnection = async () => {
+    try {
+      // Force refresh the Supabase session
+      await supabase.auth.refreshSession();
+      // Then refresh activities
+      refreshActivities();
+    } catch (error) {
+      console.error("Error refreshing connection:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -47,6 +59,15 @@ const ActivityHistory: React.FC = () => {
       <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
         <CardTitle>İşlem Geçmişi</CardTitle>
         <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-2" 
+            onClick={handleRefreshConnection}
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Bağlantıyı Yenile</span>
+          </Button>
           <Button 
             variant="outline" 
             size="sm" 
