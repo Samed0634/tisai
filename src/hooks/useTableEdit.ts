@@ -52,26 +52,11 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
       // Check if the ID exists in the database first
       const { data: existingData, error: checkError } = await supabase
         .from('isyerleri')
-        .select('ID, kurum_id')
+        .select('ID')
         .eq('ID', editData.ID)
         .maybeSingle();
       
       console.log("Check if workplace exists:", existingData, checkError);
-      
-      // Fetch a default kurum_id if needed
-      let kurum_id = existingData?.kurum_id;
-      if (!kurum_id) {
-        const { data: kurumData } = await supabase
-          .from('kurumlar')
-          .select('id')
-          .limit(1)
-          .single();
-        
-        kurum_id = kurumData?.id || '00000000-0000-0000-0000-000000000000'; // Default UUID
-      }
-      
-      // Add kurum_id to the data being saved
-      const dataToSave = { ...editData, kurum_id };
       
       let saveError;
       
@@ -80,7 +65,7 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
         console.log("Updating existing workplace with ID:", editData.ID);
         const { error } = await supabase
           .from('isyerleri')
-          .update(dataToSave)
+          .update(editData)
           .eq('ID', editData.ID);
         
         saveError = error;
@@ -90,7 +75,7 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
         console.log("Inserting new workplace with ID:", editData.ID);
         const { error } = await supabase
           .from('isyerleri')
-          .insert(dataToSave);
+          .insert(editData);
         
         saveError = error;
         console.log("Insert result:", error ? "Error" : "Success");

@@ -37,7 +37,6 @@ export const useActivityHistory = () => {
         return;
       }
       
-      // Force refresh connection with Supabase by explicitly setting the auth headers
       const { data, error } = await supabase
         .from('İşlem Geçmişi')
         .select('*')
@@ -72,10 +71,8 @@ export const useActivityHistory = () => {
   }, [fetchActivities]);
 
   useEffect(() => {
-    // Initialize fetch on component mount
     fetchActivities();
 
-    // Set up realtime subscription to immediately reflect changes
     const channel = supabase
       .channel('schema-db-changes')
       .on(
