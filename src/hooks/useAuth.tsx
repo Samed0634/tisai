@@ -9,6 +9,7 @@ interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   signIn: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -76,6 +77,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [toast]);
 
+  const signUp = useCallback(async (email: string, password: string) => {
+    try {
+      const { error } = await supabase.auth.signUp({ 
+        email, 
+        password,
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Kayıt başarılı",
+        description: "Lütfen e-posta adresinizi kontrol ederek hesabınızı doğrulayın."
+      });
+    } catch (error: any) {
+      toast({
+        title: "Kayıt başarısız",
+        description: error?.message || "Kayıt sırasında bir hata oluştu.",
+        variant: "destructive"
+      });
+      console.error("Signup error:", error);
+      throw error;
+    }
+  }, [toast]);
+
   const signOut = useCallback(async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -97,7 +122,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [toast]);
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

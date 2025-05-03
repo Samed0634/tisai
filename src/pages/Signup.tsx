@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,38 +9,29 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Loader2, Mail, Lock } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
 
-const loginSchema = z.object({
+const signupSchema = z.object({
   email: z.string().email({
     message: "Geçerli bir e-posta adresi giriniz"
   }),
   password: z.string().min(6, {
     message: "Şifre en az 6 karakter olmalıdır"
   }),
-  rememberMe: z.boolean().optional().default(false)
+  confirmPassword: z.string().min(6, {
+    message: "Şifre en az 6 karakter olmalıdır"
+  })
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Şifreler eşleşmiyor",
+  path: ["confirmPassword"],
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type SignupFormValues = z.infer<typeof signupSchema>;
 
-const Login = () => {
+const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { signIn, user } = useAuth();
-
-  // Check for remembered credentials on component mount
-  useEffect(() => {
-    const rememberedEmail = localStorage.getItem("remembered_email");
-    const rememberedPassword = localStorage.getItem("remembered_password");
-    const rememberedMe = localStorage.getItem("remember_me") === "true";
-
-    if (rememberedMe && rememberedEmail && rememberedPassword) {
-      form.setValue("email", rememberedEmail);
-      form.setValue("password", rememberedPassword);
-      form.setValue("rememberMe", true);
-    }
-  }, []);
+  const { signUp, user } = useAuth();
 
   // Check if user is already logged in
   useEffect(() => {
@@ -49,23 +40,23 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: false
+      confirmPassword: ""
     }
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: SignupFormValues) => {
     setIsLoading(true);
     try {
-      await signIn(data.email, data.password, data.rememberMe);
+      await signUp(data.email, data.password);
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 500);
-    } catch (error) {
+    } catch (error: any) {
       // Error is handled in the useAuth hook
     } finally {
       setIsLoading(false);
@@ -87,11 +78,13 @@ const Login = () => {
           <CardTitle className="text-sm font-normal text-center text-muted-foreground">
             Toplu İş Sözleşmesi Otomasyon Sistemi
           </CardTitle>
+          <p className="text-center text-sm text-muted-foreground">
+            Kayıt olmak için bilgilerinizi giriniz
+          </p>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              
               <FormField
                 control={form.control}
                 name="email"
@@ -136,20 +129,22 @@ const Login = () => {
               />
               <FormField
                 control={form.control}
-                name="rememberMe"
+                name="confirmPassword"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+                  <FormItem>
+                    <FormLabel>Şifre (Tekrar)</FormLabel>
                     <FormControl>
-                      <Checkbox 
-                        checked={field.value} 
-                        onCheckedChange={field.onChange}
-                      />
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          type="password" 
+                          placeholder="Şifrenizi tekrar giriniz" 
+                          className="pl-10"
+                          {...field} 
+                        />
+                      </div>
                     </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="cursor-pointer">
-                        Beni Hatırla
-                      </FormLabel>
-                    </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -157,10 +152,10 @@ const Login = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Giriş Yapılıyor
+                    Kayıt Olunuyor
                   </>
                 ) : (
-                  "Giriş Yap"
+                  "Kayıt Ol"
                 )}
               </Button>
             </form>
@@ -168,9 +163,9 @@ const Login = () => {
         </CardContent>
         <CardFooter className="flex flex-col justify-center space-y-2">
           <div className="text-center text-sm text-muted-foreground">
-            Hesabınız yok mu?{" "}
-            <Button variant="link" className="p-0" onClick={() => navigate("/signup")}>
-              Kayıt Ol
+            Zaten hesabınız var mı?{" "}
+            <Button variant="link" className="p-0" onClick={() => navigate("/login")}>
+              Giriş Yap
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
@@ -182,4 +177,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
