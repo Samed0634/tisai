@@ -1,56 +1,30 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarFooter } from "@/components/ui/sidebar";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
+
 export const UserFooter = () => {
-  const {
-    toast
-  } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { signOut } = useAuth();
+
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      // First perform a simple signOut without checking for session
-      // This is more reliable and will clear any local auth state
-      const {
-        error
-      } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Sign out error:", error);
-        throw error;
-      } else {
-        console.log("Sign out successful");
-        toast({
-          title: "Çıkış başarılı",
-          description: "Güvenli bir şekilde çıkış yapıldı."
-        });
-      }
-
+      await signOut();
+      
       // Redirect to login page after successful logout
       setTimeout(() => {
         navigate('/login');
       }, 500);
-    } catch (error: any) {
-      console.error("Logout error:", error);
-      toast({
-        title: "Çıkış yapılamadı",
-        description: error?.message || "Bir hata oluştu.",
-        variant: "destructive"
-      });
-
-      // Even if there's an error, still redirect to login page
-      // This ensures user isn't stuck if session is already invalid
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
     } finally {
       setIsLoading(false);
     }
   };
+  
   return <SidebarFooter className="border-t border-sidebar-border p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
