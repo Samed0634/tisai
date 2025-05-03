@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -7,10 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/hooks/useAuth";
 
 const loginSchema = z.object({
   email: z.string().email({
@@ -27,7 +27,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { signIn, user } = useAuth();
 
   // Check for remembered credentials on component mount
   useEffect(() => {
@@ -44,20 +44,10 @@ const Login = () => {
 
   // Check if user is already logged in
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/");
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate("/");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -71,42 +61,12 @@ const Login = () => {
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
     try {
-      // Handle the "Remember Me" feature
-      if (data.rememberMe) {
-        localStorage.setItem("remembered_email", data.email);
-        localStorage.setItem("remembered_password", data.password);
-        localStorage.setItem("remember_me", "true");
-      } else {
-        // Clear remembered credentials if "Remember Me" is unchecked
-        localStorage.removeItem("remembered_email");
-        localStorage.removeItem("remembered_password");
-        localStorage.removeItem("remember_me");
-      }
-
-      const { error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      toast({
-        title: "Giriş başarılı",
-        description: "Hoş geldiniz."
-      });
-
+      await signIn(data.email, data.password, data.rememberMe);
       setTimeout(() => {
         navigate("/");
       }, 500);
-    } catch (error: any) {
-      toast({
-        title: "Giriş başarısız",
-        description: error?.message || "E-posta veya şifre hatalı.",
-        variant: "destructive"
-      });
-      console.error("Login error:", error);
+    } catch (error) {
+      // Error is handled in the useAuth hook
     } finally {
       setIsLoading(false);
     }

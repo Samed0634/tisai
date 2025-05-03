@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
@@ -19,59 +18,19 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import SubscriptionSuccessPage from "./pages/subscription/SuccessPage";
 import SubscriptionCancelPage from "./pages/subscription/CancelPage";
 import SubscriptionManagePage from "./pages/subscription/ManagePage";
-import { supabase } from "./integrations/supabase/client";
+import { AuthProvider } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  
-  useEffect(() => {
-    // Make sure authentication state is properly initialized and tracked
-    console.log("Setting up auth state tracking...");
-    
-    // Set up the auth state change listener first
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`Auth state changed: ${event}`, session ? "Session active" : "No session");
-      
-      // Update authentication state based on session presence
-      setIsAuthenticated(!!session);
-    });
-    
-    // Then check for existing session
-    const checkAuth = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Session check error:", error);
-          setIsAuthenticated(false);
-          return;
-        }
-        
-        console.log("Initial session check:", data.session ? "Session active" : "No session");
-        setIsAuthenticated(!!data.session);
-      } catch (err) {
-        console.error("Unexpected error during session check:", err);
-        setIsAuthenticated(false);
-      }
-    };
-    
-    checkAuth();
-    
-    // Cleanup subscription on component unmount
-    return () => {
-      console.log("Cleaning up auth subscription");
-      subscription.unsubscribe();
-    };
-  }, []);
+  const { user, isLoading } = useAuth();
   
   // Show loading state while checking authentication
-  if (isAuthenticated === null) {
+  if (isLoading) {
     return <div>Yükleniyor...</div>;
   }
   
-  if (!isAuthenticated) {
+  if (!user) {
     console.log("User not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
@@ -82,46 +41,48 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          
-          {/* Redirect root path to login if not authenticated */}
-          <Route path="/" element={
-            <ProtectedRoute>
-              <AppLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Dashboard />} />
-            <Route path="statistics" element={<Statistics />} />
-            <Route path="procedure-status" element={<ProcedureStatus />} />
-            <Route path="new-data" element={<NewData />} />
-            <Route path="upload-tis" element={<UploadTis />} />
-            <Route path="download-tis" element={<DownloadTis />} />
-            <Route path="activity-history" element={<ActivityHistory />} />
-            <Route path="subscription" element={<SubscriptionPlans />} />
-            <Route path="subscription/manage" element={<SubscriptionManagePage />} />
-          </Route>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            
+            {/* Redirect root path to login if not authenticated */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Dashboard />} />
+              <Route path="statistics" element={<Statistics />} />
+              <Route path="procedure-status" element={<ProcedureStatus />} />
+              <Route path="new-data" element={<NewData />} />
+              <Route path="upload-tis" element={<UploadTis />} />
+              <Route path="download-tis" element={<DownloadTis />} />
+              <Route path="activity-history" element={<ActivityHistory />} />
+              <Route path="subscription" element={<SubscriptionPlans />} />
+              <Route path="subscription/manage" element={<SubscriptionManagePage />} />
+            </Route>
 
-          {/* Public subscription success/cancel pages */}
-          <Route path="/subscription/success" element={
-            <ProtectedRoute>
-              <SubscriptionSuccessPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/subscription/cancel" element={
-            <ProtectedRoute>
-              <SubscriptionCancelPage />
-            </ProtectedRoute>
-          } />
+            {/* Public subscription success/cancel pages */}
+            <Route path="/subscription/success" element={
+              <ProtectedRoute>
+                <SubscriptionSuccessPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/subscription/cancel" element={
+              <ProtectedRoute>
+                <SubscriptionCancelPage />
+              </ProtectedRoute>
+            } />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
