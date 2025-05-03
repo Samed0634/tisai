@@ -7,11 +7,8 @@ import { useTokenActivation } from "@/hooks/useTokenActivation";
 import { TokenMessage } from "./TokenMessage";
 import { useNavigate } from "react-router-dom";
 
-interface TokenFormProps {
-  onBackToSignup: () => void;
-}
-
-export const TokenForm = ({ onBackToSignup }: TokenFormProps) => {
+// Remove the props interface since we no longer need it
+export const TokenForm = () => {
   const [token, setToken] = useState("");
   const { isLoading, message, activateWithToken } = useTokenActivation();
   const navigate = useNavigate();
