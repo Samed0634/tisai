@@ -23,17 +23,43 @@ const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasKurumConnection, setHasKurumConnection] = useState<boolean | null>(null);
   
   useEffect(() => {
     // Make sure authentication state is properly initialized and tracked
     console.log("Setting up auth state tracking...");
     
     // Set up the auth state change listener first
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log(`Auth state changed: ${event}`, session ? "Session active" : "No session");
       
       // Update authentication state based on session presence
       setIsAuthenticated(!!session);
+      
+      // Check if user has a kurum connection
+      if (session?.user) {
+        try {
+          const { data, error } = await supabase
+            .from('kullanici_kurumlar')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+          
+          if (error && error.code !== 'PGRST116') { // PGRST116 = row not found
+            console.error("Error checking kurum connection:", error);
+          }
+          
+          setHasKurumConnection(!!data);
+        } catch (err) {
+          console.error("Error checking kurum connection:", err);
+          setHasKurumConnection(false);
+        }
+      } else {
+        setHasKurumConnection(false);
+      }
+      
+      setIsLoading(false);
     });
     
     // Then check for existing session
@@ -44,14 +70,40 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         if (error) {
           console.error("Session check error:", error);
           setIsAuthenticated(false);
+          setIsLoading(false);
           return;
         }
         
         console.log("Initial session check:", data.session ? "Session active" : "No session");
         setIsAuthenticated(!!data.session);
+        
+        // Check if user has a kurum connection
+        if (data.session?.user) {
+          try {
+            const { data: kurumData, error: kurumError } = await supabase
+              .from('kullanici_kurumlar')
+              .select('*')
+              .eq('user_id', data.session.user.id)
+              .single();
+            
+            if (kurumError && kurumError.code !== 'PGRST116') { // PGRST116 = row not found
+              console.error("Error checking kurum connection:", kurumError);
+            }
+            
+            setHasKurumConnection(!!kurumData);
+          } catch (err) {
+            console.error("Error checking kurum connection:", err);
+            setHasKurumConnection(false);
+          }
+        } else {
+          setHasKurumConnection(false);
+        }
+        
+        setIsLoading(false);
       } catch (err) {
         console.error("Unexpected error during session check:", err);
         setIsAuthenticated(false);
+        setIsLoading(false);
       }
     };
     
@@ -65,7 +117,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }, []);
   
   // Show loading state while checking authentication
-  if (isAuthenticated === null) {
+  if (isLoading || isAuthenticated === null || hasKurumConnection === null) {
     return <div>Yükleniyor...</div>;
   }
   
@@ -74,7 +126,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
   
-  console.log("User authenticated, rendering protected content");
+  // If authenticated but no kurum connection, redirect to kurum activation
+  if (isAuthenticated && !hasKurumConnection) {
+    console.log("User authenticated but no kurum connection, redirecting to kurum activation");
+    return <Navigate to="/kurum-aktivasyon" replace />;
+  }
+  
+  console.log("User authenticated with kurum connection, rendering protected content");
   return <>{children}</>;
 };
 
@@ -89,7 +147,7 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/kurum-aktivasyon" element={<KurumAktivasyon />} />
           
-          {/* Redirect root path to login if not authenticated */}
+          {/* Redirect root path to dashboard if authenticated */}
           <Route path="/" element={
             <ProtectedRoute>
               <AppLayout />

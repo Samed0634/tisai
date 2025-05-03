@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -36,15 +37,41 @@ const Signup = () => {
 
   // Check if user is already logged in
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
       if (session) {
-        navigate("/");
+        // Check if user has a kurum connection
+        const { data: kurumData } = await supabase
+          .from('kullanici_kurumlar')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        if (kurumData) {
+          navigate("/"); // User has kurum connection, redirect to dashboard
+        } else {
+          navigate("/kurum-aktivasyon"); // User needs to activate kurum
+        }
       }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    };
+    
+    checkSession();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        navigate("/");
+        // Check if user has a kurum connection
+        const { data: kurumData } = await supabase
+          .from('kullanici_kurumlar')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        if (kurumData) {
+          navigate("/"); // User has kurum connection, redirect to dashboard
+        } else {
+          navigate("/kurum-aktivasyon"); // User needs to activate kurum
+        }
       }
     });
 
@@ -74,11 +101,11 @@ const Signup = () => {
 
       toast({
         title: "Kayıt işlemi başarılı",
-        description: "Hesabınız oluşturuldu, giriş yapabilirsiniz."
+        description: "Hesabınız oluşturuldu, şimdi kurumunuzu aktive edebilirsiniz."
       });
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/kurum-aktivasyon");
       }, 1500);
     } catch (error: any) {
       toast({
@@ -165,11 +192,6 @@ const Signup = () => {
                 <Link to="/login" className="text-primary hover:underline text-sm flex items-center justify-center">
                   <LogIn className="h-4 w-4 mr-1" />
                   Zaten Hesabım Var, Giriş Yap
-                </Link>
-                
-                <Link to="/kurum-aktivasyon" className="text-primary hover:underline text-sm flex items-center justify-center mt-2">
-                  <LinkIcon className="h-4 w-4 mr-1" />
-                  Kurumunuzu Aktive Edin
                 </Link>
               </div>
             </form>
