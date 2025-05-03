@@ -30,14 +30,11 @@ const signupSchema = z.object({
   path: ["confirmPassword"],
 });
 
-// Define a proper interface for the kurumData object to ensure type safety
-// Make sure the property names match exactly what's in the database
+// Basitleştirilmiş kurum veri arayüzü
 interface KurumData {
   id: string;
   kayit_token: string;
   token_aktif_mi: boolean;
-  token_kullanım_sayisi?: number; // Using "ı" to match database column
-  max_kullanim_sayisi?: number;
 }
 
 type SignupFormValues = z.infer<typeof signupSchema>;
@@ -64,7 +61,7 @@ const Signup = () => {
       // Step 1: Verify token against kurumlar table
       const { data: rawData, error: kurumError } = await supabase
         .from("kurumlar")
-        .select("id, kayit_token, token_aktif_mi, token_kullanım_sayisi, max_kullanim_sayisi")
+        .select("id, kayit_token, token_aktif_mi")
         .eq("kayit_token", data.tokenId)
         .single();
 
@@ -86,20 +83,6 @@ const Signup = () => {
         toast({
           title: "Pasif Token",
           description: "Bu token aktif değil. Lütfen kurum yöneticinizle iletişime geçiniz.",
-          variant: "destructive"
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      // Check if token usage limit is reached
-      const currentUsage = kurumData.token_kullanım_sayisi || 0;
-      const maxUsage = kurumData.max_kullanim_sayisi;
-      
-      if (maxUsage !== null && maxUsage !== undefined && currentUsage >= maxUsage) {
-        toast({
-          title: "Token Kullanım Limiti",
-          description: "Bu token için maksimum kullanım sayısına ulaşılmıştır.",
           variant: "destructive"
         });
         setIsLoading(false);
@@ -128,20 +111,6 @@ const Signup = () => {
         // If relation creation fails, attempt to delete the created user
         await supabase.auth.admin.deleteUser(authData.user.id);
         throw relationError;
-      }
-
-      // Step 4: Update token usage counter
-      const { error: updateTokenError } = await supabase
-        .from("kurumlar")
-        .update({ 
-          // Explicitly set the column name with the Turkish character
-          "token_kullanım_sayisi": (currentUsage + 1) 
-        })
-        .eq("id", kurumData.id);
-
-      if (updateTokenError) {
-        console.error("Token usage counter update failed:", updateTokenError);
-        // Non-critical error, continue with registration
       }
 
       toast({
