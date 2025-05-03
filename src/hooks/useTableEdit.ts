@@ -49,6 +49,42 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
     try {
       console.log("Saving workplace data:", editData);
       
+      // Get the user's kurum_id to include it in the update
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        throw sessionError;
+      }
+      
+      if (!sessionData.session) {
+        console.error("No active session found");
+        throw new Error("No active session");
+      }
+      
+      // Get the user's kurum_id
+      const { data: userData, error: userError } = await supabase
+        .from('kullanici_kurumlar')
+        .select('kurum_id')
+        .eq('user_id', sessionData.session.user.id)
+        .single();
+      
+      if (userError) {
+        console.error("Error fetching user institution:", userError);
+        throw userError;
+      }
+      
+      if (!userData?.kurum_id) {
+        console.error("No kurum_id found for user");
+        throw new Error("No institution found for user");
+      }
+      
+      // Add the kurum_id to the data
+      const workplaceWithKurumId = {
+        ...editData,
+        kurum_id: userData.kurum_id
+      };
+      
       // Check if the ID exists in the database first
       const { data: existingData, error: checkError } = await supabase
         .from('isyerleri')
@@ -65,7 +101,7 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
         console.log("Updating existing workplace with ID:", editData.ID);
         const { error } = await supabase
           .from('isyerleri')
-          .update(editData)
+          .update(workplaceWithKurumId)
           .eq('ID', editData.ID);
         
         saveError = error;
@@ -75,7 +111,7 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
         console.log("Inserting new workplace with ID:", editData.ID);
         const { error } = await supabase
           .from('isyerleri')
-          .insert(editData);
+          .insert(workplaceWithKurumId);
         
         saveError = error;
         console.log("Insert result:", error ? "Error" : "Success");

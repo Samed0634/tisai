@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +13,7 @@ import { BasicWorkplaceFields } from "@/components/workplace/BasicWorkplaceField
 import { TenderFields } from "@/components/workplace/TenderFields";
 import { workplaceFormSchema, type WorkplaceFormValues } from "@/schemas/workplaceFormSchema";
 import { useActionHistory } from "@/hooks/useActionHistory";
+
 const NewData = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isKitWorkplace, setIsKitWorkplace] = useState(false);
@@ -41,6 +43,35 @@ const NewData = () => {
   const onSubmit = async (data: WorkplaceFormValues) => {
     setIsSubmitting(true);
     try {
+      // Get the user's kurum_id
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        throw sessionError;
+      }
+      
+      if (!sessionData.session) {
+        console.error("No active session found");
+        throw new Error("No active session");
+      }
+      
+      const { data: userData, error: userError } = await supabase
+        .from('kullanici_kurumlar')
+        .select('kurum_id')
+        .eq('user_id', sessionData.session.user.id)
+        .single();
+      
+      if (userError) {
+        console.error("Error fetching user institution:", userError);
+        throw userError;
+      }
+      
+      if (!userData?.kurum_id) {
+        console.error("No kurum_id found for user");
+        throw new Error("No institution found for user");
+      }
+      
       // Prepare data object for Supabase
       const insertData = {
         "İŞYERİ ADI": data.companyName,
@@ -56,8 +87,10 @@ const NewData = () => {
         "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate ? data.authDate.toISOString() : null,
         "İHALE ADI": data.tenderName || null,
         "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null,
-        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null
+        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null,
+        "kurum_id": userData.kurum_id // Add the kurum_id field
       };
+      
       console.log("Preparing to insert data:", insertData);
 
       // Fetch the current highest ID to determine the next ID value
