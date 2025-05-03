@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import TokenActivation from "./pages/TokenActivation";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
 import UploadTis from "./pages/UploadTis";
@@ -17,11 +18,19 @@ import ActivityHistory from "./pages/ActivityHistory";
 import ProcedureStatus from "./pages/ProcedureStatus";
 import Statistics from "./pages/Statistics";
 import { supabase } from "./integrations/supabase/client";
+import { useUserActivationStatus } from "./hooks/useUserActivationStatus";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requireActivation?: boolean;
+}
+
+const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRouteProps) => {
+  const [user, setUser] = useState<any | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
   
   useEffect(() => {
     // Make sure authentication state is properly initialized and tracked
@@ -32,7 +41,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       console.log(`Auth state changed: ${event}`, session ? "Session active" : "No session");
       
       // Update authentication state based on session presence
-      setIsAuthenticated(!!session);
+      setUser(session?.user || null);
+      setAuthChecked(true);
     });
     
     // Then check for existing session
@@ -42,15 +52,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         
         if (error) {
           console.error("Session check error:", error);
-          setIsAuthenticated(false);
+          setUser(null);
+          setAuthChecked(true);
           return;
         }
         
         console.log("Initial session check:", data.session ? "Session active" : "No session");
-        setIsAuthenticated(!!data.session);
+        setUser(data.session?.user || null);
+        setAuthChecked(true);
       } catch (err) {
         console.error("Unexpected error during session check:", err);
-        setIsAuthenticated(false);
+        setUser(null);
+        setAuthChecked(true);
       }
     };
     
@@ -63,17 +76,63 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
   
-  // Show loading state while checking authentication
-  if (isAuthenticated === null) {
-    return <div>Yükleniyor...</div>;
+  // Show loading state while checking authentication and activation
+  if (!authChecked || (user && requireActivation && isActivationLoading)) {
+    return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
   }
   
-  if (!isAuthenticated) {
+  // If not authenticated, redirect to login
+  if (!user) {
     console.log("User not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
   
-  console.log("User authenticated, rendering protected content");
+  // If authentication is required but user is not activated, redirect to activation
+  if (requireActivation && !isActivated) {
+    console.log("User not activated, redirecting to activation");
+    return <Navigate to="/token-activation" replace />;
+  }
+  
+  console.log("User authenticated and activated, rendering protected content");
+  return <>{children}</>;
+};
+
+const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<any | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user || null);
+      setAuthChecked(true);
+    };
+    
+    checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      setAuthChecked(true);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
+  
+  if (!authChecked || (user && isActivationLoading)) {
+    return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
+  }
+  
+  // Not authenticated, redirect to login
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  // Already activated, redirect to dashboard
+  if (isActivated) {
+    return <Navigate to="/" replace />;
+  }
+  
   return <>{children}</>;
 };
 
@@ -86,6 +145,11 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/token-activation" element={
+            <TokenActivationRoute>
+              <TokenActivation />
+            </TokenActivationRoute>
+          } />
           
           {/* Redirect root path to login if not authenticated */}
           <Route path="/" element={
