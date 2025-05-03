@@ -48,7 +48,8 @@ const Login = () => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate("/");
+        // Check if the user has a kurum connection
+        checkUserKurumConnection(session.user.id);
       }
     };
     
@@ -56,12 +57,40 @@ const Login = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        navigate("/");
+        checkUserKurumConnection(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // New function to check if user is connected to a kurum
+  const checkUserKurumConnection = async (userId) => {
+    try {
+      const { data: connections, error } = await supabase
+        .from('kullanici_kurumlar')
+        .select('*')
+        .eq('user_id', userId)
+        .limit(1);
+      
+      if (error) {
+        console.error("Error checking kurum connection:", error);
+        navigate("/");
+        return;
+      }
+      
+      if (connections && connections.length > 0) {
+        // User has a kurum connection, redirect to main page
+        navigate("/");
+      } else {
+        // User doesn't have a kurum connection, redirect to connection page
+        navigate("/kurum-aktivasyon");
+      }
+    } catch (err) {
+      console.error("Unexpected error during kurum connection check:", err);
+      navigate("/");
+    }
+  };
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -87,7 +116,7 @@ const Login = () => {
         localStorage.removeItem("remember_me");
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password
       });
@@ -101,9 +130,14 @@ const Login = () => {
         description: "Hoş geldiniz."
       });
 
-      setTimeout(() => {
+      // After successful login, check if user has a kurum connection
+      if (authData.user) {
+        setTimeout(() => {
+          checkUserKurumConnection(authData.user.id);
+        }, 500);
+      } else {
         navigate("/");
-      }, 500);
+      }
     } catch (error: any) {
       toast({
         title: "Giriş başarısız",
