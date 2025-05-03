@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, UserPlus } from "lucide-react";
-import { loginSchema, LoginFormValues, useAuth } from "@/hooks/useAuth";
+import { loginSchema, LoginFormValues } from "@/schemas/authSchemas";
+import { useAuth } from "@/hooks/useAuth";
 
 export function LoginForm() {
   const { isLoading, handleLogin } = useAuth();

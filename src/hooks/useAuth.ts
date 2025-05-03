@@ -1,26 +1,16 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-
-export const loginSchema = z.object({
-  email: z.string().email({
-    message: "Geçerli bir e-posta adresi giriniz"
-  }),
-  password: z.string().min(6, {
-    message: "Şifre en az 6 karakter olmalıdır"
-  }),
-  rememberMe: z.boolean().optional().default(false)
-});
-
-export type LoginFormValues = z.infer<typeof loginSchema>;
+import { LoginFormValues } from "@/schemas/authSchemas";
+import { useKurumConnectionCheck } from "./useKurumConnectionCheck";
 
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { checkUserKurumConnection } = useKurumConnectionCheck();
 
   // Check if user is already logged in
   useEffect(() => {
@@ -42,34 +32,6 @@ export const useAuth = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
-
-  // Function to check if user is connected to a kurum
-  const checkUserKurumConnection = async (userId: string) => {
-    try {
-      const { data: connections, error } = await supabase
-        .from('kullanici_kurumlar')
-        .select('*')
-        .eq('user_id', userId)
-        .limit(1);
-      
-      if (error) {
-        console.error("Error checking kurum connection:", error);
-        navigate("/");
-        return;
-      }
-      
-      if (connections && connections.length > 0) {
-        // User has a kurum connection, redirect to main page
-        navigate("/");
-      } else {
-        // User doesn't have a kurum connection, redirect to connection page
-        navigate("/kurum-aktivasyon");
-      }
-    } catch (err) {
-      console.error("Unexpected error during kurum connection check:", err);
-      navigate("/");
-    }
-  };
 
   const handleLogin = async (data: LoginFormValues) => {
     setIsLoading(true);
