@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { TokenActivationForm } from "@/components/auth/TokenActivationForm";
 import { useTokenActivation } from "@/hooks/useTokenActivation";
@@ -12,13 +12,23 @@ const TokenActivation = () => {
   const token = searchParams.get("token");
   const { handleSubmit, isProcessing, activationAttempted } = useTokenActivation();
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     // If token is provided in URL, submit it automatically
     if (token && !activationAttempted) {
       console.log("URL'den token alındı, aktivasyon başlatılıyor:", token);
       handleSubmit({ tokenId: token });
+    }
+  }, [token, handleSubmit, activationAttempted]);
+
+  // Check localStorage for any pending token from failed auth redirect
+  useEffect(() => {
+    const pendingToken = localStorage.getItem("pendingActivationToken");
+    if (pendingToken && !token && !activationAttempted) {
+      console.log("localStorage'dan bekleyen token alındı:", pendingToken);
+      handleSubmit({ tokenId: pendingToken });
+      // Clear the pending token after use
+      localStorage.removeItem("pendingActivationToken");
     }
   }, [token, handleSubmit, activationAttempted]);
 
@@ -43,6 +53,11 @@ const TokenActivation = () => {
             <div className="flex flex-col items-center justify-center py-8 space-y-4">
               <LoadingSpinner />
               <p className="text-center text-muted-foreground">Token doğrulanıyor, lütfen bekleyiniz...</p>
+              {activationAttempted && (
+                <p className="text-center text-sm text-primary">
+                  Aktivasyon işlemi başarılı olursa otomatik olarak ana sayfaya yönlendirileceksiniz.
+                </p>
+              )}
             </div>
           ) : (
             <TokenActivationForm />

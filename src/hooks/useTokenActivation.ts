@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTokenValidation } from "@/hooks/useTokenValidation";
+import { useUserActivationStatus } from "@/hooks/useUserActivationStatus";
 import type { TokenActivationValues } from "@/schemas/signupFormSchema";
 
 export const useTokenActivation = () => {
@@ -12,6 +13,7 @@ export const useTokenActivation = () => {
   const { validateToken, isValidating } = useTokenValidation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activationAttempted, setActivationAttempted] = useState(false);
+  const { setActivated } = useUserActivationStatus("");
 
   const handleSubmit = async (data: TokenActivationValues) => {
     // Prevent multiple activation attempts
@@ -28,6 +30,7 @@ export const useTokenActivation = () => {
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !sessionData.session || !sessionData.session.user) {
+        console.error("Oturum hatası:", sessionError);
         toast({
           title: "Oturum Hatası",
           description: "Kullanıcı oturumu bulunamadı. Lütfen tekrar giriş yapınız.",
@@ -38,6 +41,7 @@ export const useTokenActivation = () => {
       }
       
       const userId = sessionData.session.user.id;
+      console.log("Active user ID:", userId);
       
       // Validate token
       console.log("Token doğrulama başlıyor:", data.tokenId);
@@ -81,16 +85,22 @@ export const useTokenActivation = () => {
         return;
       }
       
+      // Update activation cache immediately
+      setActivated(userId, true);
+      console.log(`User ${userId} activation status updated in cache to: true`);
+      
       // Successful activation
       toast({
         title: "Aktivasyon Başarılı",
         description: `${kurumData.kurum_adi} kurumuna başarıyla bağlandınız. Ana sayfaya yönlendiriliyorsunuz.`,
       });
       
-      // Redirect to home page
+      // Redirect to home page with slightly longer delay
+      console.log("Redirecting to home page in 2 seconds...");
       setTimeout(() => {
-        navigate("/");
-      }, 1500);
+        console.log("Executing redirection to home page now");
+        navigate("/", { replace: true });
+      }, 2000);
     } catch (error: any) {
       console.error("Aktivasyon işlemi hatası:", error);
       toast({

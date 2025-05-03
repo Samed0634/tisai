@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -46,6 +47,7 @@ export const useUserActivationStatus = (userId: string | undefined) => {
       }
 
       try {
+        console.log(`Checking activation status for user ${userId}`);
         const { data, error, status: queryStatus } = await supabase
           .from("kullanici_kurumlar")
           .select("id")
@@ -67,7 +69,7 @@ export const useUserActivationStatus = (userId: string | undefined) => {
         // Cache the result
         activationCache.set(userId, isActivated);
         
-        console.log(`User ${userId} activation status: ${isActivated}`);
+        console.log(`User ${userId} activation status from DB: ${isActivated}`);
         setStatus({
           isActivated: isActivated,
           isLoading: false,
@@ -89,6 +91,7 @@ export const useUserActivationStatus = (userId: string | undefined) => {
   // Method to manually update cache and state (useful after activation)
   const setActivated = (userId: string, activated: boolean) => {
     if (userId) {
+      console.log(`Manually updating activation status for ${userId} to ${activated}`);
       activationCache.set(userId, activated);
       setStatus({
         isActivated: activated,

@@ -116,6 +116,7 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
+  const [redirectTimeout, setRedirectTimeout] = useState<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -151,6 +152,34 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
   
+  // Handle redirection when activation state changes
+  useEffect(() => {
+    // Clear any existing timeout
+    if (redirectTimeout) {
+      clearTimeout(redirectTimeout);
+      setRedirectTimeout(null);
+    }
+    
+    // Only proceed if authentication check is complete
+    if (!authChecked) return;
+    
+    if (isActivated && !isActivationLoading) {
+      console.log("User already activated, setting up redirect to home page");
+      const timeout = setTimeout(() => {
+        console.log("Executing redirect to home page for already-activated user");
+        // We'll use window.location.href for a full page refresh to ensure clean state
+        window.location.href = "/";
+      }, 1500);
+      setRedirectTimeout(timeout);
+    }
+    
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout);
+      }
+    };
+  }, [isActivated, isActivationLoading, authChecked]);
+  
   if (!authChecked || (user && isActivationLoading)) {
     return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
   }
@@ -168,9 +197,12 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
   
-  // Already activated, redirect to dashboard
+  // Already activated, redirect will be handled by the useEffect above
   if (isActivated) {
-    return <Navigate to="/" replace />;
+    return <div className="min-h-screen flex flex-col items-center justify-center">
+      <h2 className="text-xl font-semibold mb-4">Hesabınız zaten aktive edilmiş</h2>
+      <p className="text-muted-foreground mb-4">Ana sayfaya yönlendiriliyorsunuz...</p>
+    </div>;
   }
   
   return <>{children}</>;
