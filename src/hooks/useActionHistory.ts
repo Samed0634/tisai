@@ -7,6 +7,7 @@ import { formatInTimeZone } from 'date-fns-tz';
 export const useActionHistory = () => {
   const logAction = useCallback(async (actionName: string) => {
     try {
+      // Get the latest user session
       const { data: { user } } = await supabase.auth.getUser();
       
       const now = new Date();

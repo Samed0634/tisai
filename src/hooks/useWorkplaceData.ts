@@ -14,6 +14,10 @@ export const useWorkplaceData = () => {
     queryKey: ['workplaces'],
     queryFn: async () => {
       console.log("Fetching all workplaces data");
+      
+      // Ensure we have the latest session
+      await supabase.auth.refreshSession();
+      
       const { data, error } = await supabase
         .from('isyerleri')
         .select('*');
@@ -25,7 +29,9 @@ export const useWorkplaceData = () => {
       
       console.log(`Fetched ${data?.length || 0} workplaces`);
       return data as Workplace[];
-    }
+    },
+    // Refresh automatically every minute
+    refetchInterval: 60000,
   });
 
   const updateWorkplace = useMutation({
