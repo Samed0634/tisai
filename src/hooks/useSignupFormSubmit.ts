@@ -16,7 +16,7 @@ export const useSignupFormSubmit = () => {
     setIsSubmitting(true);
     
     try {
-      // Step 1: Sign up the user
+      // Sign up the user
       const { success, userId, error: signupError } = await signupUser({
         email: data.email,
         password: data.password
@@ -25,15 +25,13 @@ export const useSignupFormSubmit = () => {
       if (success && userId) {
         toast({
           title: "Kayıt Başarılı",
-          description: "Hesabınız oluşturuldu. Şimdi kurum token ID ile aktivasyon yapmanız gerekiyor.",
+          description: "Hesabınız oluşturuldu. Giriş sayfasına yönlendiriliyorsunuz.",
         });
 
-        // Redirect to token activation page with the token parameter if provided
-        if (data.tokenId) {
-          navigate(`/token-activation?token=${encodeURIComponent(data.tokenId)}`);
-        } else {
-          navigate("/token-activation");
-        }
+        // Redirect to login page
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
       } else {
         console.error("Kayıt işlemi sırasında hata:", signupError);
         toast({

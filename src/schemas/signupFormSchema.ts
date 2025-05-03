@@ -10,20 +10,10 @@ export const signupSchema = z.object({
   }),
   confirmPassword: z.string().min(6, {
     message: "Şifre en az 6 karakter olmalıdır"
-  }),
-  tokenId: z.string().optional()
+  })
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],
 });
 
 export type SignupFormValues = z.infer<typeof signupSchema>;
-
-// Token aktivasyonu için ayrı bir şema
-export const tokenActivationSchema = z.object({
-  tokenId: z.string().min(1, {
-    message: "Kurum Token ID girilmelidir"
-  })
-});
-
-export type TokenActivationValues = z.infer<typeof tokenActivationSchema>;
