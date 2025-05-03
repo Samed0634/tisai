@@ -37,39 +37,9 @@ export const useActivityHistory = () => {
         return;
       }
       
-      // Fetch the user's kurum_id
-      const { data: userData, error: userError } = await supabase
-        .from('kullanici_kurumlar')
-        .select('kurum_id')
-        .eq('user_id', sessionData.session.user.id)
-        .single();
-        
-      if (userError) {
-        console.error('Error fetching user institution:', userError);
-        toast({
-          title: "Veri Hatası",
-          description: "Kullanıcı kurum bilgisi alınamadı: " + userError.message,
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-      
-      if (!userData?.kurum_id) {
-        console.error('No kurum_id found for user');
-        toast({
-          title: "Kurum Bulunamadı",
-          description: "Kullanıcıya ait kurum bilgisi bulunamadı.",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-      
       const { data, error } = await supabase
         .from('İşlem Geçmişi')
-        .select('id, "İşlem Adı", "Tarih", "Saat", "İşlem Yapan Kullanıcı"')
-        .eq('kurum_id', userData.kurum_id)
+        .select('*')
         .order('id', { ascending: false });
 
       if (error) {

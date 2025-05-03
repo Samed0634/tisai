@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -35,7 +34,7 @@ const Login = () => {
     const rememberedEmail = localStorage.getItem("remembered_email");
     const rememberedPassword = localStorage.getItem("remembered_password");
     const rememberedMe = localStorage.getItem("remember_me") === "true";
-    
+
     if (rememberedMe && rememberedEmail && rememberedPassword) {
       form.setValue("email", rememberedEmail);
       form.setValue("password", rememberedPassword);
@@ -50,13 +49,13 @@ const Login = () => {
         navigate("/");
       }
     });
-    
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         navigate("/");
       }
     });
-    
+
     return () => subscription.unsubscribe();
   }, [navigate]);
 
@@ -98,9 +97,9 @@ const Login = () => {
         description: "Hoş geldiniz."
       });
 
-      // Immediately navigate to dashboard after successful login
-      navigate("/");
-      
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
     } catch (error: any) {
       toast({
         title: "Giriş başarısız",
@@ -132,6 +131,7 @@ const Login = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              
               <FormField
                 control={form.control}
                 name="email"
@@ -164,10 +164,15 @@ const Login = () => {
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
                     <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      <Checkbox 
+                        checked={field.value} 
+                        onCheckedChange={field.onChange}
+                      />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel className="cursor-pointer">Beni Hatırla</FormLabel>
+                      <FormLabel className="cursor-pointer">
+                        Beni Hatırla
+                      </FormLabel>
                     </div>
                   </FormItem>
                 )}
@@ -185,7 +190,7 @@ const Login = () => {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex flex-col items-center gap-2">
+        <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Tüm hakları saklıdır.
           </p>

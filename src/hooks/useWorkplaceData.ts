@@ -13,43 +13,10 @@ export const useWorkplaceData = () => {
   const { data: workplaces, isLoading, refetch } = useQuery({
     queryKey: ['workplaces'],
     queryFn: async () => {
-      console.log("Fetching workplaces data");
-      
-      // First get the current user's session
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.error("Session error:", sessionError);
-        throw sessionError;
-      }
-      
-      if (!sessionData.session) {
-        console.error("No active session found");
-        throw new Error("No active session");
-      }
-      
-      // Get the user's kurum_id
-      const { data: userData, error: userError } = await supabase
-        .from('kullanici_kurumlar')
-        .select('kurum_id')
-        .eq('user_id', sessionData.session.user.id)
-        .single();
-      
-      if (userError) {
-        console.error("Error fetching user institution:", userError);
-        throw userError;
-      }
-      
-      if (!userData?.kurum_id) {
-        console.error("No kurum_id found for user");
-        throw new Error("No institution found for user");
-      }
-      
-      // Now fetch the workplaces for this kurum_id
+      console.log("Fetching all workplaces data");
       const { data, error } = await supabase
         .from('isyerleri')
-        .select('*')
-        .eq('kurum_id', userData.kurum_id);
+        .select('*');
       
       if (error) {
         console.error("Error fetching workplaces:", error);
@@ -65,35 +32,11 @@ export const useWorkplaceData = () => {
     mutationFn: async (workplace: Workplace) => {
       console.log("Updating workplace:", workplace);
       
-      // Get the user's kurum_id to include it in the update
-      const { data: sessionData } = await supabase.auth.getSession();
-      
-      if (!sessionData.session) {
-        throw new Error("No active session");
-      }
-      
-      const { data: userData, error: userError } = await supabase
-        .from('kullanici_kurumlar')
-        .select('kurum_id')
-        .eq('user_id', sessionData.session.user.id)
-        .single();
-      
-      if (userError || !userData) {
-        throw new Error("Couldn't fetch user institution data");
-      }
-      
-      // Add kurum_id to the workplace object
-      const workplaceWithKurumId = {
-        ...workplace,
-        kurum_id: userData.kurum_id
-      };
-      
       // Check if the workplace exists first
       const { data: existingWorkplace, error: checkError } = await supabase
         .from('isyerleri')
         .select('ID')
         .eq('ID', workplace.ID)
-        .eq('kurum_id', userData.kurum_id)
         .maybeSingle();
         
       console.log("Check if workplace exists:", existingWorkplace, checkError);
@@ -106,9 +49,8 @@ export const useWorkplaceData = () => {
         // Update existing workplace
         const { data, error } = await supabase
           .from('isyerleri')
-          .update(workplaceWithKurumId)
+          .update(workplace)
           .eq('ID', workplace.ID)
-          .eq('kurum_id', userData.kurum_id)
           .select();
         
         if (error) throw error;
@@ -119,7 +61,7 @@ export const useWorkplaceData = () => {
         // Insert new workplace
         const { data, error } = await supabase
           .from('isyerleri')
-          .insert(workplaceWithKurumId)
+          .insert(workplace)
           .select();
         
         if (error) throw error;

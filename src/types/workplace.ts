@@ -31,6 +31,4 @@ export interface Workplace {
   "TİS İMZA TARİHİ": string | null;
   "TİS BAŞLANGIÇ TARİHİ": string | null;
   "TİS BİTİŞ TARİHİ": string | null;
-  // Add kurum_id field
-  kurum_id?: string;
 }

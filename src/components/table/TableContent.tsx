@@ -67,17 +67,14 @@ export const TableContent: React.FC<TableContentProps> = ({
   }
 
   // Make sure we have the "durum" column in our column definitions if it's not there
-  // Filter out kurum_id from visible columns if it's there
-  const filteredVisibleColumns = visibleColumns.filter(col => col !== 'kurum_id');
-  
   const visibleColumnDefinitions = COLUMNS.filter(col => 
-    filteredVisibleColumns.includes(col.id)
+    visibleColumns.includes(col.id)
   );
 
   // Ensure the durum column is defined
   const durumColumnExists = visibleColumnDefinitions.some(col => col.id === 'durum');
   
-  if (!durumColumnExists && filteredVisibleColumns.includes('durum')) {
+  if (!durumColumnExists && visibleColumns.includes('durum')) {
     visibleColumnDefinitions.push({
       id: 'durum',
       title: 'Durum',
@@ -125,7 +122,7 @@ export const TableContent: React.FC<TableContentProps> = ({
       <TableHeaderComponent 
         title={title}
         titleClassName={titleClassName}
-        visibleColumns={filteredVisibleColumns}
+        visibleColumns={visibleColumns}
         toggleColumn={toggleColumn}
         pageSize={pageSize}
         onPageSizeChange={handlePageSizeChange}
