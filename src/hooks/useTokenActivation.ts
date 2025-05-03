@@ -11,8 +11,12 @@ export const useTokenActivation = () => {
   const { toast } = useToast();
   const { validateToken, isValidating } = useTokenValidation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activationComplete, setActivationComplete] = useState(false);
 
   const handleSubmit = useCallback(async (data: TokenActivationValues) => {
+    // Don't process if already complete or in progress
+    if (activationComplete || isSubmitting) return;
+    
     console.log("Token activation started with data:", data);
     setIsSubmitting(true);
     
@@ -64,17 +68,17 @@ export const useTokenActivation = () => {
         return;
       }
       
-      // Successful activation
+      // Successful activation - set flag to prevent retries
+      setActivationComplete(true);
+      
       toast({
         title: "Aktivasyon Başarılı",
         description: "Hesabınız başarıyla aktive edildi. Sisteme yönlendiriliyorsunuz.",
       });
       
-      // Use a small timeout to ensure state updates are processed before navigation
-      setTimeout(() => {
-        console.log("Redirecting to home page after successful activation");
-        navigate("/", { replace: true });
-      }, 500);
+      // Navigate after a short delay to ensure state updates and toast display
+      console.log("Redirecting to home page after successful activation");
+      navigate("/", { replace: true });
       
     } catch (error: any) {
       console.error("Activation process error:", error);
@@ -86,12 +90,13 @@ export const useTokenActivation = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [navigate, toast, validateToken]);
+  }, [navigate, toast, validateToken, activationComplete, isSubmitting]);
 
   const isProcessing = isValidating || isSubmitting;
 
   return {
     handleSubmit,
-    isProcessing
+    isProcessing,
+    activationComplete
   };
 };

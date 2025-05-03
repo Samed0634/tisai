@@ -99,25 +99,20 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
 const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const { isActivated, isLoading } = useUserActivationStatus(user?.id);
-  const isMounted = useRef(true);
+  const { isActivated, isLoading, hasError } = useUserActivationStatus(user?.id);
+  const checkCount = useRef(0);
+  const redirected = useRef(false);
   
   useEffect(() => {
-    isMounted.current = true;
-    
     const checkAuth = async () => {
       try {
         const { data } = await supabase.auth.getSession();
-        if (isMounted.current) {
-          setUser(data.session?.user || null);
-          setAuthChecked(true);
-        }
+        setUser(data.session?.user || null);
+        setAuthChecked(true);
       } catch (error) {
         console.error("Auth check error:", error);
-        if (isMounted.current) {
-          setUser(null);
-          setAuthChecked(true);
-        }
+        setUser(null);
+        setAuthChecked(true);
       }
     };
     
@@ -125,19 +120,27 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("TokenActivationRoute: Auth state changed", event);
-      if (isMounted.current) {
-        setUser(session?.user || null);
-        setAuthChecked(true);
-      }
+      setUser(session?.user || null);
+      setAuthChecked(true);
     });
     
     return () => {
-      isMounted.current = false;
       subscription.unsubscribe();
     };
   }, []);
   
-  if (!authChecked || isLoading) {
+  // Only check activation status a limited number of times to avoid infinite loops
+  useEffect(() => {
+    if (isActivated && !redirected.current) {
+      console.log("TokenActivationRoute: User already activated, preparing to redirect");
+      redirected.current = true;
+    }
+    
+    checkCount.current += 1;
+    console.log(`TokenActivationRoute: Check count: ${checkCount.current}`);
+  }, [isActivated]);
+  
+  if (!authChecked || (isLoading && checkCount.current < 3)) {
     return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
   }
   
@@ -148,7 +151,7 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   // Already activated, redirect to dashboard
-  if (isActivated) {
+  if (isActivated && !hasError) {
     console.log("TokenActivationRoute: User already activated, redirecting to dashboard");
     return <Navigate to="/" replace />;
   }

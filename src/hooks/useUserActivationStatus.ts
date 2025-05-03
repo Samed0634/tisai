@@ -5,8 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 export const useUserActivationStatus = (userId: string | undefined) => {
   const [isActivated, setIsActivated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const isMounted = useRef(true);
   const lastCheckedUserId = useRef<string | undefined>(undefined);
+  const lastActivationStatus = useRef<boolean | null>(null);
 
   // Memoize the checkActivationStatus function to avoid recreating it on each render
   const checkActivationStatus = useCallback(async (uid: string | undefined) => {
@@ -19,10 +21,13 @@ export const useUserActivationStatus = (userId: string | undefined) => {
       return;
     }
 
-    // Skip check if we're checking the same user ID again
-    if (lastCheckedUserId.current === uid && isActivated !== null) {
-      console.log(`useUserActivationStatus: Using cached result for user ${uid}`);
-      setIsLoading(false);
+    // Skip check if we're checking the same user ID again and already have a result
+    if (lastCheckedUserId.current === uid && lastActivationStatus.current !== null) {
+      console.log(`useUserActivationStatus: Using cached result for user ${uid}: ${lastActivationStatus.current}`);
+      if (isMounted.current) {
+        setIsActivated(lastActivationStatus.current);
+        setIsLoading(false);
+      }
       return;
     }
 
@@ -30,6 +35,8 @@ export const useUserActivationStatus = (userId: string | undefined) => {
     
     try {
       console.log(`useUserActivationStatus: Checking activation for user ${uid}`);
+      setHasError(false);
+      
       const { data, error } = await supabase
         .from("kullanici_kurumlar")
         .select("id")
@@ -41,10 +48,15 @@ export const useUserActivationStatus = (userId: string | undefined) => {
         if (isMounted.current) {
           setIsActivated(false);
           setIsLoading(false);
+          setHasError(true);
         }
       } else {
         const activated = !!data;
         console.log(`useUserActivationStatus: User ${uid} activation status:`, activated);
+        
+        // Store result in ref for future use
+        lastActivationStatus.current = activated;
+        
         if (isMounted.current) {
           setIsActivated(activated);
           setIsLoading(false);
@@ -55,15 +67,20 @@ export const useUserActivationStatus = (userId: string | undefined) => {
       if (isMounted.current) {
         setIsActivated(false);
         setIsLoading(false);
+        setHasError(true);
       }
     }
-  }, [isActivated]);
+  }, []);
 
   useEffect(() => {
     // Component mount status tracking
     isMounted.current = true;
     
-    setIsLoading(true);
+    // Only set loading true if we don't have cached result
+    if (!(lastCheckedUserId.current === userId && lastActivationStatus.current !== null)) {
+      setIsLoading(true);
+    }
+    
     checkActivationStatus(userId);
 
     // Cleanup function to prevent state updates after unmount
@@ -73,5 +90,5 @@ export const useUserActivationStatus = (userId: string | undefined) => {
     };
   }, [userId, checkActivationStatus]);
 
-  return { isActivated, isLoading };
+  return { isActivated, isLoading, hasError };
 };
