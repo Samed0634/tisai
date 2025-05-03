@@ -36,27 +36,11 @@ export const useTokenValidation = () => {
         return { isValid: false, kurumData: null, error: "Token boş" };
       }
 
-      // Verify token against kurumlar table
-      console.log("Token doğrulaması başlıyor:", cleanToken);
-      const { data: kurumData, error: kurumError } = await supabase
+      // Tüm kurumları çek ve manuel olarak karşılaştır (büyük-küçük harf duyarsız)
+      console.log("Token sorgusu başlatılıyor...");
+      const { data: kurumDataList, error: kurumError } = await supabase
         .from("kurumlar")
-        .select("id, kayit_token, token_aktif_mi")
-        .eq("kayit_token", cleanToken)
-        .maybeSingle();
-
-      console.log("Token sorgusu sonucu:", { kurumData, kurumError });
-      
-      // Veritabanındaki token ile karşılaştırma detayları
-      if (kurumData) {
-        console.log("Veritabanındaki token:", kurumData.kayit_token);
-        console.log("Token karşılaştırması:", {
-          girilenToken: cleanToken,
-          dbToken: kurumData.kayit_token,
-          esitMi: cleanToken === kurumData.kayit_token
-        });
-      } else {
-        console.log("Veritabanında eşleşen kayıt bulunamadı");
-      }
+        .select("id, kayit_token, token_aktif_mi");
 
       if (kurumError) {
         console.error("Token sorgu hatası:", kurumError);
@@ -67,6 +51,23 @@ export const useTokenValidation = () => {
         });
         return { isValid: false, kurumData: null, error: kurumError.message };
       }
+
+      console.log("Veritabanından alınan kayıtlar:", kurumDataList);
+
+      // Manuel olarak büyük-küçük harf duyarsız eşleştirme yap
+      const kurumData = kurumDataList?.find(kurum => {
+        const dbToken = kurum.kayit_token?.trim() || "";
+        const inputToken = cleanToken.toLowerCase();
+        const dbTokenLower = dbToken.toLowerCase();
+        
+        console.log("Token karşılaştırması:", {
+          girilenToken: inputToken,
+          dbToken: dbTokenLower,
+          esitMi: inputToken === dbTokenLower
+        });
+        
+        return inputToken === dbTokenLower;
+      }) || null;
 
       if (!kurumData) {
         console.error("Token bulunamadı: Token veritabanında mevcut değil.");
@@ -89,6 +90,7 @@ export const useTokenValidation = () => {
         return { isValid: false, kurumData: null, error: "Token pasif durumda" };
       }
 
+      console.log("Token doğrulama başarılı:", kurumData);
       return { isValid: true, kurumData };
     } catch (error: any) {
       console.error("Token doğrulama hatası:", error);

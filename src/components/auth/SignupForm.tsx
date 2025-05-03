@@ -54,6 +54,7 @@ export const SignupForm = () => {
     setIsSubmitting(true);
     
     try {
+      console.log("Token doğrulama başlıyor...");
       // Step 1: Validate the token
       const { isValid, kurumData, error } = await validateToken(data.tokenId);
       

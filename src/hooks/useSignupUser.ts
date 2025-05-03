@@ -23,6 +23,8 @@ export const useSignupUser = () => {
     try {
       // Create user in Supabase Auth
       console.log("Kullanıcı oluşturuluyor:", email);
+      console.log("Kullanıcının bağlanacağı kurum ID:", kurumId);
+      
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
