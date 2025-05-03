@@ -1,18 +1,22 @@
 
-import React from "react";
+import React, { ReactNode } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Sidebar, SidebarHeader, SidebarProvider, SidebarContent } from "@/components/ui/sidebar";
-import { Outlet } from "react-router-dom";
 import { AppHeader } from "./layout/AppHeader";
 import { Navigation } from "./layout/Navigation";
 import { UserFooter } from "./layout/UserFooter";
 import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
 
-const AppLayout = () => {
+interface AppLayoutProps {
+  children: ReactNode;
+}
+
+const AppLayout = ({ children }: AppLayoutProps) => {
   // Initialize inactivity timeout
   useInactivityTimeout();
   
-  return <SidebarProvider>
+  return (
+    <SidebarProvider>
       <div className="flex h-screen w-full bg-background">
         <Sidebar className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
           <SidebarHeader className="flex items-center gap-2 px-6 py-4 border-b border-sidebar-border">
@@ -31,11 +35,13 @@ const AppLayout = () => {
         <div className="flex-1 flex flex-col overflow-hidden bg-gray-50">
           <AppHeader />
           <main className="flex-1 overflow-y-auto p-4">
-            <Outlet />
+            {children}
           </main>
         </div>
         <Toaster />
       </div>
-    </SidebarProvider>;
+    </SidebarProvider>
+  );
 };
+
 export default AppLayout;
