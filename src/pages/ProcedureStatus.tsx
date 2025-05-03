@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
@@ -10,6 +11,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { useFilterMemory } from "@/hooks/useFilterMemory";
 import { exportToExcel } from "@/utils/exportUtils";
 
+// Define visible columns but explicitly exclude kurum_id
 const DEFAULT_VISIBLE_COLUMNS = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI", "durum"];
 
 type SortOption = {
@@ -50,7 +52,10 @@ const ProcedureStatus = () => {
 
       // Text search filter - case insensitive
       if (normalizedSearchTerm) {
-        return workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm);
+        return workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm) || 
+               workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm) || 
+               workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm) || 
+               workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm);
       }
       return true;
     });
@@ -68,7 +73,13 @@ const ProcedureStatus = () => {
 
   const handleExportToExcel = () => {
     if (filteredAndSortedWorkplaces.length > 0) {
-      exportToExcel(filteredAndSortedWorkplaces, "Prosedür_Durumu");
+      // Create export data without kurum_id field
+      const exportData = filteredAndSortedWorkplaces.map(workplace => {
+        const { kurum_id, ...exportWorkplace } = workplace;
+        return exportWorkplace;
+      });
+      
+      exportToExcel(exportData, "Prosedür_Durumu");
     }
   };
 
