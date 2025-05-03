@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const SubscriptionPlans: React.FC = () => {
   const { 
@@ -22,13 +23,14 @@ const SubscriptionPlans: React.FC = () => {
   } = useSubscription();
   
   const { toast } = useToast();
+  const [selectedBillingCycle, setSelectedBillingCycle] = React.useState<'monthly' | 'annual'>('monthly');
   
   React.useEffect(() => {
     // Auto-refresh subscription status on page load
     refresh();
   }, []);
 
-  const handleSelectPlan = async (plan: 'pro' | 'plus') => {
+  const handleSelectPlan = async (plan: 'pro' | 'plus' | 'pro-annual' | 'plus-annual') => {
     // Check authentication state before proceeding
     const { data } = await supabase.auth.getSession();
     if (!data.session) {
@@ -60,7 +62,7 @@ const SubscriptionPlans: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-green-500" />
         <p className="mt-4 text-muted-foreground">Abonelik bilgileri yükleniyor...</p>
       </div>
     );
@@ -86,47 +88,101 @@ const SubscriptionPlans: React.FC = () => {
           İhtiyaçlarınıza uygun bir plan seçin
         </p>
         {subscribed && subscription_end && (
-          <div className="mt-4 p-2 bg-primary/10 inline-block rounded-md">
-            <p className="text-sm font-medium">
-              {subscription_tier} planınız {formatSubscriptionEnd(subscription_end)} tarihine kadar aktif
+          <div className="mt-4 p-2 bg-green-500/10 inline-block rounded-md">
+            <p className="text-sm font-medium text-green-700">
+              {subscription_tier === "Trial" ? "Deneme süreniz" : `${subscription_tier} planınız`} {formatSubscriptionEnd(subscription_end)} tarihine kadar aktif
             </p>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
-        <SubscriptionCard
-          title="Plus Plan"
-          price="₺299"
-          description="Temel özellikler ve sınırlı erişim"
-          features={[
-            "Toplu İş Sözleşmesi Oluşturma",
-            "Belgelerin PDF olarak indirilmesi",
-            "Temel istatistikler",
-            "E-posta desteği"
-          ]}
-          isActive={subscribed && subscription_tier === "Plus"}
-          buttonText={subscribed && subscription_tier === "Plus" ? "Aktif Plan" : "Planı Seç"}
-          onSelect={() => handleSelectPlan('plus')}
-          disabled={subscribed && subscription_tier === "Plus"}
-        />
+      <div className="flex justify-center mb-8">
+        <Tabs 
+          defaultValue="monthly" 
+          className="w-full max-w-md"
+          onValueChange={(value) => setSelectedBillingCycle(value as 'monthly' | 'annual')}
+        >
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="monthly">Aylık</TabsTrigger>
+            <TabsTrigger value="annual">Yıllık <span className="ml-1 text-xs text-green-500 font-medium">%17 İndirim</span></TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
-        <SubscriptionCard
-          title="Pro Plan"
-          price="₺599"
-          description="Tam özellikler ve sınırsız erişim"
-          features={[
-            "Plus planındaki tüm özellikler",
-            "Gelişmiş istatistikler ve raporlama",
-            "Sınırsız belge oluşturma",
-            "Öncelikli destek",
-            "API erişimi"
-          ]}
-          isActive={subscribed && subscription_tier === "Pro"}
-          buttonText={subscribed && subscription_tier === "Pro" ? "Aktif Plan" : "Planı Seç"}
-          onSelect={() => handleSelectPlan('pro')}
-          disabled={subscribed && subscription_tier === "Pro"}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
+        {selectedBillingCycle === 'monthly' ? (
+          <>
+            <SubscriptionCard
+              title="Plus Plan"
+              price="₺299"
+              description="Temel özellikler ve sınırlı erişim"
+              features={[
+                "Toplu İş Sözleşmesi Oluşturma",
+                "Belgelerin PDF olarak indirilmesi",
+                "Temel istatistikler",
+                "E-posta desteği"
+              ]}
+              isActive={subscribed && subscription_tier === "Plus"}
+              buttonText={subscribed && subscription_tier === "Plus" ? "Aktif Plan" : "Planı Seç"}
+              onSelect={() => handleSelectPlan('plus')}
+              disabled={subscribed && subscription_tier === "Plus"}
+            />
+
+            <SubscriptionCard
+              title="Pro Plan"
+              price="₺599"
+              description="Tam özellikler ve sınırsız erişim"
+              features={[
+                "Plus planındaki tüm özellikler",
+                "Gelişmiş istatistikler ve raporlama",
+                "Sınırsız belge oluşturma",
+                "Öncelikli destek",
+                "API erişimi"
+              ]}
+              isActive={subscribed && subscription_tier === "Pro"}
+              buttonText={subscribed && subscription_tier === "Pro" ? "Aktif Plan" : "Planı Seç"}
+              onSelect={() => handleSelectPlan('pro')}
+              disabled={subscribed && subscription_tier === "Pro"}
+            />
+          </>
+        ) : (
+          <>
+            <SubscriptionCard
+              title="Plus Plan (Yıllık)"
+              price="₺2.988"
+              description="Temel özellikler ve sınırlı erişim"
+              features={[
+                "Toplu İş Sözleşmesi Oluşturma",
+                "Belgelerin PDF olarak indirilmesi",
+                "Temel istatistikler",
+                "E-posta desteği",
+                "Yıllık faturalama ile %17 tasarruf"
+              ]}
+              isActive={subscribed && subscription_tier === "Plus"}
+              buttonText={subscribed && subscription_tier === "Plus" ? "Aktif Plan" : "Planı Seç"}
+              onSelect={() => handleSelectPlan('plus-annual')}
+              disabled={subscribed && subscription_tier === "Plus"}
+            />
+
+            <SubscriptionCard
+              title="Pro Plan (Yıllık)"
+              price="₺5.988"
+              description="Tam özellikler ve sınırsız erişim"
+              features={[
+                "Plus planındaki tüm özellikler",
+                "Gelişmiş istatistikler ve raporlama",
+                "Sınırsız belge oluşturma",
+                "Öncelikli destek",
+                "API erişimi",
+                "Yıllık faturalama ile %17 tasarruf"
+              ]}
+              isActive={subscribed && subscription_tier === "Pro"}
+              buttonText={subscribed && subscription_tier === "Pro" ? "Aktif Plan" : "Planı Seç"}
+              onSelect={() => handleSelectPlan('pro-annual')}
+              disabled={subscribed && subscription_tier === "Pro"}
+            />
+          </>
+        )}
       </div>
 
       {subscribed && (

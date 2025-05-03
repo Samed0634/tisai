@@ -53,7 +53,7 @@ const SubscriptionSuccessPage = () => {
         <CardContent>
           {isRefreshing ? (
             <div className="flex items-center justify-center py-6">
-              <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+              <Loader2 className="h-6 w-6 animate-spin text-green-500 mr-2" />
               <span>Abonelik durumunuz güncelleniyor...</span>
             </div>
           ) : (

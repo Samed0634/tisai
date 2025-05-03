@@ -36,7 +36,7 @@ const SubscriptionManagePage = () => {
   if (loading) {
     return (
       <div className="container max-w-3xl mx-auto py-16 px-4 text-center">
-        <RefreshCw className="h-8 w-8 animate-spin mx-auto text-primary" />
+        <RefreshCw className="h-8 w-8 animate-spin mx-auto text-green-500" />
         <p className="mt-4">Abonelik bilgileri yükleniyor...</p>
       </div>
     );
@@ -70,12 +70,12 @@ const SubscriptionManagePage = () => {
         </p>
       </div>
 
-      <Card className="mb-8 border-primary/20">
+      <Card className="mb-8 border-green-500/20">
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <div className="bg-primary/10 text-primary text-sm px-3 py-1 rounded-full font-medium inline-block">
-                {subscription_tier} Plan
+              <div className="bg-green-500/10 text-green-600 text-sm px-3 py-1 rounded-full font-medium inline-block">
+                {subscription_tier === "Trial" ? "Deneme" : `${subscription_tier} Plan`}
               </div>
               <h3 className="text-xl font-medium mt-2">Aktif Abonelik</h3>
               <p className="text-sm text-muted-foreground mt-1">
@@ -97,7 +97,7 @@ const SubscriptionManagePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <Card className="p-6 hover:bg-secondary/5 transition-colors cursor-pointer">
           <div className="flex flex-col items-center text-center">
-            <FileText className="h-10 w-10 text-primary mb-4" />
+            <FileText className="h-10 w-10 text-green-500 mb-4" />
             <h3 className="font-medium text-lg mb-1">TİS Belgeleri</h3>
             <p className="text-sm text-muted-foreground">
               Tüm belgelerinize erişin ve indirin
@@ -107,7 +107,7 @@ const SubscriptionManagePage = () => {
 
         <Card className="p-6 hover:bg-secondary/5 transition-colors cursor-pointer">
           <div className="flex flex-col items-center text-center">
-            <BarChart className="h-10 w-10 text-primary mb-4" />
+            <BarChart className="h-10 w-10 text-green-500 mb-4" />
             <h3 className="font-medium text-lg mb-1">Raporlar</h3>
             <p className="text-sm text-muted-foreground">
               Gelişmiş istatistiklere ve raporlara erişin
@@ -117,7 +117,7 @@ const SubscriptionManagePage = () => {
 
         <Card className="p-6 hover:bg-secondary/5 transition-colors cursor-pointer" onClick={openCustomerPortal}>
           <div className="flex flex-col items-center text-center">
-            <LogOut className="h-10 w-10 text-primary mb-4" />
+            <LogOut className="h-10 w-10 text-green-500 mb-4" />
             <h3 className="font-medium text-lg mb-1">İptal Et</h3>
             <p className="text-sm text-muted-foreground">
               Aboneliğinizi istediğiniz zaman iptal edebilirsiniz

@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { STRIPE_SECRET_KEY } from "../_shared/stripe-key.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,14 +23,16 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    const stripeKey = STRIPE_SECRET_KEY;
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
     logStep("Stripe key verified");
 
-    // Initialize Supabase client with the anon key for user authentication
+    // Initialize Supabase client with the service role key
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const supabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: { persistSession: false }
+    });
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header provided");
@@ -53,7 +56,7 @@ serve(async (req) => {
     const origin = req.headers.get("origin") || "https://ckamzvmrkfkatbynwdom.lovable.dev";
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${origin}/subscription/manage`,
+      return_url: `${origin}/subscription`,
     });
     logStep("Customer portal session created", { sessionId: portalSession.id, url: portalSession.url });
 

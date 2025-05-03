@@ -32,8 +32,10 @@ serve(async (req) => {
 
     // Get allowed plans
     const ALLOWED_PLANS = {
-      "pro": "price_1RKoivQF6Z2bM6OtPbacI8CV", // Pro Plan price ID
-      "plus": "price_1RKojGQF6Z2bM6Ot4vUqo2tr" // Plus Plan price ID
+      "pro": "price_1RKoivQF6Z2bM6OtPbacI8CV", // Pro Plan (Monthly) price ID
+      "plus": "price_1RKojGQF6Z2bM6Ot4vUqo2tr", // Plus Plan (Monthly) price ID
+      "pro-annual": "price_1RKoy1QF6Z2bM6OtmmM3isoR", // Pro Plan (Annual) price ID
+      "plus-annual": "price_1RKoyTQF6Z2bM6Ot0omJlzYy" // Plus Plan (Annual) price ID
     };
 
     // Validate plan

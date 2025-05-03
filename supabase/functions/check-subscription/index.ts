@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { STRIPE_SECRET_KEY } from "../_shared/stripe-key.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -29,7 +30,7 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    const stripeKey = STRIPE_SECRET_KEY;
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
     logStep("Stripe key verified");
 
@@ -46,21 +47,40 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
+    // Check for trial period - if user created less than 3 days ago, they're in trial
+    const userCreatedAt = new Date(user.created_at);
+    const now = new Date();
+    const trialDays = 3;
+    const trialEndsAt = new Date(userCreatedAt);
+    trialEndsAt.setDate(trialEndsAt.getDate() + trialDays);
+    
+    const isInTrial = now < trialEndsAt;
+    const trialEnd = isInTrial ? trialEndsAt.toISOString() : null;
+    
+    logStep("Trial status checked", { isInTrial, trialEnd, userCreatedAt: user.created_at });
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
-      logStep("No customer found, updating unsubscribed state");
+      logStep("No customer found, checking trial status");
+      
+      // If no Stripe customer but in trial period, return trial info
       await supabaseClient.from("subscribers").upsert({
         email: user.email,
         user_id: user.id,
         stripe_customer_id: null,
-        subscribed: false,
-        subscription_tier: null,
-        subscription_end: null,
+        subscribed: isInTrial,
+        subscription_tier: isInTrial ? "Trial" : null,
+        subscription_end: trialEnd,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'email' });
-      return new Response(JSON.stringify({ subscribed: false }), {
+      
+      return new Response(JSON.stringify({ 
+        subscribed: isInTrial, 
+        subscription_tier: isInTrial ? "Trial" : null,
+        subscription_end: trialEnd
+      }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -90,13 +110,23 @@ serve(async (req) => {
         subscriptionTier = "Pro";
       } else if (priceId === "price_1RKojGQF6Z2bM6Ot4vUqo2tr") {
         subscriptionTier = "Plus";
+      } else if (priceId === "price_1RKoy1QF6Z2bM6OtmmM3isoR") {
+        subscriptionTier = "Pro";  // Pro Annual
+      } else if (priceId === "price_1RKoyTQF6Z2bM6Ot0omJlzYy") {
+        subscriptionTier = "Plus"; // Plus Annual
       } else {
         subscriptionTier = "Unknown";
       }
       
       logStep("Determined subscription tier", { priceId, subscriptionTier });
+    } else if (isInTrial) {
+      // No active subscription but in trial period
+      subscriptionTier = "Trial";
+      subscriptionEnd = trialEnd;
+      logStep("User in trial period", { trialEnd });
+      hasActiveSub = true;
     } else {
-      logStep("No active subscription found");
+      logStep("No active subscription or trial found");
     }
 
     await supabaseClient.from("subscribers").upsert({

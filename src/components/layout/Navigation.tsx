@@ -55,7 +55,7 @@ export function Navigation() {
         <span className="truncate">
           Abonelik
           {subscribed && subscription_tier && (
-            <span className="ml-1.5 text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+            <span className="ml-1.5 text-xs bg-green-500/20 text-green-600 px-1.5 py-0.5 rounded-full">
               {subscription_tier}
             </span>
           )}

@@ -57,7 +57,7 @@ export const useSubscription = () => {
     }
   };
 
-  const createCheckoutSession = async (plan: 'pro' | 'plus') => {
+  const createCheckoutSession = async (plan: 'pro' | 'plus' | 'pro-annual' | 'plus-annual') => {
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         method: 'POST',

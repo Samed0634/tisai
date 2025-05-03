@@ -12,7 +12,7 @@ interface FeatureProps {
 const Feature = ({ children }: FeatureProps) => {
   return (
     <div className="flex items-center gap-2">
-      <Check className="h-4 w-4 text-primary" />
+      <Check className="h-4 w-4 text-green-500" />
       <span className="text-sm">{children}</span>
     </div>
   );
@@ -44,14 +44,14 @@ const SubscriptionCard = ({
       className={cn(
         "flex flex-col",
         "transition-all duration-300",
-        isActive && "border-primary/70 shadow-lg shadow-primary/20"
+        isActive && "border-green-500 shadow-lg shadow-green-500/20"
       )}
     >
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl">{title}</CardTitle>
           {isActive && (
-            <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full font-medium">
+            <span className="bg-green-500/10 text-green-600 text-xs px-2 py-0.5 rounded-full font-medium">
               Aktif Plan
             </span>
           )}
