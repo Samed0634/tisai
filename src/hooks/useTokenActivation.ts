@@ -11,12 +11,20 @@ export const useTokenActivation = () => {
   const { toast } = useToast();
   const { validateToken, isValidating } = useTokenValidation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activationAttempted, setActivationAttempted] = useState(false);
 
   const handleSubmit = async (data: TokenActivationValues) => {
+    // Prevent multiple activation attempts
+    if (activationAttempted || isSubmitting) {
+      console.log("Activation already attempted or in progress, skipping...");
+      return;
+    }
+
     setIsSubmitting(true);
+    setActivationAttempted(true);
     
     try {
-      // Önce kullanıcının oturum bilgisini al
+      // Get current user session
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !sessionData.session || !sessionData.session.user) {
@@ -31,19 +39,30 @@ export const useTokenActivation = () => {
       
       const userId = sessionData.session.user.id;
       
-      // Token doğrulama işlemi
+      // Validate token
       console.log("Token doğrulama başlıyor:", data.tokenId);
       const { isValid, kurumData, error } = await validateToken(data.tokenId);
       
       if (!isValid || !kurumData) {
         console.error("Token doğrulama başarısız:", error);
+        toast({
+          title: "Token Doğrulama Hatası",
+          description: error || "Token doğrulanamadı. Lütfen geçerli bir token giriniz.",
+          variant: "destructive"
+        });
+        
+        // Delay before redirecting to login on error
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+        
         setIsSubmitting(false);
-        return; // Error messages handled in the validateToken function
+        return;
       }
       
       console.log("Token doğrulama başarılı, kurum bilgileri:", kurumData);
       
-      // Kullanıcı-kurum ilişkisini oluştur
+      // Create user-kurum relation
       const { error: relationError } = await supabase
         .from("kullanici_kurumlar")
         .insert({
@@ -62,13 +81,13 @@ export const useTokenActivation = () => {
         return;
       }
       
-      // Başarılı aktivasyon
+      // Successful activation
       toast({
         title: "Aktivasyon Başarılı",
-        description: "Hesabınız başarıyla aktive edildi. Sisteme yönlendiriliyorsunuz.",
+        description: `${kurumData.kurum_adi} kurumuna başarıyla bağlandınız. Ana sayfaya yönlendiriliyorsunuz.`,
       });
       
-      // Ana sayfaya yönlendir
+      // Redirect to home page
       setTimeout(() => {
         navigate("/");
       }, 1500);
@@ -79,6 +98,9 @@ export const useTokenActivation = () => {
         description: error?.message || "Aktivasyon sırasında bir hata oluştu. Lütfen tekrar deneyiniz.",
         variant: "destructive"
       });
+      
+      // Reset activation attempt flag on error
+      setActivationAttempted(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -88,6 +110,7 @@ export const useTokenActivation = () => {
 
   return {
     handleSubmit,
-    isProcessing
+    isProcessing,
+    activationAttempted
   };
 };

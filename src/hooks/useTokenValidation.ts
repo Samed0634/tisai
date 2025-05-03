@@ -7,6 +7,7 @@ interface KurumData {
   id: string;
   kayit_token: string;
   token_aktif_mi: boolean;
+  kurum_adi: string;
 }
 
 interface ValidationResult {
@@ -40,7 +41,7 @@ export const useTokenValidation = () => {
       console.log("Token sorgusu başlatılıyor...");
       const { data: kurumDataList, error: kurumError } = await supabase
         .from("kurumlar")
-        .select("id, kayit_token, token_aktif_mi");
+        .select("id, kayit_token, token_aktif_mi, kurum_adi");
 
       if (kurumError) {
         console.error("Token sorgu hatası:", kurumError);

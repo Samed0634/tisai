@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -19,6 +19,7 @@ import ProcedureStatus from "./pages/ProcedureStatus";
 import Statistics from "./pages/Statistics";
 import { supabase } from "./integrations/supabase/client";
 import { useUserActivationStatus } from "./hooks/useUserActivationStatus";
+import { useToast } from "./hooks/use-toast";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,8 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRouteProps) => {
   const [user, setUser] = useState<any | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
+  const { isActivated, isLoading: isActivationLoading, error } = useUserActivationStatus(user?.id);
+  const { toast } = useToast();
   
   useEffect(() => {
     // Make sure authentication state is properly initialized and tracked
@@ -90,6 +92,16 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
   // If authentication is required but user is not activated, redirect to activation
   if (requireActivation && !isActivated) {
     console.log("User not activated, redirecting to activation");
+    
+    // Show error toast if there's an activation check error
+    if (error) {
+      toast({
+        title: "Aktivasyon Kontrol Hatası",
+        description: `Hesap aktivasyon durumu kontrol edilirken bir hata oluştu: ${error}`,
+        variant: "destructive"
+      });
+    }
+    
     return <Navigate to="/token-activation" replace />;
   }
   
@@ -101,17 +113,37 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
+  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
   
   useEffect(() => {
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUser(data.session?.user || null);
-      setAuthChecked(true);
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Session check error in TokenActivationRoute:", error);
+          setUser(null);
+          setAuthChecked(true);
+          return;
+        }
+        
+        console.log("Initial session check in TokenActivationRoute:", 
+          data.session ? "Session active" : "No session");
+        setUser(data.session?.user || null);
+        setAuthChecked(true);
+      } catch (err) {
+        console.error("Unexpected error during session check:", err);
+        setUser(null);
+        setAuthChecked(true);
+      }
     };
     
     checkAuth();
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`Auth state changed in TokenActivationRoute: ${event}`);
       setUser(session?.user || null);
       setAuthChecked(true);
     });
@@ -125,6 +157,14 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   
   // Not authenticated, redirect to login
   if (!user) {
+    // If there's a token in URL, save it to localStorage before redirecting
+    if (token) {
+      localStorage.setItem("pendingActivationToken", token);
+      toast({
+        title: "Giriş Yapmanız Gerekiyor",
+        description: "Token aktivasyonu için önce giriş yapmalısınız.",
+      });
+    }
     return <Navigate to="/login" replace />;
   }
   

@@ -1,9 +1,27 @@
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { TokenActivationForm } from "@/components/auth/TokenActivationForm";
+import { useTokenActivation } from "@/hooks/useTokenActivation";
+import { useToast } from "@/hooks/use-toast";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const TokenActivation = () => {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+  const { handleSubmit, isProcessing, activationAttempted } = useTokenActivation();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If token is provided in URL, submit it automatically
+    if (token && !activationAttempted) {
+      console.log("URL'den token alındı, aktivasyon başlatılıyor:", token);
+      handleSubmit({ tokenId: token });
+    }
+  }, [token, handleSubmit, activationAttempted]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Card className="w-[400px]">
@@ -17,11 +35,18 @@ const TokenActivation = () => {
           </div>
           <div className="text-center text-2xl font-bold text-foreground mb-2">TISAI</div>
           <CardTitle className="text-lg font-semibold text-center">
-            Hesap Aktivasyonu
+            {token ? "Token Aktivasyonu" : "Hesap Aktivasyonu"}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <TokenActivationForm />
+          {token && isProcessing ? (
+            <div className="flex flex-col items-center justify-center py-8 space-y-4">
+              <LoadingSpinner />
+              <p className="text-center text-muted-foreground">Token doğrulanıyor, lütfen bekleyiniz...</p>
+            </div>
+          ) : (
+            <TokenActivationForm />
+          )}
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
