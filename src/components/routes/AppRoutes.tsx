@@ -3,7 +3,6 @@ import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/components/routes/ProtectedRoute";
 import Login from "@/pages/Login";
-import Signup from "@/pages/Signup";
 import Dashboard from "@/pages/Dashboard";
 import NewData from "@/pages/NewData";
 import UploadTis from "@/pages/UploadTis";
@@ -17,7 +16,6 @@ export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
       
       {/* Protected routes */}
       <Route element={<ProtectedRoute />}>
