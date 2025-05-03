@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import TokenActivation from "./pages/TokenActivation";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
 import UploadTis from "./pages/UploadTis";
@@ -18,19 +17,11 @@ import ActivityHistory from "./pages/ActivityHistory";
 import ProcedureStatus from "./pages/ProcedureStatus";
 import Statistics from "./pages/Statistics";
 import { supabase } from "./integrations/supabase/client";
-import { useUserActivationStatus } from "./hooks/useUserActivationStatus";
 
 const queryClient = new QueryClient();
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-  requireActivation?: boolean;
-}
-
-const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRouteProps) => {
-  const [user, setUser] = useState<any | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   
   useEffect(() => {
     // Make sure authentication state is properly initialized and tracked
@@ -41,8 +32,7 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
       console.log(`Auth state changed: ${event}`, session ? "Session active" : "No session");
       
       // Update authentication state based on session presence
-      setUser(session?.user || null);
-      setAuthChecked(true);
+      setIsAuthenticated(!!session);
     });
     
     // Then check for existing session
@@ -52,18 +42,15 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
         
         if (error) {
           console.error("Session check error:", error);
-          setUser(null);
-          setAuthChecked(true);
+          setIsAuthenticated(false);
           return;
         }
         
         console.log("Initial session check:", data.session ? "Session active" : "No session");
-        setUser(data.session?.user || null);
-        setAuthChecked(true);
+        setIsAuthenticated(!!data.session);
       } catch (err) {
         console.error("Unexpected error during session check:", err);
-        setUser(null);
-        setAuthChecked(true);
+        setIsAuthenticated(false);
       }
     };
     
@@ -76,98 +63,17 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
     };
   }, []);
   
-  // Show loading state while checking authentication and activation
-  if (!authChecked || (user && requireActivation && isActivationLoading)) {
-    return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
+  // Show loading state while checking authentication
+  if (isAuthenticated === null) {
+    return <div>Yükleniyor...</div>;
   }
   
-  // If not authenticated, redirect to login
-  if (!user) {
+  if (!isAuthenticated) {
     console.log("User not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
   
-  // If authentication is required but user is not activated, redirect to activation
-  if (requireActivation && !isActivated) {
-    console.log("User not activated, redirecting to activation");
-    return <Navigate to="/token-activation" replace />;
-  }
-  
-  console.log("User authenticated and activated, rendering protected content");
-  return <>{children}</>;
-};
-
-const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<any | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const { isActivated, isLoading } = useUserActivationStatus(user?.id);
-  
-  useEffect(() => {
-    console.log("TokenActivationRoute: Setting up auth tracking");
-    
-    // Set up auth state change listener first to ensure we catch all auth events
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`TokenActivationRoute: Auth state changed: ${event}`);
-      setUser(session?.user || null);
-      setAuthChecked(true);
-    });
-    
-    // Then check for existing session
-    const checkAuth = async () => {
-      try {
-        console.log("TokenActivationRoute: Checking current session");
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("TokenActivationRoute: Session error:", error);
-          setUser(null);
-        } else {
-          console.log("TokenActivationRoute: Session check result:", data.session ? "Has session" : "No session");
-          setUser(data.session?.user || null);
-        }
-        
-        setAuthChecked(true);
-      } catch (err) {
-        console.error("TokenActivationRoute: Unexpected error:", err);
-        setUser(null);
-        setAuthChecked(true);
-      }
-    };
-    
-    checkAuth();
-    
-    return () => {
-      console.log("TokenActivationRoute: Cleaning up subscription");
-      subscription.unsubscribe();
-    };
-  }, []);
-  
-  console.log("TokenActivationRoute state:", {
-    user: user ? "Logged in" : "Not logged in",
-    authChecked,
-    isActivated,
-    isLoading
-  });
-  
-  // Show loading state while checking authentication and activation status
-  if (!authChecked || isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
-  }
-  
-  // Not authenticated, redirect to login
-  if (!user) {
-    console.log("TokenActivationRoute: User not authenticated, redirecting to login");
-    return <Navigate to="/login" replace />;
-  }
-  
-  // Already activated, redirect to dashboard
-  if (isActivated) {
-    console.log("TokenActivationRoute: User already activated, redirecting to dashboard");
-    return <Navigate to="/" replace />;
-  }
-  
-  // User is authenticated but not activated, show token activation page
-  console.log("TokenActivationRoute: Showing activation page");
+  console.log("User authenticated, rendering protected content");
   return <>{children}</>;
 };
 
@@ -180,11 +86,6 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/token-activation" element={
-            <TokenActivationRoute>
-              <TokenActivation />
-            </TokenActivationRoute>
-          } />
           
           {/* Redirect root path to login if not authenticated */}
           <Route path="/" element={

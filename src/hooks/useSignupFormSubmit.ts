@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useTokenValidation } from "@/hooks/useTokenValidation";
 import { useSignupUser } from "@/hooks/useSignupUser";
 import type { SignupFormValues } from "@/schemas/signupFormSchema";
 
 export const useSignupFormSubmit = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { validateToken, isValidating } = useTokenValidation();
   const { signupUser, isLoading: isSigningUp } = useSignupUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -16,20 +18,34 @@ export const useSignupFormSubmit = () => {
     setIsSubmitting(true);
     
     try {
-      // Step 1: Sign up the user
-      const { success, userId, error: signupError } = await signupUser({
+      console.log("Token doğrulama başlıyor...");
+      // Step 1: Validate the token
+      const { isValid, kurumData, error } = await validateToken(data.tokenId);
+      
+      if (!isValid || !kurumData) {
+        console.error("Token doğrulama başarısız:", error);
+        setIsSubmitting(false);
+        return; // Error messages handled in the validateToken function
+      }
+
+      console.log("Token doğrulama başarılı, kurum bilgileri:", kurumData);
+
+      // Step 2: Sign up the user
+      const { success, error: signupError } = await signupUser({
         email: data.email,
-        password: data.password
+        password: data.password,
+        kurumId: kurumData.id
       });
 
-      if (success && userId) {
+      if (success) {
         toast({
           title: "Kayıt Başarılı",
-          description: "Hesabınız oluşturuldu. Şimdi kurum token ID ile aktivasyon yapmanız gerekiyor.",
+          description: "Hesabınız başarıyla oluşturuldu. Giriş yapabilirsiniz.",
         });
 
-        // Redirect to token activation page
-        navigate("/token-activation");
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
       } else {
         console.error("Kayıt işlemi sırasında hata:", signupError);
       }
@@ -45,7 +61,7 @@ export const useSignupFormSubmit = () => {
     }
   };
 
-  const isProcessing = isSigningUp || isSubmitting;
+  const isProcessing = isValidating || isSigningUp || isSubmitting;
 
   return {
     handleSubmit,

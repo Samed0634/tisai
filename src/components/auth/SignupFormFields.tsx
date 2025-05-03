@@ -77,6 +77,23 @@ export const SignupFormFields: React.FC<SignupFormFieldsProps> = ({ isProcessing
           </FormItem>
         )}
       />
+      <FormField
+        control={control}
+        name="tokenId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Kurum Token ID</FormLabel>
+            <FormControl>
+              <Input 
+                placeholder="Kurum token ID'nizi giriniz" 
+                disabled={isProcessing}
+                {...field} 
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </>
   );
 };
