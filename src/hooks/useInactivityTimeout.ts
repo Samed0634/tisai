@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-const INACTIVITY_TIMEOUT = 300000; // 5 minutes in milliseconds
+const INACTIVITY_TIMEOUT = 180000; // 3 minutes in milliseconds (180 seconds)
 
 export const useInactivityTimeout = () => {
   const timeoutRef = useRef<number | null>(null);
@@ -20,7 +20,7 @@ export const useInactivityTimeout = () => {
     // Set new timeout
     timeoutRef.current = window.setTimeout(async () => {
       try {
-        console.log('Inactive for 5 minutes, logging out...');
+        console.log('Inactive for 3 minutes, logging out...');
         
         // First perform the sign out
         const { error } = await supabase.auth.signOut();
