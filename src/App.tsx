@@ -103,8 +103,11 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const { isActivated, isLoading } = useUserActivationStatus(user?.id);
   
   useEffect(() => {
-    // First set up the auth state change listener to prevent race conditions
+    console.log("TokenActivationRoute: Setting up auth tracking");
+    
+    // Set up auth state change listener first to ensure we catch all auth events
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`TokenActivationRoute: Auth state changed: ${event}`);
       setUser(session?.user || null);
       setAuthChecked(true);
     });
@@ -112,19 +115,39 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
     // Then check for existing session
     const checkAuth = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
-        setUser(data.session?.user || null);
+        console.log("TokenActivationRoute: Checking current session");
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("TokenActivationRoute: Session error:", error);
+          setUser(null);
+        } else {
+          console.log("TokenActivationRoute: Session check result:", data.session ? "Has session" : "No session");
+          setUser(data.session?.user || null);
+        }
+        
         setAuthChecked(true);
       } catch (err) {
-        console.error("Error checking session:", err);
+        console.error("TokenActivationRoute: Unexpected error:", err);
+        setUser(null);
         setAuthChecked(true);
       }
     };
     
     checkAuth();
     
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("TokenActivationRoute: Cleaning up subscription");
+      subscription.unsubscribe();
+    };
   }, []);
+  
+  console.log("TokenActivationRoute state:", {
+    user: user ? "Logged in" : "Not logged in",
+    authChecked,
+    isActivated,
+    isLoading
+  });
   
   // Show loading state while checking authentication and activation status
   if (!authChecked || isLoading) {
@@ -133,15 +156,18 @@ const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   
   // Not authenticated, redirect to login
   if (!user) {
+    console.log("TokenActivationRoute: User not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
   
   // Already activated, redirect to dashboard
   if (isActivated) {
+    console.log("TokenActivationRoute: User already activated, redirecting to dashboard");
     return <Navigate to="/" replace />;
   }
   
   // User is authenticated but not activated, show token activation page
+  console.log("TokenActivationRoute: Showing activation page");
   return <>{children}</>;
 };
 
