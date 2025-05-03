@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -190,7 +191,12 @@ const Login = () => {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex flex-col items-center gap-2">
+          <div className="text-center w-full">
+            <Link to="/signup" className="text-sm text-primary hover:underline">
+              Yeni Kayıt
+            </Link>
+          </div>
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Tüm hakları saklıdır.
           </p>

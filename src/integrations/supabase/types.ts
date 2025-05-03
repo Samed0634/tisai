@@ -211,13 +211,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "kullanici_kurumlar_id_fkey1"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "kurumlar"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "kullanici_kurumlar_kurum_id_fkey"
             columns: ["kurum_id"]
             isOneToOne: false
