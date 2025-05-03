@@ -38,7 +38,6 @@ export type Database = {
           id: number
           "İşlem Adı": string | null
           "İşlem Yapan Kullanıcı": string | null
-          kurum_id: string
           Saat: string | null
           Tarih: string | null
         }
@@ -46,7 +45,6 @@ export type Database = {
           id?: number
           "İşlem Adı"?: string | null
           "İşlem Yapan Kullanıcı"?: string | null
-          kurum_id: string
           Saat?: string | null
           Tarih?: string | null
         }
@@ -54,19 +52,10 @@ export type Database = {
           id?: number
           "İşlem Adı"?: string | null
           "İşlem Yapan Kullanıcı"?: string | null
-          kurum_id?: string
           Saat?: string | null
           Tarih?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "İşlem Geçmişi_kurum_id_fkey"
-            columns: ["kurum_id"]
-            isOneToOne: false
-            referencedRelation: "kurumlar"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       isyerleri: {
         Row: {
@@ -88,7 +77,6 @@ export type Database = {
           "İŞYERİ ADI": string | null
           "İŞYERİ TÜRÜ": string | null
           "İŞYERİNİN BULUNDUĞU İL": string | null
-          kurum_id: string
           "MÜZAKERE SÜRESİ SON TARİH": string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
@@ -125,7 +113,6 @@ export type Database = {
           "İŞYERİ ADI"?: string | null
           "İŞYERİ TÜRÜ"?: string | null
           "İŞYERİNİN BULUNDUĞU İL"?: string | null
-          kurum_id: string
           "MÜZAKERE SÜRESİ SON TARİH"?: string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
@@ -162,7 +149,6 @@ export type Database = {
           "İŞYERİ ADI"?: string | null
           "İŞYERİ TÜRÜ"?: string | null
           "İŞYERİNİN BULUNDUĞU İL"?: string | null
-          kurum_id?: string
           "MÜZAKERE SÜRESİ SON TARİH"?: string | null
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
@@ -179,86 +165,6 @@ export type Database = {
           "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
           "YETKİ TESPİT İSTEM TARİHİ"?: string | null
           "YHK GÖNDERİM TARİHİ"?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "isyerleri_kurum_id_fkey"
-            columns: ["kurum_id"]
-            isOneToOne: false
-            referencedRelation: "kurumlar"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      kullanici_kurumlar: {
-        Row: {
-          baglanti_tarihi: string
-          id: string
-          kurum_id: string
-          user_id: string
-        }
-        Insert: {
-          baglanti_tarihi?: string
-          id?: string
-          kurum_id?: string
-          user_id?: string
-        }
-        Update: {
-          baglanti_tarihi?: string
-          id?: string
-          kurum_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "kullanici_kurumlar_id_fkey1"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "kurumlar"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "kullanici_kurumlar_kurum_id_fkey"
-            columns: ["kurum_id"]
-            isOneToOne: false
-            referencedRelation: "kurumlar"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      kurumlar: {
-        Row: {
-          adres: string | null
-          email: string | null
-          id: string
-          kayit_token: string
-          kurum_adi: string
-          max_kullanim_sayisi: number | null
-          telefon: string | null
-          token_aktif_mi: boolean
-          token_kullanım_sayisi: number
-        }
-        Insert: {
-          adres?: string | null
-          email?: string | null
-          id?: string
-          kayit_token: string
-          kurum_adi: string
-          max_kullanim_sayisi?: number | null
-          telefon?: string | null
-          token_aktif_mi: boolean
-          token_kullanım_sayisi?: number
-        }
-        Update: {
-          adres?: string | null
-          email?: string | null
-          id?: string
-          kayit_token?: string
-          kurum_adi?: string
-          max_kullanim_sayisi?: number | null
-          telefon?: string | null
-          token_aktif_mi?: boolean
-          token_kullanım_sayisi?: number
         }
         Relationships: []
       }
