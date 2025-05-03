@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,39 +9,31 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from "react-router-dom";
 
-const loginSchema = z.object({
+const signupSchema = z.object({
   email: z.string().email({
     message: "Geçerli bir e-posta adresi giriniz"
   }),
   password: z.string().min(6, {
     message: "Şifre en az 6 karakter olmalıdır"
   }),
-  rememberMe: z.boolean().optional().default(false)
+  confirmPassword: z.string().min(6, {
+    message: "Şifre en az 6 karakter olmalıdır"
+  })
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Şifreler eşleşmiyor",
+  path: ["confirmPassword"]
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type SignupFormValues = z.infer<typeof signupSchema>;
 
-const Login = () => {
+const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  // Check for remembered credentials on component mount
-  useEffect(() => {
-    const rememberedEmail = localStorage.getItem("remembered_email");
-    const rememberedPassword = localStorage.getItem("remembered_password");
-    const rememberedMe = localStorage.getItem("remember_me") === "true";
-
-    if (rememberedMe && rememberedEmail && rememberedPassword) {
-      form.setValue("email", rememberedEmail);
-      form.setValue("password", rememberedPassword);
-      form.setValue("rememberMe", true);
-    }
-  }, []);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -60,31 +52,19 @@ const Login = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: false
+      confirmPassword: ""
     }
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: SignupFormValues) => {
     setIsLoading(true);
     try {
-      // Handle the "Remember Me" feature
-      if (data.rememberMe) {
-        localStorage.setItem("remembered_email", data.email);
-        localStorage.setItem("remembered_password", data.password);
-        localStorage.setItem("remember_me", "true");
-      } else {
-        // Clear remembered credentials if "Remember Me" is unchecked
-        localStorage.removeItem("remembered_email");
-        localStorage.removeItem("remembered_password");
-        localStorage.removeItem("remember_me");
-      }
-
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password
       });
@@ -94,20 +74,20 @@ const Login = () => {
       }
 
       toast({
-        title: "Giriş başarılı",
-        description: "Hoş geldiniz."
+        title: "Kayıt işlemi başarılı",
+        description: "Hesabınız oluşturuldu, giriş yapabilirsiniz."
       });
 
       setTimeout(() => {
-        navigate("/");
-      }, 500);
+        navigate("/login");
+      }, 1500);
     } catch (error: any) {
       toast({
-        title: "Giriş başarısız",
-        description: error?.message || "E-posta veya şifre hatalı.",
+        title: "Kayıt işlemi başarısız",
+        description: error?.message || "Bir hata oluştu, lütfen tekrar deneyiniz.",
         variant: "destructive"
       });
-      console.error("Login error:", error);
+      console.error("Signup error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -126,13 +106,12 @@ const Login = () => {
           </div>
           <div className="text-center text-2xl font-bold text-foreground mb-2">TISAI</div>
           <CardTitle className="text-sm font-normal text-center text-muted-foreground">
-            Toplu İş Sözleşmesi Otomasyon Sistemi
+            Yeni Hesap Oluştur
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              
               <FormField
                 control={form.control}
                 name="email"
@@ -161,20 +140,14 @@ const Login = () => {
               />
               <FormField
                 control={form.control}
-                name="rememberMe"
+                name="confirmPassword"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+                  <FormItem>
+                    <FormLabel>Şifreyi Tekrar Girin</FormLabel>
                     <FormControl>
-                      <Checkbox 
-                        checked={field.value} 
-                        onCheckedChange={field.onChange}
-                      />
+                      <Input type="password" placeholder="Şifrenizi tekrar giriniz" {...field} />
                     </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="cursor-pointer">
-                        Beni Hatırla
-                      </FormLabel>
-                    </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -182,17 +155,17 @@ const Login = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Giriş Yapılıyor
+                    Kayıt Oluşturuluyor
                   </>
                 ) : (
-                  "Giriş Yap"
+                  "Kayıt Ol"
                 )}
               </Button>
-
+              
               <div className="text-center mt-4">
-                <Link to="/signup" className="text-primary hover:underline text-sm flex items-center justify-center">
-                  <UserPlus className="h-4 w-4 mr-1" />
-                  Hesabın Yok mu? Kaydol
+                <Link to="/login" className="text-primary hover:underline text-sm flex items-center justify-center">
+                  <LogIn className="h-4 w-4 mr-1" />
+                  Zaten Hesabım Var, Giriş Yap
                 </Link>
               </div>
             </form>
@@ -208,4 +181,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
