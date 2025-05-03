@@ -56,16 +56,21 @@ const Signup = () => {
 
   const onSubmit = async (data: SignupFormValues) => {
     setIsLoading(true);
+    console.log("Form verisi:", data);
 
     try {
       // Step 1: Verify token against kurumlar table
-      const { data: rawData, error: kurumError } = await supabase
+      console.log("Token doğrulaması başlıyor:", data.tokenId);
+      const { data: kurumData, error: kurumError } = await supabase
         .from("kurumlar")
         .select("id, kayit_token, token_aktif_mi")
         .eq("kayit_token", data.tokenId)
         .single();
 
-      if (kurumError || !rawData) {
+      console.log("Token sorgusu sonucu:", { kurumData, kurumError });
+
+      if (kurumError || !kurumData) {
+        console.error("Token doğrulama hatası:", kurumError);
         toast({
           title: "Token Doğrulama Hatası",
           description: "Geçersiz kurum token ID. Lütfen geçerli bir token alınız.",
@@ -74,9 +79,6 @@ const Signup = () => {
         setIsLoading(false);
         return;
       }
-
-      // Safely cast the response data to our expected interface
-      const kurumData = rawData as unknown as KurumData;
 
       // Check if token is active
       if (!kurumData.token_aktif_mi) {
@@ -90,16 +92,35 @@ const Signup = () => {
       }
 
       // Step 2: Create user in Supabase Auth
+      console.log("Kullanıcı oluşturuluyor:", data.email);
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
+        options: {
+          emailRedirectTo: window.location.origin + '/login'
+        }
       });
 
-      if (authError || !authData.user) {
-        throw authError || new Error("Kullanıcı oluşturulamadı.");
+      console.log("Auth kayıt sonucu:", { authData, authError });
+
+      if (authError) {
+        let errorMessage = "Kullanıcı oluşturulamadı.";
+        if (authError.message.includes("User already registered")) {
+          errorMessage = "Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapınız veya başka bir e-posta adresi deneyiniz.";
+        }
+        throw new Error(errorMessage);
+      }
+
+      if (!authData.user) {
+        throw new Error("Kullanıcı oluşturulamadı. Lütfen tekrar deneyiniz.");
       }
 
       // Step 3: Create entry in kullanici_kurumlar table
+      console.log("Kurum-kullanıcı ilişkisi oluşturuluyor:", {
+        user_id: authData.user.id,
+        kurum_id: kurumData.id
+      });
+
       const { error: relationError } = await supabase
         .from("kullanici_kurumlar")
         .insert({
@@ -107,10 +128,21 @@ const Signup = () => {
           kurum_id: kurumData.id,
         });
 
+      console.log("İlişki oluşturma sonucu:", { relationError });
+
       if (relationError) {
-        // If relation creation fails, attempt to delete the created user
-        await supabase.auth.admin.deleteUser(authData.user.id);
-        throw relationError;
+        console.error("Kullanıcı-kurum ilişkisi oluşturma hatası:", relationError);
+        
+        // Kullanıcı oluşturuldu ama ilişki eklenemedi, kullanıcıyı silmeye çalışalım
+        try {
+          // Not: Auth API ile kullanıcı silemeyiz, bunun için admin API gerekli
+          // Bu hata durumunda kullanıcıyı bilgilendirip manuel düzeltme önerebiliriz
+          console.log("Kullanıcı oluşturuldu ama ilişki eklenemedi, kullanıcıyı manuel olarak düzeltmek gerekebilir");
+        } catch (deleteError) {
+          console.error("Kullanıcı silme hatası:", deleteError);
+        }
+        
+        throw new Error("Kullanıcı-kurum ilişkisi oluşturulamadı. Lütfen yöneticinizle iletişime geçiniz.");
       }
 
       toast({
@@ -122,12 +154,12 @@ const Signup = () => {
         navigate("/login");
       }, 1500);
     } catch (error: any) {
+      console.error("Kayıt işlemi hatası:", error);
       toast({
         title: "Kayıt Hatası",
         description: error?.message || "Kayıt işlemi sırasında bir hata oluştu.",
         variant: "destructive"
       });
-      console.error("Signup error:", error);
     } finally {
       setIsLoading(false);
     }
