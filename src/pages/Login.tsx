@@ -192,7 +192,7 @@ const Login = () => {
               <div className="text-center mt-4 space-y-2">
                 <Link to="/signup" className="text-primary hover:underline text-sm flex items-center justify-center">
                   <UserPlus className="h-4 w-4 mr-1" />
-                  Hesabın Yok mu? Kaydol
+                  Hesabınız yok mu? Kaydolun
                 </Link>
               </div>
             </form>

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
 
 const signupSchema = z.object({
   email: z.string().email({
@@ -166,10 +165,10 @@ const Signup = () => {
                 )}
               </Button>
               
-              <div className="text-center mt-4 space-y-2">
+              <div className="text-center mt-4">
                 <Link to="/login" className="text-primary hover:underline text-sm flex items-center justify-center">
                   <LogIn className="h-4 w-4 mr-1" />
-                  Zaten Hesabım Var, Giriş Yap
+                  Zaten hesabınız var mı? Giriş Yap
                 </Link>
               </div>
             </form>
