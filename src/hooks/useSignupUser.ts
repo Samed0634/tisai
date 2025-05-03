@@ -9,11 +9,16 @@ interface SignupUserParams {
   kurumId: string;
 }
 
+interface SignupResult {
+  success: boolean;
+  error?: Error;
+}
+
 export const useSignupUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const signupUser = async ({ email, password, kurumId }: SignupUserParams) => {
+  const signupUser = async ({ email, password, kurumId }: SignupUserParams): Promise<SignupResult> => {
     setIsLoading(true);
     try {
       // Create user in Supabase Auth
@@ -62,6 +67,11 @@ export const useSignupUser = () => {
         console.log("Kullanıcı oluşturuldu ama ilişki eklenemedi, kullanıcıyı manuel olarak düzeltmek gerekebilir");
         throw new Error("Kullanıcı-kurum ilişkisi oluşturulamadı. Lütfen yöneticinizle iletişime geçiniz.");
       }
+
+      toast({
+        title: "Başarılı",
+        description: "Kaydınız başarıyla oluşturuldu. Giriş yapabilirsiniz.",
+      });
 
       return { success: true };
     } catch (error: any) {

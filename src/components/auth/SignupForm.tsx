@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,8 +35,9 @@ export type SignupFormValues = z.infer<typeof signupSchema>;
 export const SignupForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { validateToken } = useTokenValidation();
-  const { signupUser, isLoading } = useSignupUser();
+  const { validateToken, isValidating } = useTokenValidation();
+  const { signupUser, isLoading: isSigningUp } = useSignupUser();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -50,32 +51,52 @@ export const SignupForm = () => {
 
   const onSubmit = async (data: SignupFormValues) => {
     console.log("Form verisi:", data);
+    setIsSubmitting(true);
     
-    // Step 1: Validate the token
-    const { isValid, kurumData } = await validateToken(data.tokenId);
-    
-    if (!isValid || !kurumData) {
-      return; // Error messages handled in the validateToken function
-    }
+    try {
+      // Step 1: Validate the token
+      const { isValid, kurumData, error } = await validateToken(data.tokenId);
+      
+      if (!isValid || !kurumData) {
+        console.error("Token doğrulama başarısız:", error);
+        setIsSubmitting(false);
+        return; // Error messages handled in the validateToken function
+      }
 
-    // Step 2: Sign up the user
-    const { success } = await signupUser({
-      email: data.email,
-      password: data.password,
-      kurumId: kurumData.id
-    });
+      console.log("Token doğrulama başarılı, kurum bilgileri:", kurumData);
 
-    if (success) {
-      toast({
-        title: "Kayıt Başarılı",
-        description: "Hesabınız başarıyla oluşturuldu. Giriş yapabilirsiniz.",
+      // Step 2: Sign up the user
+      const { success, error: signupError } = await signupUser({
+        email: data.email,
+        password: data.password,
+        kurumId: kurumData.id
       });
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
+      if (success) {
+        toast({
+          title: "Kayıt Başarılı",
+          description: "Hesabınız başarıyla oluşturuldu. Giriş yapabilirsiniz.",
+        });
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } else {
+        console.error("Kayıt işlemi sırasında hata:", signupError);
+      }
+    } catch (error: any) {
+      console.error("Form işleme sırasında beklenmeyen hata:", error);
+      toast({
+        title: "İşlem Hatası",
+        description: "Kayıt işlemi sırasında bir hata oluştu. Lütfen tekrar deneyiniz.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  const isProcessing = isValidating || isSigningUp || isSubmitting;
 
   return (
     <Form {...form}>
@@ -87,7 +108,13 @@ export const SignupForm = () => {
             <FormItem>
               <FormLabel>E-posta</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="E-posta adresinizi giriniz" {...field} />
+                <Input 
+                  type="email" 
+                  placeholder="E-posta adresinizi giriniz" 
+                  autoComplete="email"
+                  disabled={isProcessing}
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -100,7 +127,13 @@ export const SignupForm = () => {
             <FormItem>
               <FormLabel>Şifre</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Şifrenizi giriniz" {...field} />
+                <Input 
+                  type="password" 
+                  placeholder="Şifrenizi giriniz" 
+                  autoComplete="new-password"
+                  disabled={isProcessing}
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -113,7 +146,13 @@ export const SignupForm = () => {
             <FormItem>
               <FormLabel>Tekrar Şifre</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Şifrenizi tekrar giriniz" {...field} />
+                <Input 
+                  type="password" 
+                  placeholder="Şifrenizi tekrar giriniz" 
+                  autoComplete="new-password"
+                  disabled={isProcessing}
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -126,18 +165,22 @@ export const SignupForm = () => {
             <FormItem>
               <FormLabel>Kurum Token ID</FormLabel>
               <FormControl>
-                <Input placeholder="Kurum token ID'nizi giriniz" {...field} />
+                <Input 
+                  placeholder="Kurum token ID'nizi giriniz" 
+                  disabled={isProcessing}
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="pt-2 space-y-2">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? (
+          <Button type="submit" className="w-full" disabled={isProcessing}>
+            {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Kayıt Yapılıyor
+                İşlem Yapılıyor
               </>
             ) : (
               "Kayıt Ol"
@@ -148,6 +191,7 @@ export const SignupForm = () => {
             variant="outline" 
             className="w-full" 
             onClick={() => navigate('/login')}
+            disabled={isProcessing}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Geri Dön

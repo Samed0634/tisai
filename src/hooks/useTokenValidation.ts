@@ -12,18 +12,30 @@ interface KurumData {
 interface ValidationResult {
   isValid: boolean;
   kurumData: KurumData | null;
+  error?: string;
 }
 
 export const useTokenValidation = () => {
+  const [isValidating, setIsValidating] = useState(false);
   const { toast } = useToast();
 
   const validateToken = async (tokenId: string): Promise<ValidationResult> => {
-    // Temizlenmiş token değeri (baştaki ve sondaki boşlukları kaldır)
-    const cleanToken = tokenId.trim();
-    console.log("Temizlenmiş token değeri:", cleanToken);
-    console.log("Token uzunluğu:", cleanToken.length);
-
+    setIsValidating(true);
     try {
+      // Temizlenmiş token değeri (baştaki ve sondaki boşlukları kaldır)
+      const cleanToken = tokenId.trim();
+      console.log("Temizlenmiş token değeri:", cleanToken);
+      console.log("Token uzunluğu:", cleanToken.length);
+
+      if (!cleanToken || cleanToken.length === 0) {
+        toast({
+          title: "Token Hatası",
+          description: "Token boş olamaz. Lütfen geçerli bir kurum token ID giriniz.",
+          variant: "destructive"
+        });
+        return { isValid: false, kurumData: null, error: "Token boş" };
+      }
+
       // Verify token against kurumlar table
       console.log("Token doğrulaması başlıyor:", cleanToken);
       const { data: kurumData, error: kurumError } = await supabase
@@ -42,6 +54,8 @@ export const useTokenValidation = () => {
           dbToken: kurumData.kayit_token,
           esitMi: cleanToken === kurumData.kayit_token
         });
+      } else {
+        console.log("Veritabanında eşleşen kayıt bulunamadı");
       }
 
       if (kurumError) {
@@ -51,7 +65,7 @@ export const useTokenValidation = () => {
           description: kurumError.message || "Token doğrulama sırasında bir hata oluştu.",
           variant: "destructive"
         });
-        return { isValid: false, kurumData: null };
+        return { isValid: false, kurumData: null, error: kurumError.message };
       }
 
       if (!kurumData) {
@@ -61,7 +75,7 @@ export const useTokenValidation = () => {
           description: "Geçersiz kurum token ID. Lütfen geçerli bir token alınız.",
           variant: "destructive"
         });
-        return { isValid: false, kurumData: null };
+        return { isValid: false, kurumData: null, error: "Token bulunamadı" };
       }
 
       // Check if token is active
@@ -72,7 +86,7 @@ export const useTokenValidation = () => {
           description: "Bu token aktif değil. Lütfen kurum yöneticinizle iletişime geçiniz.",
           variant: "destructive"
         });
-        return { isValid: false, kurumData: null };
+        return { isValid: false, kurumData: null, error: "Token pasif durumda" };
       }
 
       return { isValid: true, kurumData };
@@ -83,9 +97,11 @@ export const useTokenValidation = () => {
         description: error?.message || "Token doğrulama sırasında bir hata oluştu.",
         variant: "destructive"
       });
-      return { isValid: false, kurumData: null };
+      return { isValid: false, kurumData: null, error: error?.message };
+    } finally {
+      setIsValidating(false);
     }
   };
 
-  return { validateToken };
+  return { validateToken, isValidating };
 };
