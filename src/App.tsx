@@ -18,7 +18,7 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import SubscriptionSuccessPage from "./pages/subscription/SuccessPage";
 import SubscriptionCancelPage from "./pages/subscription/CancelPage";
 import SubscriptionManagePage from "./pages/subscription/ManagePage";
-import { AuthProvider } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
 
