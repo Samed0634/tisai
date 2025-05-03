@@ -5,4 +5,5 @@ export interface ActionHistory {
   "Tarih": string;
   "Saat": string;
   "İşlem Yapan Kullanıcı": string;
+  kurum_id?: string;
 }

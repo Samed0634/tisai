@@ -37,10 +37,37 @@ export const useActivityHistory = () => {
         return;
       }
       
-      const { data, error } = await supabase
+      // Get the user's kurum_id
+      const { data: userData, error: userError } = await supabase
+        .from('kullanici_kurumlar')
+        .select('kurum_id')
+        .eq('user_id', sessionData.session.user.id)
+        .maybeSingle();
+        
+      if (userError) {
+        console.error('Error getting user kurum_id:', userError);
+        toast({
+          title: "Kurum Bilgisi Hatası",
+          description: "Kurum bilgisi alınamadı.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+      
+      const kurum_id = userData?.kurum_id;
+      
+      let query = supabase
         .from('İşlem Geçmişi')
         .select('*')
         .order('id', { ascending: false });
+        
+      // If we have a kurum_id, filter by it
+      if (kurum_id) {
+        query = query.eq('kurum_id', kurum_id);
+      }
+      
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching activities:', error);

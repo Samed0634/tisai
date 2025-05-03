@@ -43,6 +43,39 @@ const NewData = () => {
     try {
       console.log("Form data submitted:", data);
       
+      // Get current user session
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        throw sessionError;
+      }
+      
+      const user = sessionData.session?.user;
+      
+      // Get the kurum_id for this user
+      const { data: userData, error: userError } = await supabase
+        .from('kullanici_kurumlar')
+        .select('kurum_id')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+        
+      if (userError) {
+        console.error("Error getting user kurum_id:", userError);
+        throw userError;
+      }
+      
+      const kurum_id = userData?.kurum_id;
+      if (!kurum_id) {
+        console.error("No kurum_id found for user");
+        toast({
+          title: "Hata",
+          description: "Kullanıcı için kurum bilgisi bulunamadı.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
       // Prepare data object for Supabase with Turkish column names
       const insertData = {
         "İŞYERİ ADI": data.companyName,
@@ -58,7 +91,8 @@ const NewData = () => {
         "YETKİ BELGESİ TEBLİĞ TARİHİ": data.authDate ? data.authDate.toISOString() : null,
         "İHALE ADI": data.tenderName || null,
         "İHALE BAŞLANGIÇ TARİHİ": data.tenderStartDate ? data.tenderStartDate.toISOString() : null,
-        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null
+        "İHALE BİTİŞ TARİHİ": data.tenderEndDate ? data.tenderEndDate.toISOString() : null,
+        kurum_id: kurum_id
       };
       
       console.log("Preparing to insert data:", insertData);
@@ -77,10 +111,6 @@ const NewData = () => {
       if (existingData && existingData.length > 0 && existingData[0].ID) {
         nextId = existingData[0].ID + 1;
       }
-
-      // Get the current user's session to get auth data
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData.session?.user;
 
       // Add the ID to the insert data
       const finalInsertData = {

@@ -20,6 +20,20 @@ export const useActionHistory = () => {
         time: turkishTime
       });
 
+      // Get the current user's kurum_id
+      const { data: userData, error: userError } = await supabase
+        .from('kullanici_kurumlar')
+        .select('kurum_id')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (userError) {
+        console.error('Error getting user kurum_id:', userError);
+        throw userError;
+      }
+
+      const kurum_id = userData?.kurum_id || null;
+
       // Log action to İşlem Geçmişi table
       const { error } = await supabase
         .from('İşlem Geçmişi')
@@ -27,7 +41,8 @@ export const useActionHistory = () => {
           "İşlem Adı": actionName,
           "İşlem Yapan Kullanıcı": user?.email || 'Sistem',
           "Tarih": turkishDate,
-          "Saat": turkishTime
+          "Saat": turkishTime,
+          kurum_id: kurum_id
         });
 
       if (error) {

@@ -32,6 +32,23 @@ export const useWorkplaceData = () => {
     mutationFn: async (workplace: Workplace) => {
       console.log("Updating workplace:", workplace);
       
+      // Get kurum_id from the user's session
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Get the user's kurum_id from kullanici_kurumlar
+      const { data: userData, error: userError } = await supabase
+        .from('kullanici_kurumlar')
+        .select('kurum_id')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (userError) {
+        console.error("Error fetching kurum_id:", userError);
+        throw userError;
+      }
+
+      const kurum_id = userData?.kurum_id;
+      
       // Check if the workplace exists first
       const { data: existingWorkplace, error: checkError } = await supabase
         .from('isyerleri')
@@ -45,11 +62,17 @@ export const useWorkplaceData = () => {
       
       let result;
       
+      // Add kurum_id to the workplace object
+      const workplaceWithKurumId = {
+        ...workplace,
+        kurum_id
+      };
+      
       if (existingWorkplace) {
         // Update existing workplace
         const { data, error } = await supabase
           .from('isyerleri')
-          .update(workplace)
+          .update(workplaceWithKurumId)
           .eq('ID', workplace.ID)
           .select();
         
@@ -61,7 +84,7 @@ export const useWorkplaceData = () => {
         // Insert new workplace
         const { data, error } = await supabase
           .from('isyerleri')
-          .insert(workplace)
+          .insert(workplaceWithKurumId)
           .select();
         
         if (error) throw error;
