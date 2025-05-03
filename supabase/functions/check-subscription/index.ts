@@ -30,8 +30,7 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const stripeKey = STRIPE_SECRET_KEY;
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+    if (!STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY is not set");
     logStep("Stripe key verified");
 
     const authHeader = req.headers.get("Authorization");
@@ -59,7 +58,7 @@ serve(async (req) => {
     
     logStep("Trial status checked", { isInTrial, trialEnd, userCreatedAt: user.created_at });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2023-10-16" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
@@ -94,7 +93,8 @@ serve(async (req) => {
       status: "active",
       limit: 1,
     });
-    const hasActiveSub = subscriptions.data.length > 0;
+    
+    let hasActiveSub = subscriptions.data.length > 0;
     let subscriptionTier = null;
     let subscriptionEnd = null;
 

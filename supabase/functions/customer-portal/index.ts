@@ -23,8 +23,7 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const stripeKey = STRIPE_SECRET_KEY;
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+    if (!STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY is not set");
     logStep("Stripe key verified");
 
     // Initialize Supabase client with the service role key
@@ -43,7 +42,7 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2023-10-16" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     if (customers.data.length === 0) {
       throw new Error("No Stripe customer found for this user");
