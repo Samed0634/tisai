@@ -13,6 +13,23 @@ interface WorkplaceItem {
   [key: string]: any;
 }
 
+// Function to normalize text for case-insensitive and accent-insensitive comparison
+const normalizeText = (text: string | null | undefined): string => {
+  if (!text) return "";
+  
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+    .replace(/ı/g, "i")
+    .replace(/ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/ş/g, "s")
+    .replace(/ö/g, "o")
+    .replace(/ç/g, "c");
+};
+
 export const useTableSort = <T extends WorkplaceItem>(data: T[]) => {
   const [sortKey, setSortKey] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -47,9 +64,9 @@ export const useTableSort = <T extends WorkplaceItem>(data: T[]) => {
         : new Date(bValue).getTime() - new Date(aValue).getTime();
     }
     
-    // Default string comparison
-    const aString = String(aValue || '').toLowerCase();
-    const bString = String(bValue || '').toLowerCase();
+    // Default string comparison with normalization for case-insensitivity and Turkish characters
+    const aString = normalizeText(aValue);
+    const bString = normalizeText(bValue);
     
     if (aString < bString) return sortOrder === 'asc' ? -1 : 1;
     if (aString > bString) return sortOrder === 'asc' ? 1 : -1;

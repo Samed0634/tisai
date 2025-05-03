@@ -13,6 +13,13 @@ export const useActionHistory = () => {
       const turkishDate = formatInTimeZone(now, 'Europe/Istanbul', 'yyyy-MM-dd');
       const turkishTime = formatInTimeZone(now, 'Europe/Istanbul', 'HH:mm:ss');
 
+      console.log("Logging action:", {
+        action: actionName,
+        user: user?.email || 'Sistem',
+        date: turkishDate,
+        time: turkishTime
+      });
+
       // Log action to İşlem Geçmişi table
       const { error } = await supabase
         .from('İşlem Geçmişi')
@@ -27,6 +34,8 @@ export const useActionHistory = () => {
         console.error('Error logging action:', error);
         throw error;
       }
+      
+      console.log("Action logged successfully");
     } catch (error) {
       console.error('Error logging action:', error);
       toast({
