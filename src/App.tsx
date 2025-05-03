@@ -4,8 +4,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import TokenActivation from "./pages/TokenActivation";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
@@ -99,66 +100,39 @@ const ProtectedRoute = ({ children, requireActivation = true }: ProtectedRoutePr
 const TokenActivationRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const { isActivated, isLoading, hasError } = useUserActivationStatus(user?.id);
-  const redirected = useRef(false);
+  const { isActivated, isLoading: isActivationLoading } = useUserActivationStatus(user?.id);
   
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        setUser(data.session?.user || null);
-        setAuthChecked(true);
-      } catch (error) {
-        console.error("Auth check error:", error);
-        setUser(null);
-        setAuthChecked(true);
-      }
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user || null);
+      setAuthChecked(true);
     };
     
     checkAuth();
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("TokenActivationRoute: Auth state changed", event);
       setUser(session?.user || null);
       setAuthChecked(true);
     });
     
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
   
-  useEffect(() => {
-    if (isActivated && !redirected.current) {
-      console.log("TokenActivationRoute: User already activated, redirecting to dashboard");
-      redirected.current = true;
-      
-      // Redirect after a small delay to prevent render loop
-      const timer = setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isActivated]);
-  
-  if (!authChecked || isLoading) {
+  if (!authChecked || (user && isActivationLoading)) {
     return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
   }
   
   // Not authenticated, redirect to login
   if (!user) {
-    console.log("TokenActivationRoute: User not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
   
   // Already activated, redirect to dashboard
-  if (isActivated && !hasError) {
-    console.log("TokenActivationRoute: User already activated, redirecting to dashboard");
+  if (isActivated) {
     return <Navigate to="/" replace />;
   }
   
-  console.log("TokenActivationRoute: User authenticated but not activated, showing activation page");
   return <>{children}</>;
 };
 
@@ -170,6 +144,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/token-activation" element={
             <TokenActivationRoute>
               <TokenActivation />

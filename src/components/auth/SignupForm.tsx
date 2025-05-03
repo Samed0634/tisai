@@ -17,7 +17,8 @@ export const SignupForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      tokenId: ""
     }
   });
 

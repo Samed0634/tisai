@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,19 +11,12 @@ export const useTokenActivation = () => {
   const { toast } = useToast();
   const { validateToken, isValidating } = useTokenValidation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activationComplete, setActivationComplete] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
-  const handleSubmit = useCallback(async (data: TokenActivationValues) => {
-    // Don't process if already complete or in progress
-    if (activationComplete || isSubmitting) return;
-    
-    console.log("Token activation started with data:", data);
+  const handleSubmit = async (data: TokenActivationValues) => {
     setIsSubmitting(true);
-    setHasError(false);
     
     try {
-      // First get the user session info
+      // Önce kullanıcının oturum bilgisini al
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !sessionData.session || !sessionData.session.user) {
@@ -32,32 +25,25 @@ export const useTokenActivation = () => {
           description: "Kullanıcı oturumu bulunamadı. Lütfen tekrar giriş yapınız.",
           variant: "destructive"
         });
-        navigate("/login", { replace: true });
+        navigate("/login");
         return;
       }
       
       const userId = sessionData.session.user.id;
-      console.log("User ID for token activation:", userId);
       
-      // Token validation process
-      console.log("Token validation starting:", data.tokenId);
+      // Token doğrulama işlemi
+      console.log("Token doğrulama başlıyor:", data.tokenId);
       const { isValid, kurumData, error } = await validateToken(data.tokenId);
       
       if (!isValid || !kurumData) {
-        console.error("Token validation failed:", error);
-        toast({
-          title: "Token Doğrulama Hatası",
-          description: error || "Hatalı token ID. Lütfen geçerli bir token giriniz.",
-          variant: "destructive"
-        });
-        setHasError(true);
+        console.error("Token doğrulama başarısız:", error);
         setIsSubmitting(false);
-        return;
+        return; // Error messages handled in the validateToken function
       }
       
-      console.log("Token validation successful, institution data:", kurumData);
+      console.log("Token doğrulama başarılı, kurum bilgileri:", kurumData);
       
-      // Create user-institution relationship
+      // Kullanıcı-kurum ilişkisini oluştur
       const { error: relationError } = await supabase
         .from("kullanici_kurumlar")
         .insert({
@@ -66,50 +52,42 @@ export const useTokenActivation = () => {
         });
       
       if (relationError) {
-        console.error("User-institution relationship creation error:", relationError);
+        console.error("Kullanıcı-kurum ilişkisi oluşturma hatası:", relationError);
         toast({
           title: "Aktivasyon Hatası",
           description: "Kullanıcı-kurum ilişkisi oluşturulamadı. Lütfen yöneticinizle iletişime geçiniz.",
           variant: "destructive"
         });
-        setHasError(true);
         setIsSubmitting(false);
         return;
       }
       
-      // Successful activation - set flag to prevent retries
-      setActivationComplete(true);
-      
+      // Başarılı aktivasyon
       toast({
         title: "Aktivasyon Başarılı",
         description: "Hesabınız başarıyla aktive edildi. Sisteme yönlendiriliyorsunuz.",
       });
       
-      // Navigate after a short delay to ensure state updates and toast display
-      console.log("Redirecting to home page after successful activation");
+      // Ana sayfaya yönlendir
       setTimeout(() => {
-        navigate("/", { replace: true });
+        navigate("/");
       }, 1500);
-      
     } catch (error: any) {
-      console.error("Activation process error:", error);
+      console.error("Aktivasyon işlemi hatası:", error);
       toast({
         title: "Aktivasyon Hatası",
         description: error?.message || "Aktivasyon sırasında bir hata oluştu. Lütfen tekrar deneyiniz.",
         variant: "destructive"
       });
-      setHasError(true);
     } finally {
       setIsSubmitting(false);
     }
-  }, [navigate, toast, validateToken, activationComplete, isSubmitting]);
+  };
 
   const isProcessing = isValidating || isSubmitting;
 
   return {
     handleSubmit,
-    isProcessing,
-    activationComplete,
-    hasError
+    isProcessing
   };
 };
