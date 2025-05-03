@@ -30,13 +30,14 @@ const signupSchema = z.object({
   path: ["confirmPassword"],
 });
 
-// Define an interface for the kurumData object to ensure type safety
+// Define a proper interface for the kurumData object to ensure type safety
+// Make sure the property names match exactly what's in the database
 interface KurumData {
   id: string;
   kayit_token: string;
   token_aktif_mi: boolean;
-  token_kullanım_sayisi?: number; // Optional since it might be null
-  max_kullanim_sayisi?: number;   // Optional since it might be null
+  token_kullanım_sayisi?: number; // Using "ı" to match database column
+  max_kullanim_sayisi?: number;
 }
 
 type SignupFormValues = z.infer<typeof signupSchema>;
@@ -61,13 +62,13 @@ const Signup = () => {
 
     try {
       // Step 1: Verify token against kurumlar table
-      const { data: rawKurumData, error: kurumError } = await supabase
+      const { data: rawData, error: kurumError } = await supabase
         .from("kurumlar")
         .select("id, kayit_token, token_aktif_mi, token_kullanım_sayisi, max_kullanim_sayisi")
         .eq("kayit_token", data.tokenId)
         .single();
 
-      if (kurumError || !rawKurumData) {
+      if (kurumError || !rawData) {
         toast({
           title: "Token Doğrulama Hatası",
           description: "Geçersiz kurum token ID. Lütfen geçerli bir token alınız.",
@@ -78,7 +79,7 @@ const Signup = () => {
       }
 
       // Safely cast the response data to our expected interface
-      const kurumData = rawKurumData as KurumData;
+      const kurumData = rawData as unknown as KurumData;
 
       // Check if token is active
       if (!kurumData.token_aktif_mi) {
@@ -133,7 +134,8 @@ const Signup = () => {
       const { error: updateTokenError } = await supabase
         .from("kurumlar")
         .update({ 
-          token_kullanım_sayisi: (currentUsage + 1) 
+          // Explicitly set the column name with the Turkish character
+          "token_kullanım_sayisi": (currentUsage + 1) 
         })
         .eq("id", kurumData.id);
 
