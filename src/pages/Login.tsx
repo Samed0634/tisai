@@ -45,11 +45,14 @@ const Login = () => {
 
   // Check if user is already logged in
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         navigate("/");
       }
-    });
+    };
+    
+    checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
@@ -132,7 +135,6 @@ const Login = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              
               <FormField
                 control={form.control}
                 name="email"
@@ -140,12 +142,18 @@ const Login = () => {
                   <FormItem>
                     <FormLabel>E-posta</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="E-posta adresinizi giriniz" {...field} />
+                      <Input 
+                        type="email" 
+                        placeholder="E-posta adresinizi giriniz" 
+                        autoComplete="username"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              
               <FormField
                 control={form.control}
                 name="password"
@@ -153,12 +161,18 @@ const Login = () => {
                   <FormItem>
                     <FormLabel>Şifre</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Şifrenizi giriniz" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="Şifrenizi giriniz" 
+                        autoComplete="current-password"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              
               <FormField
                 control={form.control}
                 name="rememberMe"
@@ -178,6 +192,7 @@ const Login = () => {
                   </FormItem>
                 )}
               />
+              
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
@@ -189,7 +204,7 @@ const Login = () => {
                 )}
               </Button>
 
-              <div className="text-center mt-4 space-y-2">
+              <div className="text-center mt-4">
                 <Link to="/signup" className="text-primary hover:underline text-sm flex items-center justify-center">
                   <UserPlus className="h-4 w-4 mr-1" />
                   Hesabınız yok mu? Kaydolun

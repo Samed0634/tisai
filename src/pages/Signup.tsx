@@ -36,11 +36,14 @@ const Signup = () => {
 
   // Check if user is already logged in
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         navigate("/");
       }
-    });
+    };
+    
+    checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
@@ -122,7 +125,12 @@ const Signup = () => {
                   <FormItem>
                     <FormLabel>E-posta</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="E-posta adresinizi giriniz" {...field} />
+                      <Input 
+                        type="email" 
+                        placeholder="E-posta adresinizi giriniz" 
+                        autoComplete="username"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -135,7 +143,12 @@ const Signup = () => {
                   <FormItem>
                     <FormLabel>Şifre</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Şifrenizi giriniz" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="Şifrenizi giriniz" 
+                        autoComplete="new-password"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,7 +161,12 @@ const Signup = () => {
                   <FormItem>
                     <FormLabel>Şifreyi Tekrar Girin</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Şifrenizi tekrar giriniz" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="Şifrenizi tekrar giriniz" 
+                        autoComplete="new-password"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
