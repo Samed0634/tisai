@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { z } from "zod";
@@ -10,6 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, UserPlus, Link as LinkIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const loginSchema = z.object({
   email: z.string().email({
@@ -67,7 +69,7 @@ const Login = () => {
     }
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
     try {
       // Handle the "Remember Me" feature
