@@ -1,21 +1,21 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useSubscription } from "@/hooks/useSubscription";
+import KurumRegistrationForm from "@/components/subscription/KurumRegistrationForm";
 
-const SubscriptionPlans = () => {
-  const [loading, setLoading] = useState(true);
-  const [hasKurum, setHasKurum] = useState(false);
+const KurumKayit = () => {
+  const [hasKurum, setHasKurum] = useState<boolean | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const subscription = useSubscription();
 
   useEffect(() => {
     const checkUserKurum = async () => {
       if (!user) return;
 
       try {
+        // Kullanıcının bağlı olduğu bir kurum var mı kontrol et
         const { data, error } = await supabase
           .from("kullanici_kurumlar")
           .select("kurum_id")
@@ -27,41 +27,37 @@ const SubscriptionPlans = () => {
           return;
         }
 
+        // Eğer bir kurum bulunduysa subscription sayfasına yönlendir
         if (data && data.kurum_id) {
           setHasKurum(true);
+          navigate("/subscription");
         } else {
-          // Kullanıcının kurumu yoksa, kurum kayıt sayfasına yönlendir
-          navigate("/kurum-kayit");
+          setHasKurum(false);
         }
       } catch (error) {
         console.error("Kurum kontrol hatası:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     checkUserKurum();
   }, [user, navigate]);
 
-  if (loading) {
+  // Eğer kontrol devam ediyorsa veya kullanıcının kurumu varsa yükleniyor göster
+  if (hasKurum === null || hasKurum === true) {
     return <div className="flex items-center justify-center h-screen">Yükleniyor...</div>;
   }
 
-  if (!hasKurum) {
-    return null; // Yönlendirme yapıldığı için içerik göstermeye gerek yok
-  }
-
-  // Mevcut abonelik planları sayfası içeriği
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Abonelik Planları</h1>
-      
-      {/* Abonelik içeriği buraya gelecek */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Abonelik planı kartları */}
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold">Kurum Kayıt</h1>
+        <p className="text-muted-foreground mt-2">
+          TİS Takip Sistemini kullanabilmek için kurumunuzu kaydettirmeniz gerekmektedir.
+        </p>
       </div>
+      <KurumRegistrationForm />
     </div>
   );
 };
 
-export default SubscriptionPlans;
+export default KurumKayit;
