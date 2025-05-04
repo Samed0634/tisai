@@ -1,19 +1,15 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '@/hooks/useSubscription';
 import SubscriptionCard from '@/components/subscription/SubscriptionCard';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useKurumStatus } from '@/hooks/useKurumStatus';
-import { useAuth } from '@/hooks/useAuth';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { addDays, formatDistanceToNow, differenceInDays } from 'date-fns';
 
 const SubscriptionPlans: React.FC = () => {
   const { 
@@ -21,38 +17,23 @@ const SubscriptionPlans: React.FC = () => {
     subscription_tier, 
     subscription_end, 
     loading, 
-    isInTrial,
-    trialExpired,
-    trialEnd,
-    userCreatedAt,
     error, 
-    refresh,
     createCheckoutSession,
-    openCustomerPortal
+    openCustomerPortal,
+    refresh
   } = useSubscription();
   
   const { toast } = useToast();
   const [selectedBillingCycle, setSelectedBillingCycle] = React.useState<'monthly' | 'annual'>('monthly');
   const navigate = useNavigate();
   const { hasKurum, loading: loadingKurumStatus } = useKurumStatus();
-  const { user, checkTrialStatus } = useAuth();
   
   useEffect(() => {
     // Auto-refresh subscription status on page load
     refresh();
 
-    // Regular check of trial status
-    const checkTrialStatusInterval = setInterval(() => {
-      checkTrialStatus();
-    }, 60000); // Check every minute
-
-    // Cleanup interval on unmount
-    return () => clearInterval(checkTrialStatusInterval);
-  }, [refresh, checkTrialStatus]);
-  
-  useEffect(() => {
     // Redirect to institution registration if user doesn't have one
-    if (!loadingKurumStatus && !hasKurum && user) {
+    if (!loadingKurumStatus && !hasKurum) {
       toast({
         title: "Kurum Kaydı Gerekli",
         description: "Abonelik planlarını görüntüleyebilmek için önce kurumunuzu kaydetmeniz gerekmektedir.",
@@ -60,16 +41,7 @@ const SubscriptionPlans: React.FC = () => {
       });
       navigate('/kurum-kayit');
     }
-    
-    // Check if user is on expired trial and not subscribed
-    if (!loading && trialExpired && !subscribed && user) {
-      toast({
-        title: "Deneme Süreniz Sona Erdi",
-        description: "Hizmeti kullanmaya devam etmek için lütfen bir abonelik planı seçin.",
-        variant: "destructive"
-      });
-    }
-  }, [hasKurum, loadingKurumStatus, navigate, loading, trialExpired, subscribed, user]);
+  }, [hasKurum, loadingKurumStatus, navigate]);
 
   const handleSelectPlan = async (plan: 'pro' | 'plus' | 'pro-annual' | 'plus-annual') => {
     // Check authentication state before proceeding
@@ -110,26 +82,6 @@ const SubscriptionPlans: React.FC = () => {
       return date;
     }
   };
-  
-  const getTrialInfo = () => {
-    if (!userCreatedAt) return null;
-    
-    try {
-      const createdAt = new Date(userCreatedAt);
-      const trialEndDate = addDays(createdAt, 3);
-      const daysLeft = differenceInDays(trialEndDate, new Date());
-      
-      return {
-        createdAt: format(createdAt, "d MMMM yyyy", { locale: tr }),
-        trialEnd: format(trialEndDate, "d MMMM yyyy", { locale: tr }),
-        daysLeft: Math.max(0, daysLeft)
-      };
-    } catch (err) {
-      return null;
-    }
-  };
-  
-  const trialInfo = getTrialInfo();
 
   if (loading || loadingKurumStatus) {
     return (
@@ -153,7 +105,7 @@ const SubscriptionPlans: React.FC = () => {
   }
 
   // If user doesn't have an institution registered, they should be redirected
-  if (!hasKurum && user) {
+  if (!hasKurum) {
     return null;
   }
 
@@ -164,30 +116,6 @@ const SubscriptionPlans: React.FC = () => {
         <p className="text-muted-foreground">
           İhtiyaçlarınıza uygun bir plan seçin
         </p>
-        
-        {/* Trial status information */}
-        {isInTrial && !subscribed && trialInfo && (
-          <div className="mt-4">
-            <Alert className={trialExpired ? "bg-red-50 border-red-200" : "bg-blue-50 border-blue-200"}>
-              {trialExpired ? (
-                <AlertCircle className="h-5 w-5 text-red-500" />
-              ) : (
-                <AlertCircle className="h-5 w-5 text-blue-500" />
-              )}
-              <AlertTitle>
-                {trialExpired 
-                  ? "Deneme süreniz sona erdi" 
-                  : `Deneme süresi: ${trialInfo.daysLeft} gün kaldı`}
-              </AlertTitle>
-              <AlertDescription>
-                {trialExpired 
-                  ? "Hizmeti kullanmaya devam etmek için lütfen bir abonelik planı seçin." 
-                  : `Hesabınız ${trialInfo.createdAt} tarihinde oluşturuldu. Deneme süreniz ${trialInfo.trialEnd} tarihine kadar devam edecek.`}
-              </AlertDescription>
-            </Alert>
-          </div>
-        )}
-        
         {subscribed && subscription_end && (
           <div className="mt-4 p-2 bg-green-500/10 inline-block rounded-md">
             <p className="text-sm font-medium text-green-700">

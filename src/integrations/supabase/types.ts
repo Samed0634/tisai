@@ -217,13 +217,6 @@ export type Database = {
             referencedRelation: "kurumlar"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "kullanici_kurumlar_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "expired_trial_users"
-            referencedColumns: ["id"]
-          },
         ]
       }
       kurumlar: {
@@ -290,15 +283,7 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "subscribers_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "expired_trial_users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
@@ -407,16 +392,6 @@ export type Database = {
           "YETKİ BELGESİ TEBLİĞ TARİHİ"?: string | null
           "YETKİ TESPİT İSTEM TARİHİ"?: string | null
           "YHK GÖNDERİM TARİHİ"?: string | null
-        }
-        Relationships: []
-      }
-      expired_trial_users: {
-        Row: {
-          account_age: unknown | null
-          created_at: string | null
-          email: string | null
-          id: string | null
-          trial_expired: boolean | null
         }
         Relationships: []
       }
@@ -1718,14 +1693,7 @@ export type Database = {
       }
     }
     Functions: {
-      handle_expired_trial_users: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      has_trial_expired: {
-        Args: { user_id: string }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
