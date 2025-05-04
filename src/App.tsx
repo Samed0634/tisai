@@ -22,7 +22,7 @@ import SubscriptionManagePage from "./pages/subscription/ManagePage";
 import KurumKayit from "./pages/KurumKayit";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
-import { useSubscription } from "./hooks/useSubscription";
+import { SubscriptionProvider, useSubscription } from "./hooks/useSubscription";
 
 const queryClient = new QueryClient();
 
@@ -31,11 +31,13 @@ const AppWithProviders = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AppRoutes />
-        </TooltipProvider>
+        <SubscriptionProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AppRoutes />
+          </TooltipProvider>
+        </SubscriptionProvider>
       </AuthProvider>
     </BrowserRouter>
   </QueryClientProvider>
