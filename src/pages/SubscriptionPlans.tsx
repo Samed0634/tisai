@@ -1,5 +1,5 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '@/hooks/useSubscription';
 import SubscriptionCard from '@/components/subscription/SubscriptionCard';
 import { useToast } from '@/hooks/use-toast';
@@ -9,6 +9,7 @@ import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useKurumStatus } from '@/hooks/useKurumStatus';
 
 const SubscriptionPlans: React.FC = () => {
   const { 
@@ -24,11 +25,23 @@ const SubscriptionPlans: React.FC = () => {
   
   const { toast } = useToast();
   const [selectedBillingCycle, setSelectedBillingCycle] = React.useState<'monthly' | 'annual'>('monthly');
+  const navigate = useNavigate();
+  const { hasKurum, loading: loadingKurumStatus } = useKurumStatus();
   
-  React.useEffect(() => {
+  useEffect(() => {
     // Auto-refresh subscription status on page load
     refresh();
-  }, []);
+
+    // Redirect to institution registration if user doesn't have one
+    if (!loadingKurumStatus && !hasKurum) {
+      toast({
+        title: "Kurum Kaydı Gerekli",
+        description: "Abonelik planlarını görüntüleyebilmek için önce kurumunuzu kaydetmeniz gerekmektedir.",
+        variant: "destructive"
+      });
+      navigate('/kurum-kayit');
+    }
+  }, [hasKurum, loadingKurumStatus, navigate]);
 
   const handleSelectPlan = async (plan: 'pro' | 'plus' | 'pro-annual' | 'plus-annual') => {
     // Check authentication state before proceeding
@@ -39,6 +52,17 @@ const SubscriptionPlans: React.FC = () => {
         description: "Abonelik işlemleri için önce giriş yapmalısınız",
         variant: "destructive"
       });
+      return;
+    }
+    
+    // Check if user has registered an institution
+    if (!hasKurum) {
+      toast({
+        title: "Kurum Kaydı Gerekli",
+        description: "Abonelik planlarını seçebilmek için önce kurumunuzu kaydetmeniz gerekmektedir.",
+        variant: "destructive"
+      });
+      navigate('/kurum-kayit');
       return;
     }
     
@@ -59,7 +83,7 @@ const SubscriptionPlans: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (loading || loadingKurumStatus) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin text-green-500" />
@@ -78,6 +102,11 @@ const SubscriptionPlans: React.FC = () => {
         </Button>
       </div>
     );
+  }
+
+  // If user doesn't have an institution registered, they should be redirected
+  if (!hasKurum) {
+    return null;
   }
 
   return (

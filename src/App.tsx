@@ -19,6 +19,7 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import SubscriptionSuccessPage from "./pages/subscription/SuccessPage";
 import SubscriptionCancelPage from "./pages/subscription/CancelPage";
 import SubscriptionManagePage from "./pages/subscription/ManagePage";
+import KurumKayit from "./pages/KurumKayit";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="activity-history" element={<ActivityHistory />} />
               <Route path="subscription" element={<SubscriptionPlans />} />
               <Route path="subscription/manage" element={<SubscriptionManagePage />} />
+              <Route path="kurum-kayit" element={<KurumKayit />} />
             </Route>
 
             {/* Public subscription success/cancel pages */}
