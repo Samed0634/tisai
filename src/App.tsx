@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,11 +26,11 @@ import { useSubscription } from "./hooks/useSubscription";
 
 const queryClient = new QueryClient();
 
-// Move the ProtectedRoute component inside the BrowserRouter context
+// App with all providers
 const AppWithProviders = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <AuthProvider> {/* Now AuthProvider is inside BrowserRouter */}
+      <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
