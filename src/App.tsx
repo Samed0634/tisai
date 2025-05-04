@@ -19,7 +19,6 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import SubscriptionSuccessPage from "./pages/subscription/SuccessPage";
 import SubscriptionCancelPage from "./pages/subscription/CancelPage";
 import SubscriptionManagePage from "./pages/subscription/ManagePage";
-import KurumKayit from "./pages/KurumKayit";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
@@ -51,11 +50,6 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/kurum-kayit" element={
-              <ProtectedRoute>
-                <KurumKayit />
-              </ProtectedRoute>
-            } />
             
             {/* Redirect root path to login if not authenticated */}
             <Route path="/" element={
