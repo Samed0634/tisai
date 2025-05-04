@@ -9,6 +9,10 @@ export interface SubscriptionData {
   subscription_end: string | null;
   loading: boolean;
   error: string | null;
+  isInTrial: boolean;
+  trialExpired: boolean;
+  trialEnd: string | null;
+  userCreatedAt: string | null;
 }
 
 export const useSubscription = () => {
@@ -18,6 +22,10 @@ export const useSubscription = () => {
     subscription_end: null,
     loading: true,
     error: null,
+    isInTrial: false,
+    trialExpired: false,
+    trialEnd: null,
+    userCreatedAt: null
   });
   const { toast } = useToast();
 
@@ -45,6 +53,10 @@ export const useSubscription = () => {
         subscription_end: data.subscription_end || null,
         loading: false,
         error: null,
+        isInTrial: data.isInTrial || false,
+        trialExpired: data.trialExpired || false,
+        trialEnd: data.trialEnd || null,
+        userCreatedAt: data.userCreatedAt || null
       });
 
     } catch (err: any) {

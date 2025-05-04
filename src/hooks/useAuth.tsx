@@ -1,8 +1,8 @@
-
 import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "./use-toast";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface AuthContextType {
   user: User | null;
@@ -11,6 +11,7 @@ interface AuthContextType {
   signIn: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  checkTrialStatus: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,6 +21,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const checkTrialStatus = async (): Promise<boolean> => {
+    if (!user) return false;
+    
+    try {
+      // Check if user's trial has expired
+      const { data, error } = await supabase.rpc('has_trial_expired', { 
+        user_id: user.id 
+      });
+      
+      if (error) throw error;
+      
+      // If trial expired and user is not on the subscription page, redirect
+      if (data === true && location.pathname !== "/subscription") {
+        toast({
+          title: "Deneme Süresi Sona Erdi",
+          description: "Hizmeti kullanmaya devam etmek için lütfen bir abonelik planı seçin.",
+          variant: "destructive"
+        });
+        
+        navigate("/subscription");
+        return true;
+      }
+      
+      return data === true;
+    } catch (error) {
+      console.error("Trial status check error:", error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -28,6 +61,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log(`Auth state changed: ${event}`, currentSession ? "Session active" : "No session");
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+        
+        // Check trial status when auth state changes (except for logout)
+        if (currentSession?.user && event !== "SIGNED_OUT") {
+          setTimeout(() => {
+            checkTrialStatus();
+          }, 0);
+        }
       }
     );
 
@@ -36,6 +76,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setIsLoading(false);
+      
+      // Check trial status on initial load if user is logged in
+      if (currentSession?.user) {
+        setTimeout(() => {
+          checkTrialStatus();
+        }, 0);
+      }
     }).catch(error => {
       console.error("Error getting session:", error);
       setIsLoading(false);
@@ -45,6 +92,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Check trial status whenever route changes
+  useEffect(() => {
+    if (user && location.pathname !== "/subscription") {
+      checkTrialStatus();
+    }
+  }, [location.pathname, user]);
 
   const signIn = useCallback(async (email: string, password: string, rememberMe?: boolean) => {
     try {
@@ -66,6 +120,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         title: "Giriş başarılı",
         description: "Hoş geldiniz."
       });
+      
+      // After login, check trial status
+      setTimeout(async () => {
+        const trialExpired = await checkTrialStatus();
+        
+        // If trial hasn't expired and we're not already at the root page, go to dashboard
+        if (!trialExpired && location.pathname !== "/") {
+          navigate("/");
+        }
+      }, 500);
+      
     } catch (error: any) {
       toast({
         title: "Giriş başarısız",
@@ -75,7 +140,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Login error:", error);
       throw error;
     }
-  }, [toast]);
+  }, [toast, navigate, location.pathname]);
 
   const signUp = useCallback(async (email: string, password: string) => {
     try {
@@ -122,7 +187,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [toast]);
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut, checkTrialStatus }}>
       {children}
     </AuthContext.Provider>
   );

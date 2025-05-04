@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -21,15 +21,46 @@ import SubscriptionCancelPage from "./pages/subscription/CancelPage";
 import SubscriptionManagePage from "./pages/subscription/ManagePage";
 import KurumKayit from "./pages/KurumKayit";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { useSubscription } from "./hooks/useSubscription";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading } = useAuth();
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requireSubscription?: boolean;
+}
+
+const ProtectedRoute = ({ children, requireSubscription = false }: ProtectedRouteProps) => {
+  const { user, isLoading, checkTrialStatus } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { trialExpired, subscribed, loading: subscriptionLoading } = useSubscription();
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      // If user is authenticated but their trial has expired and they're not subscribed
+      // and they're not already on the subscription page, redirect them
+      if (
+        user && 
+        !subscriptionLoading && 
+        trialExpired && 
+        !subscribed && 
+        location.pathname !== "/subscription" && 
+        requireSubscription
+      ) {
+        navigate("/subscription");
+      }
+    };
+    
+    checkAuth();
+  }, [user, trialExpired, subscribed, subscriptionLoading, location.pathname, navigate, requireSubscription]);
   
   // Show loading state while checking authentication
-  if (isLoading) {
-    return <div>Yükleniyor...</div>;
+  if (isLoading || subscriptionLoading) {
+    return <div className="h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>;
   }
   
   if (!user) {
@@ -54,7 +85,7 @@ const App = () => (
             
             {/* Redirect root path to login if not authenticated */}
             <Route path="/" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireSubscription={true}>
                 <AppLayout />
               </ProtectedRoute>
             }>
