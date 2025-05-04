@@ -27,9 +27,10 @@ const KurumKayit = () => {
           return;
         }
 
-        // Eğer bir kurum bulunduysa, hasKurum'u true yap
+        // Eğer bir kurum bulunduysa subscription sayfasına yönlendir
         if (data && data.kurum_id) {
           setHasKurum(true);
+          navigate("/subscription");
         } else {
           setHasKurum(false);
         }
@@ -39,30 +40,11 @@ const KurumKayit = () => {
     };
 
     checkUserKurum();
-  }, [user]);
+  }, [user, navigate]);
 
-  if (hasKurum === null) {
+  // Eğer kontrol devam ediyorsa veya kullanıcının kurumu varsa yükleniyor göster
+  if (hasKurum === null || hasKurum === true) {
     return <div className="flex items-center justify-center h-screen">Yükleniyor...</div>;
-  }
-
-  // Eğer kullanıcının zaten bir kurumu varsa, bilgi mesajı göster
-  if (hasKurum === true) {
-    return (
-      <div className="container mx-auto py-8">
-        <div className="mx-auto max-w-md text-center">
-          <h1 className="text-2xl font-bold mb-4">Kurum Kaydınız Mevcut</h1>
-          <p className="text-muted-foreground mb-6">
-            Sisteme kayıtlı bir kurumunuz bulunmaktadır. Abonelik planlarına göz atmak için Abonelik sayfasını ziyaret edebilirsiniz.
-          </p>
-          <button 
-            onClick={() => navigate('/subscription')}
-            className="px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            Abonelik Planlarına Git
-          </button>
-        </div>
-      </div>
-    );
   }
 
   return (

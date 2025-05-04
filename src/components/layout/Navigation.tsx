@@ -1,5 +1,5 @@
 
-import { BarChart3, Building2, History, Upload, FileText, ChartPie, Download, CreditCard, UserPlus } from "lucide-react";
+import { BarChart3, Building2, History, Upload, FileText, ChartPie, Download, CreditCard } from "lucide-react";
 import { NavigationLink } from "./NavigationLink";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -50,23 +50,16 @@ export function Navigation() {
         <span className="truncate">İstatistik &amp; Raporlama</span>
       </NavigationLink>
       
-      <div className="space-y-1">
-        <NavigationLink to="/subscription" onClick={handleLinkClick}>
-          <CreditCard className="h-4 w-4" />
-          <span className="truncate">
-            Abonelik
-            {subscribed && subscription_tier && (
-              <span className="ml-1.5 text-xs bg-green-500/20 text-green-600 px-1.5 py-0.5 rounded-full">
-                {subscription_tier}
-              </span>
-            )}
-          </span>
-        </NavigationLink>
-        
-        <NavigationLink to="/kurum-kayit" onClick={handleLinkClick} className="ml-6">
-          <UserPlus className="h-4 w-4" />
-          <span className="truncate">Kurum Kayıt</span>
-        </NavigationLink>
-      </div>
+      <NavigationLink to="/subscription" onClick={handleLinkClick}>
+        <CreditCard className="h-4 w-4" />
+        <span className="truncate">
+          Abonelik
+          {subscribed && subscription_tier && (
+            <span className="ml-1.5 text-xs bg-green-500/20 text-green-600 px-1.5 py-0.5 rounded-full">
+              {subscription_tier}
+            </span>
+          )}
+        </span>
+      </NavigationLink>
     </nav>;
 }

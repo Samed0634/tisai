@@ -51,6 +51,11 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/kurum-kayit" element={
+              <ProtectedRoute>
+                <KurumKayit />
+              </ProtectedRoute>
+            } />
             
             {/* Redirect root path to login if not authenticated */}
             <Route path="/" element={
@@ -67,7 +72,6 @@ const App = () => (
               <Route path="activity-history" element={<ActivityHistory />} />
               <Route path="subscription" element={<SubscriptionPlans />} />
               <Route path="subscription/manage" element={<SubscriptionManagePage />} />
-              <Route path="kurum-kayit" element={<KurumKayit />} />
             </Route>
 
             {/* Public subscription success/cancel pages */}
