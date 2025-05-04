@@ -21,8 +21,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate(); // Now correctly within Router context
+  const location = useLocation(); // Now correctly within Router context
 
   const checkTrialStatus = async (): Promise<boolean> => {
     if (!user) return false;

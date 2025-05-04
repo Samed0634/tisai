@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,11 +25,27 @@ import { useSubscription } from "./hooks/useSubscription";
 
 const queryClient = new QueryClient();
 
+// Move the ProtectedRoute component inside the BrowserRouter context
+const AppWithProviders = () => (
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <AuthProvider> {/* Now AuthProvider is inside BrowserRouter */}
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AppRoutes />
+        </TooltipProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </QueryClientProvider>
+);
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireSubscription?: boolean;
 }
 
+// This component must be used inside the Router context
 const ProtectedRoute = ({ children, requireSubscription = false }: ProtectedRouteProps) => {
   const { user, isLoading, checkTrialStatus } = useAuth();
   const navigate = useNavigate();
@@ -72,53 +87,46 @@ const ProtectedRoute = ({ children, requireSubscription = false }: ProtectedRout
   return <>{children}</>;
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            
-            {/* Redirect root path to login if not authenticated */}
-            <Route path="/" element={
-              <ProtectedRoute requireSubscription={true}>
-                <AppLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Dashboard />} />
-              <Route path="statistics" element={<Statistics />} />
-              <Route path="procedure-status" element={<ProcedureStatus />} />
-              <Route path="new-data" element={<NewData />} />
-              <Route path="upload-tis" element={<UploadTis />} />
-              <Route path="download-tis" element={<DownloadTis />} />
-              <Route path="activity-history" element={<ActivityHistory />} />
-              <Route path="subscription" element={<SubscriptionPlans />} />
-              <Route path="subscription/manage" element={<SubscriptionManagePage />} />
-              <Route path="kurum-kayit" element={<KurumKayit />} />
-            </Route>
+// Move the routes into a separate component
+const AppRoutes = () => (
+  <Routes>
+    <Route path="/login" element={<Login />} />
+    <Route path="/signup" element={<Signup />} />
+    
+    {/* Redirect root path to login if not authenticated */}
+    <Route path="/" element={
+      <ProtectedRoute requireSubscription={true}>
+        <AppLayout />
+      </ProtectedRoute>
+    }>
+      <Route index element={<Dashboard />} />
+      <Route path="statistics" element={<Statistics />} />
+      <Route path="procedure-status" element={<ProcedureStatus />} />
+      <Route path="new-data" element={<NewData />} />
+      <Route path="upload-tis" element={<UploadTis />} />
+      <Route path="download-tis" element={<DownloadTis />} />
+      <Route path="activity-history" element={<ActivityHistory />} />
+      <Route path="subscription" element={<SubscriptionPlans />} />
+      <Route path="subscription/manage" element={<SubscriptionManagePage />} />
+      <Route path="kurum-kayit" element={<KurumKayit />} />
+    </Route>
 
-            {/* Public subscription success/cancel pages */}
-            <Route path="/subscription/success" element={
-              <ProtectedRoute>
-                <SubscriptionSuccessPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/subscription/cancel" element={
-              <ProtectedRoute>
-                <SubscriptionCancelPage />
-              </ProtectedRoute>
-            } />
+    {/* Public subscription success/cancel pages */}
+    <Route path="/subscription/success" element={
+      <ProtectedRoute>
+        <SubscriptionSuccessPage />
+      </ProtectedRoute>
+    } />
+    <Route path="/subscription/cancel" element={
+      <ProtectedRoute>
+        <SubscriptionCancelPage />
+      </ProtectedRoute>
+    } />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+    <Route path="*" element={<NotFound />} />
+  </Routes>
 );
+
+const App = () => <AppWithProviders />;
 
 export default App;
