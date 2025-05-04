@@ -22,6 +22,8 @@ export const SearchBox = ({
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
         className="pl-8"
+        aria-label="Arama yapın"
+        title="Büyük/küçük harf ve Türkçe karakter duyarlılığı olmadan arama yapar"
       />
     </div>
   );

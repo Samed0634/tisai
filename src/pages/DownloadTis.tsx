@@ -1,31 +1,41 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { normalizeText, fuzzySearch } from '@/utils/searchUtils';
 
 const DownloadTis = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState<any[]>([]);
+  const [allResults, setAllResults] = useState<any[]>([]); // Store all results
   const [isLoading, setIsLoading] = useState(false);
 
+  // Filter results locally based on search term for instant feedback
+  const results = useMemo(() => {
+    if (!searchTerm) return allResults;
+    
+    return allResults.filter(item => 
+      fuzzySearch(searchTerm, item['İŞYERİ ADI']) || 
+      fuzzySearch(searchTerm, item['SORUMLU UZMAN']) ||
+      fuzzySearch(searchTerm, item['SGK NO'])
+    );
+  }, [searchTerm, allResults]);
+
   const handleSearch = async () => {
-    if (!searchTerm) return;
     setIsLoading(true);
     try {
+      // Fetch all items with TIS URLs, then filter on client side
       const { data, error } = await supabase
         .from('isyerleri')
         .select('*')
-        .ilike('İŞYERİ ADI', `%${searchTerm}%`);
+        .not('tis_url', 'is', null);
       
       if (error) throw error;
       
-      // Filter results to only include workplaces that have a TİS URL
-      const filteredData = data?.filter(item => item.tis_url) || [];
-      setResults(filteredData);
+      setAllResults(data || []);
     } catch (error) {
       console.error('Search error:', error);
       toast({
@@ -52,6 +62,11 @@ const DownloadTis = () => {
     }
   };
 
+  // Load data when component mounts
+  React.useEffect(() => {
+    handleSearch();
+  }, []);
+
   return (
     <div className="container mx-auto p-6">
       <Card>
@@ -62,17 +77,17 @@ const DownloadTis = () => {
           <div className="flex gap-4 mb-6">
             <Input 
               type="text" 
-              placeholder="İşyeri adı ile arama yapın..." 
+              placeholder="İşyeri adı ile hızlı arama yapın..." 
               value={searchTerm} 
               onChange={e => setSearchTerm(e.target.value)} 
               className="flex-1"
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              title="Büyük/küçük harf ve Türkçe karakter duyarlılığı olmadan arama yapar"
             />
             <Button 
               onClick={handleSearch} 
               disabled={isLoading}
             >
-              Ara
+              Yenile
             </Button>
           </div>
 
@@ -101,9 +116,15 @@ const DownloadTis = () => {
               </Card>
             ))}
             
-            {results.length === 0 && searchTerm && !isLoading && (
+            {results.length === 0 && !isLoading && (
               <p className="text-center text-muted-foreground">
-                Sonuç bulunamadı.
+                {allResults.length === 0 ? 'TİS belgesi bulunamadı.' : 'Arama sonucu bulunamadı.'}
+              </p>
+            )}
+
+            {isLoading && (
+              <p className="text-center text-muted-foreground">
+                Yükleniyor...
               </p>
             )}
           </div>

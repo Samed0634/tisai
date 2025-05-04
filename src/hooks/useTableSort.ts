@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { normalizeText } from "@/utils/searchUtils";
 
 interface WorkplaceItem {
   id: string;
@@ -12,23 +13,6 @@ interface WorkplaceItem {
   status?: string;
   [key: string]: any;
 }
-
-// Function to normalize text for case-insensitive and accent-insensitive comparison
-const normalizeText = (text: string | null | undefined): string => {
-  if (!text) return "";
-  
-  return text
-    .toString()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-    .replace(/ı/g, "i")
-    .replace(/ğ/g, "g")
-    .replace(/ü/g, "u")
-    .replace(/ş/g, "s")
-    .replace(/ö/g, "o")
-    .replace(/ç/g, "c");
-};
 
 export const useTableSort = <T extends WorkplaceItem>(data: T[]) => {
   const [sortKey, setSortKey] = useState<string>("");
