@@ -30,7 +30,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn, user } = useAuth();
 
-  // Array of floating text messages
+  // Array of floating text messages (added the new phrases)
   const floatingTexts = [
     "TISAI, bir toplu iş sözleşmesi takip otomasyonudur.",
     "Veri gir, süreleri TISAI takip etsin.",
@@ -41,7 +41,13 @@ const Login = () => {
     "Hamurunda yapay zeka bulunmaktadır.",
     "TISAI, sizlere sürekli gelişim vaadetmektedir.",
     "TISAI-Call ile 7/24 üyelerle iletişim ve sorunların anlık tespiti mümkün hale gelmektedir.",
-    "TISAI-Call için takipte kalın!"
+    "TISAI-Call için takipte kalın!",
+    // New text phrases
+    "Fiyat-Performans ürünü: TISAI",
+    "Süreçleri yönetmek için bir Uzman olmanıza gerek yok!",
+    "Genç TİS Uzmanları tarafından, sektördeki boşluğu doldurmak için geliştirildi",
+    "Verileriniz bulut veritabanında güvende!",
+    "Bireysel ve Kurumsal kullanımlara uygundur"
   ];
 
   // Check for remembered credentials on component mount

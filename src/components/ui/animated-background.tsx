@@ -38,7 +38,7 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
     }
 
     const particles: TextParticle[] = [];
-    const maxParticles = 10;
+    const maxParticles = 15; // Increased from 10 to accommodate more texts
     const colors = [
       "rgba(30, 174, 219, 1)",    // Bright blue
       "rgba(41, 156, 0, 1)",      // Primary green
@@ -168,7 +168,7 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
     };
 
     // Create new particles periodically
-    const particleInterval = setInterval(createParticle, 1500);
+    const particleInterval = setInterval(createParticle, 1200); // Slightly increased interval for more text variety
     
     // Start animation loop
     animate();
