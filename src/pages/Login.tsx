@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -30,24 +29,25 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn, user } = useAuth();
 
-  // Array of floating text messages (added the new phrases)
+  // Array of floating text messages (updated with removed and new phrases)
   const floatingTexts = [
     "TISAI, bir toplu iş sözleşmesi takip otomasyonudur.",
     "Veri gir, süreleri TISAI takip etsin.",
     "Whatsapp ile hatırlatma yapabilir.",
     "Bu işin uzmanları tarafından, sendikalar için geliştirildi",
-    "TISAI, bir programdan çok daha ötesidir",
     "Herkes kullanabilsin diye basit kullanıcı arayüzü sunar",
     "Hamurunda yapay zeka bulunmaktadır.",
-    "TISAI, sizlere sürekli gelişim vaadetmektedir.",
     "TISAI-Call ile 7/24 üyelerle iletişim ve sorunların anlık tespiti mümkün hale gelmektedir.",
     "TISAI-Call için takipte kalın!",
-    // New text phrases
-    "Fiyat-Performans ürünü: TISAI",
     "Süreçleri yönetmek için bir Uzman olmanıza gerek yok!",
     "Genç TİS Uzmanları tarafından, sektördeki boşluğu doldurmak için geliştirildi",
     "Verileriniz bulut veritabanında güvende!",
-    "Bireysel ve Kurumsal kullanımlara uygundur"
+    "Bireysel ve Kurumsal kullanımlara uygundur",
+    // New text phrases about legal procedures
+    "Yetki belgesinin tebliğinden itibaren 15 gün içinde toplu iş sözleşmesi müzakereleri için işverenliğe çağrıda bulunulmalıdır",
+    "Yasal müzakere süreci, ilk oturum tutanağından itibaren 60 gündür",
+    "Çağrı yapılan tarihten itibaren 6 işgünü içinde yer ve gün tespit edilememesi, işçi sendikasının yetkisini düşüren bir hal değildir.",
+    "Grev oylamasında oyların eşitliği halinde işyerinde 'greve evet' çıkmış demektir."
   ];
 
   // Check for remembered credentials on component mount
