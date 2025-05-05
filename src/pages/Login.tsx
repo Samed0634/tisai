@@ -44,10 +44,26 @@ const Login = () => {
     navigate("/signup");
   };
 
+  // Background configuration
+  const backgroundColors = [
+    "rgba(30, 174, 219, 1)",    // Bright blue
+    "rgba(41, 156, 0, 1)",      // Primary green
+    "rgba(51, 195, 240, 1)",    // Sky blue
+    "rgba(0, 170, 255, 1)",     // Another bright blue
+  ];
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background/40 relative overflow-hidden">
-      {/* Futuristic animated background */}
-      <AnimatedBackground texts={floatingTexts} />
+      {/* Futuristic animated background with configuration */}
+      <AnimatedBackground 
+        texts={floatingTexts}
+        maxParticles={20}
+        colors={backgroundColors}
+        particleInterval={1000}
+        particleSpeed={0.3}
+        gridSize={50}
+        gridOpacity={0.1}
+      />
       
       {/* Login card with glass effect */}
       <Card className="w-[350px] bg-white/80 backdrop-blur-md border border-white/20 shadow-xl">

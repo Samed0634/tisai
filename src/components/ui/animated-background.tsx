@@ -1,10 +1,34 @@
+
 import React, { useEffect, useRef } from "react";
 
 interface AnimatedTextProps {
   texts: string[];
+  maxParticles?: number;
+  colors?: string[];
+  particleInterval?: number;
+  fadeInDurationPercent?: number;
+  fadeOutStartPercent?: number;
+  particleSpeed?: number;
+  gridSize?: number;
+  gridOpacity?: number;
 }
 
-export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
+export const AnimatedBackground: React.FC<AnimatedTextProps> = ({
+  texts,
+  maxParticles = 20,
+  colors = [
+    "rgba(30, 174, 219, 1)",    // Bright blue
+    "rgba(41, 156, 0, 1)",      // Primary green
+    "rgba(51, 195, 240, 1)",    // Sky blue
+    "rgba(0, 170, 255, 1)",     // Another bright blue
+  ],
+  particleInterval = 1000,
+  fadeInDurationPercent = 0.2,
+  fadeOutStartPercent = 0.8,
+  particleSpeed = 0.3,
+  gridSize = 50,
+  gridOpacity = 0.1,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -37,13 +61,6 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
     }
 
     const particles: TextParticle[] = [];
-    const maxParticles = 20; // Increased from 15 to accommodate more texts
-    const colors = [
-      "rgba(30, 174, 219, 1)",    // Bright blue
-      "rgba(41, 156, 0, 1)",      // Primary green
-      "rgba(51, 195, 240, 1)",    // Sky blue
-      "rgba(0, 170, 255, 1)",     // Another bright blue
-    ];
 
     // Create new floating text at random position
     const createParticle = () => {
@@ -52,8 +69,8 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
       const randomText = texts[Math.floor(Math.random() * texts.length)];
       const randomX = Math.random() * canvas.width;
       const randomY = Math.random() * canvas.height;
-      const randomSpeedX = (Math.random() - 0.5) * 0.3;
-      const randomSpeedY = (Math.random() - 0.5) * 0.3;
+      const randomSpeedX = (Math.random() - 0.5) * particleSpeed;
+      const randomSpeedY = (Math.random() - 0.5) * particleSpeed;
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       const randomLifespan = 10000 + Math.random() * 5000; // 10-15 seconds
       
@@ -87,8 +104,8 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
         particle.currentLife += 16; // ~16ms per frame
 
         // Calculate opacity based on life cycle (fade in, stay, fade out)
-        const fadeInDuration = particle.lifespan * 0.2; // 20% of life for fade in
-        const fadeOutStart = particle.lifespan * 0.8; // 80% of life before fade out
+        const fadeInDuration = particle.lifespan * fadeInDurationPercent;
+        const fadeOutStart = particle.lifespan * fadeOutStartPercent;
 
         if (particle.currentLife < fadeInDuration) {
           // Fade in
@@ -133,11 +150,10 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
 
     // Draw futuristic grid pattern
     const drawGridPattern = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-      const gridSize = 50;
-      const gridLineWidth = 0.5;
+      const lineOpacity = gridOpacity;
       
-      ctx.strokeStyle = "rgba(30, 174, 219, 0.1)"; // Bright blue with low opacity
-      ctx.lineWidth = gridLineWidth;
+      ctx.strokeStyle = `rgba(30, 174, 219, ${lineOpacity})`; // Bright blue with configurable opacity
+      ctx.lineWidth = 0.5;
       
       // Horizontal lines
       for (let y = 0; y < canvas.height; y += gridSize) {
@@ -156,7 +172,7 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
       }
       
       // Add some brighter points at intersections for a tech effect
-      ctx.fillStyle = "rgba(30, 174, 219, 0.2)";
+      ctx.fillStyle = `rgba(30, 174, 219, ${lineOpacity * 2})`;
       for (let x = 0; x < canvas.width; x += gridSize) {
         for (let y = 0; y < canvas.height; y += gridSize) {
           ctx.beginPath();
@@ -167,7 +183,7 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
     };
 
     // Create new particles periodically
-    const particleInterval = setInterval(createParticle, 1000); // Increased frequency to show more texts
+    const interval = setInterval(createParticle, particleInterval);
     
     // Start animation loop
     animate();
@@ -175,9 +191,10 @@ export const AnimatedBackground: React.FC<AnimatedTextProps> = ({ texts }) => {
     // Cleanup
     return () => {
       window.removeEventListener("resize", resizeCanvas);
-      clearInterval(particleInterval);
+      clearInterval(interval);
     };
-  }, [texts]);
+  }, [texts, maxParticles, colors, particleInterval, fadeInDurationPercent, 
+      fadeOutStartPercent, particleSpeed, gridSize, gridOpacity]);
 
   return (
     <canvas
