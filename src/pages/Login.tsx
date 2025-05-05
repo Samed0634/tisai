@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Loader2, Mail, Lock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
+import { AnimatedBackground } from "@/components/ui/animated-background";
 
 const loginSchema = z.object({
   email: z.string().email({
@@ -28,6 +29,20 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { signIn, user } = useAuth();
+
+  // Array of floating text messages
+  const floatingTexts = [
+    "TISAI, bir toplu iş sözleşmesi takip otomasyonudur.",
+    "Veri gir, süreleri TISAI takip etsin.",
+    "Whatsapp ile hatırlatma yapabilir.",
+    "Bu işin uzmanları tarafından, sendikalar için geliştirildi",
+    "TISAI, bir programdan çok daha ötesidir",
+    "Herkes kullanabilsin diye basit kullanıcı arayüzü sunar",
+    "Hamurunda yapay zeka bulunmaktadır.",
+    "TISAI, sizlere sürekli gelişim vaadetmektedir.",
+    "TISAI-Call ile 7/24 üyelerle iletişim ve sorunların anlık tespiti mümkün hale gelmektedir.",
+    "TISAI-Call için takipte kalın!"
+  ];
 
   // Check for remembered credentials on component mount
   useEffect(() => {
@@ -73,17 +88,21 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-[350px]">
+    <div className="min-h-screen flex items-center justify-center bg-background/40 relative overflow-hidden">
+      {/* Futuristic animated background */}
+      <AnimatedBackground texts={floatingTexts} />
+      
+      {/* Login card with glass effect */}
+      <Card className="w-[350px] bg-white/80 backdrop-blur-md border border-white/20 shadow-xl">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-2">
             <img
               alt="TİS Takip Sistemi Logo"
-              className="h-16 w-16 object-contain rounded-full border-2 border-primary/20"
+              className="h-16 w-16 object-contain rounded-full border-2 border-primary/20 hover:border-primary/60 transition-all duration-300"
               src="/lovable-uploads/733693aa-684f-4a0c-9a55-a65f5b9ee373.png"
             />
           </div>
-          <div className="text-center text-2xl font-bold text-foreground mb-2">TISAI</div>
+          <div className="text-center text-2xl font-bold text-foreground mb-2 bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500">TISAI</div>
           <CardTitle className="text-sm font-normal text-center text-muted-foreground">
             Toplu İş Sözleşmesi Otomasyon Sistemi
           </CardTitle>
@@ -104,7 +123,7 @@ const Login = () => {
                         <Input 
                           type="email" 
                           placeholder="E-posta adresinizi giriniz" 
-                          className="pl-10"
+                          className="pl-10 bg-white/60 backdrop-blur-sm border-white/40"
                           {...field} 
                         />
                       </div>
@@ -125,7 +144,7 @@ const Login = () => {
                         <Input 
                           type="password" 
                           placeholder="Şifrenizi giriniz" 
-                          className="pl-10"
+                          className="pl-10 bg-white/60 backdrop-blur-sm border-white/40"
                           {...field} 
                         />
                       </div>
@@ -153,7 +172,11 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-primary to-blue-500 hover:opacity-90" 
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
