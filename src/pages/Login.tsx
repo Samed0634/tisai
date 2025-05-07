@@ -12,11 +12,13 @@ const Login = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Array of floating text messages (updated with removed and new phrases)
+  // Array of floating text messages (updated with removed WhatsApp reference and new statements)
   const floatingTexts = [
     "TISAI, bir toplu iş sözleşmesi takip otomasyonudur.",
     "Veri gir, süreleri TISAI takip etsin.",
-    "Whatsapp ile hatırlatma yapabilir.",
+    "Gmail ile hatırlatma yapmaktadır.",
+    "Whatsapp entegrasyonu, Facebook Meta'nın politikaları gereği sağlıklı çalışmamaktadır.",
+    "Telegram entegrasyonu talebe göre yapılabilir.",
     "Bu işin uzmanları tarafından, sendikalar için geliştirildi",
     "Herkes kullanabilsin diye basit kullanıcı arayüzü sunar",
     "Hamurunda yapay zeka bulunmaktadır.",
@@ -26,7 +28,7 @@ const Login = () => {
     "Genç TİS Uzmanları tarafından, sektördeki boşluğu doldurmak için geliştirildi",
     "Verileriniz bulut veritabanında güvende!",
     "Bireysel ve Kurumsal kullanımlara uygundur",
-    // New text phrases about legal procedures
+    // Legal procedure texts (kept from previous update)
     "Yetki belgesinin tebliğinden itibaren 15 gün içinde toplu iş sözleşmesi müzakereleri için işverenliğe çağrıda bulunulmalıdır",
     "Yasal müzakere süreci, ilk oturum tutanağından itibaren 60 gündür",
     "Çağrı yapılan tarihten itibaren 6 işgünü içinde yer ve gün tespit edilememesi, işçi sendikasının yetkisini düşüren bir hal değildir.",
