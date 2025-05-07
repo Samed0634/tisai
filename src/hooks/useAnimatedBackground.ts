@@ -14,6 +14,8 @@ interface UseAnimatedBackgroundProps {
   gridOpacity?: number;
   fontSize?: number;
   fontFamily?: string;
+  mouseRepelStrength?: number; // New: strength of mouse repulsion
+  mouseRepelRadius?: number; // New: radius of mouse influence
 }
 
 // Types for the particle objects
@@ -47,12 +49,15 @@ export const useAnimatedBackground = ({
   gridOpacity = 0.1,
   fontSize = 14,
   fontFamily = "Inter, sans-serif",
+  mouseRepelStrength = 0.5, // Default mouse repulsion strength
+  mouseRepelRadius = 150, // Default mouse influence radius
 }: UseAnimatedBackgroundProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameIdRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const particlesRef = useRef<TextParticle[]>([]);
   const lastParticleTimeRef = useRef<number>(0);
+  const mousePositionRef = useRef<{ x: number, y: number } | null>(null); // Track mouse position
 
   // Main animation effect
   useEffect(() => {
@@ -70,6 +75,23 @@ export const useAnimatedBackground = ({
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
+
+    // Track mouse position
+    const handleMouseMove = (event: MouseEvent) => {
+      mousePositionRef.current = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    };
+
+    // Reset mouse position when mouse leaves the canvas
+    const handleMouseLeave = () => {
+      mousePositionRef.current = null;
+    };
+
+    // Add mouse event listeners
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseleave", handleMouseLeave);
 
     // Create new floating text at random position
     const createParticle = (timestamp: number) => {
@@ -138,6 +160,29 @@ export const useAnimatedBackground = ({
       }
     };
 
+    // Calculate repulsion effect from mouse
+    const applyMouseRepulsion = (particle: TextParticle, deltaTime: number) => {
+      if (!mousePositionRef.current) return;
+
+      const dx = particle.x - mousePositionRef.current.x;
+      const dy = particle.y - mousePositionRef.current.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Only apply repulsion within the mouseRepelRadius
+      if (distance < mouseRepelRadius) {
+        // Calculate repulsion force (stronger when closer)
+        const repelFactor = (mouseRepelRadius - distance) / mouseRepelRadius * mouseRepelStrength;
+
+        // Normalize the direction vector
+        const normDx = dx / distance || 0; // Avoid division by zero
+        const normDy = dy / distance || 0;
+
+        // Apply repulsion force (normalized for frame rate independence)
+        particle.x += normDx * repelFactor * (deltaTime / 16);
+        particle.y += normDy * repelFactor * (deltaTime / 16);
+      }
+    };
+
     // Optimized animation loop using requestAnimationFrame
     const animate = (timestamp: number) => {
       // Skip frame if less than ~16ms has passed (aiming for ~60fps)
@@ -165,6 +210,9 @@ export const useAnimatedBackground = ({
         particle.x += particle.speedX * (deltaTime / 16);
         particle.y += particle.speedY * (deltaTime / 16);
         particle.currentLife += deltaTime;
+
+        // Apply mouse repulsion effect
+        applyMouseRepulsion(particle, deltaTime);
 
         // Calculate opacity based on life cycle (fade in, stay, fade out)
         const fadeInDuration = particle.lifespan * fadeInDurationPercent;
@@ -220,6 +268,8 @@ export const useAnimatedBackground = ({
     // Cleanup
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseleave", handleMouseLeave);
       cancelAnimationFrame(animationFrameIdRef.current);
       particlesRef.current = [];
     };
@@ -234,7 +284,9 @@ export const useAnimatedBackground = ({
     gridSize, 
     gridOpacity,
     fontSize,
-    fontFamily
+    fontFamily,
+    mouseRepelStrength,
+    mouseRepelRadius
   ]);
 
   return { canvasRef };

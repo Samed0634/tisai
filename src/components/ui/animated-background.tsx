@@ -14,6 +14,8 @@ interface AnimatedBackgroundProps {
   gridOpacity?: number;
   fontSize?: number;
   fontFamily?: string;
+  mouseRepelStrength?: number;
+  mouseRepelRadius?: number;
 }
 
 export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = (props) => {

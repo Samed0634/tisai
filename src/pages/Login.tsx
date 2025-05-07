@@ -65,6 +65,10 @@ const Login = () => {
         particleSpeed={0.3}
         gridSize={50}
         gridOpacity={0.1}
+        fontSize={14}
+        fontFamily="Inter, sans-serif"
+        mouseRepelStrength={0.8}
+        mouseRepelRadius={200}
       />
       
       {/* Login card with glass effect */}
