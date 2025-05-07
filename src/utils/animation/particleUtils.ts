@@ -1,5 +1,5 @@
 
-import { TextParticle } from "./types";
+import { TextParticle, MousePosition, ClickPosition } from "./types";
 
 /**
  * Creates a new particle with the given parameters
@@ -9,10 +9,13 @@ export const createParticle = (
   canvasWidth: number,
   canvasHeight: number,
   colors: string[],
-  particleSpeed: number
+  particleSpeed: number,
+  x?: number,
+  y?: number
 ): TextParticle => {
-  const randomX = Math.random() * canvasWidth;
-  const randomY = Math.random() * canvasHeight;
+  // Use provided position or generate random position
+  const randomX = x !== undefined ? x : Math.random() * canvasWidth;
+  const randomY = y !== undefined ? y : Math.random() * canvasHeight;
   const randomSpeedX = (Math.random() - 0.5) * particleSpeed;
   const randomSpeedY = (Math.random() - 0.5) * particleSpeed;
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -60,7 +63,7 @@ export const updateParticleOpacity = (
  */
 export const applyMouseRepulsion = (
   particle: TextParticle,
-  mousePosition: { x: number, y: number } | null,
+  mousePosition: MousePosition | null,
   mouseRepelRadius: number,
   mouseRepelStrength: number,
   deltaTime: number
@@ -87,6 +90,63 @@ export const applyMouseRepulsion = (
 };
 
 /**
+ * Applies click effect to particles
+ */
+export const applyClickEffect = (
+  particle: TextParticle,
+  clickPosition: ClickPosition | null,
+  clickForce: number,
+  deltaTime: number
+): void => {
+  if (!clickPosition) return;
+  
+  // Only affect particles for a short time after the click (500ms)
+  if (performance.now() - clickPosition.time > 500) return;
+  
+  const dx = particle.x - clickPosition.x;
+  const dy = particle.y - clickPosition.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const radius = 150; // Click effect radius
+  
+  if (distance < radius) {
+    // Create an outward force from the click point
+    const force = (radius - distance) / radius * clickForce;
+    const angle = Math.atan2(dy, dx);
+    
+    // Add to the particle's speed
+    particle.speedX += (Math.cos(angle) * force * (deltaTime / 16));
+    particle.speedY += (Math.sin(angle) * force * (deltaTime / 16));
+    
+    // Add a small randomization to create more dynamic movement
+    particle.speedX += (Math.random() - 0.5) * 0.2 * (deltaTime / 16);
+    particle.speedY += (Math.random() - 0.5) * 0.2 * (deltaTime / 16);
+  }
+};
+
+/**
+ * Creates multiple particles at a specific position
+ */
+export const createParticlesAtPosition = (
+  texts: string[],
+  canvasWidth: number,
+  canvasHeight: number,
+  colors: string[],
+  particleSpeed: number,
+  count: number,
+  x: number,
+  y: number
+): TextParticle[] => {
+  const particles: TextParticle[] = [];
+  
+  for (let i = 0; i < count; i++) {
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    particles.push(createParticle(randomText, canvasWidth, canvasHeight, colors, particleSpeed * 1.5, x, y));
+  }
+  
+  return particles;
+};
+
+/**
  * Updates a particle's position based on speed and deltaTime
  */
 export const updateParticlePosition = (
@@ -96,4 +156,36 @@ export const updateParticlePosition = (
   particle.x += particle.speedX * (deltaTime / 16);
   particle.y += particle.speedY * (deltaTime / 16);
   particle.currentLife += deltaTime;
+  
+  // Add a slight drag effect to gradually slow particles
+  particle.speedX *= 0.995;
+  particle.speedY *= 0.995;
+};
+
+/**
+ * Keeps particles within the canvas boundaries with a bounce effect
+ */
+export const keepParticleInBounds = (
+  particle: TextParticle, 
+  canvasWidth: number,
+  canvasHeight: number
+): void => {
+  // Add a small offset to prevent particles from getting stuck at the edges
+  const buffer = 10;
+  
+  if (particle.x < buffer) {
+    particle.x = buffer;
+    particle.speedX = Math.abs(particle.speedX) * 0.8;
+  } else if (particle.x > canvasWidth - buffer) {
+    particle.x = canvasWidth - buffer;
+    particle.speedX = -Math.abs(particle.speedX) * 0.8;
+  }
+  
+  if (particle.y < buffer) {
+    particle.y = buffer;
+    particle.speedY = Math.abs(particle.speedY) * 0.8;
+  } else if (particle.y > canvasHeight - buffer) {
+    particle.y = canvasHeight - buffer;
+    particle.speedY = -Math.abs(particle.speedY) * 0.8;
+  }
 };

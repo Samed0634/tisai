@@ -27,9 +27,20 @@ export interface AnimatedBackgroundConfig {
   fontFamily?: string;
   mouseRepelStrength?: number;
   mouseRepelRadius?: number;
+  clickEffect?: boolean;
+  clickSpawnCount?: number;
+  clickForce?: number;
+  tapCreateParticles?: boolean;
+  tapParticleCount?: number;
 }
 
 export interface MousePosition {
   x: number;
   y: number;
+}
+
+export interface ClickPosition {
+  x: number;
+  y: number;
+  time: number;
 }

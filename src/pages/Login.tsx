@@ -69,6 +69,11 @@ const Login = () => {
         fontFamily="Inter, sans-serif"
         mouseRepelStrength={0.8}
         mouseRepelRadius={200}
+        clickEffect={true}
+        clickForce={0.8}
+        clickSpawnCount={3}
+        tapCreateParticles={true}
+        tapParticleCount={5}
       />
       
       {/* Login card with glass effect */}

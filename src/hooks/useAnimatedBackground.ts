@@ -1,9 +1,17 @@
-
-import { useEffect, useRef } from "react";
-import { TextParticle, AnimatedBackgroundConfig, MousePosition } from "@/utils/animation/types";
-import { createParticle, updateParticleOpacity, applyMouseRepulsion, updateParticlePosition } from "@/utils/animation/particleUtils";
+import { useEffect, useRef, useCallback } from "react";
+import { TextParticle, AnimatedBackgroundConfig, MousePosition, ClickPosition } from "@/utils/animation/types";
+import { 
+  createParticle, 
+  updateParticleOpacity, 
+  applyMouseRepulsion, 
+  updateParticlePosition, 
+  applyClickEffect, 
+  createParticlesAtPosition,
+  keepParticleInBounds
+} from "@/utils/animation/particleUtils";
 import { drawGridPattern, renderParticle } from "@/utils/animation/renderUtils";
 import { resizeCanvas } from "@/utils/animation/canvasUtils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const useAnimatedBackground = ({
   texts,
@@ -24,6 +32,11 @@ export const useAnimatedBackground = ({
   fontFamily = "Inter, sans-serif",
   mouseRepelStrength = 0.5,
   mouseRepelRadius = 150,
+  clickEffect = true,
+  clickForce = 0.7,
+  clickSpawnCount = 3,
+  tapCreateParticles = true,
+  tapParticleCount = 5
 }: AnimatedBackgroundConfig) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameIdRef = useRef<number>(0);
@@ -31,6 +44,67 @@ export const useAnimatedBackground = ({
   const particlesRef = useRef<TextParticle[]>([]);
   const lastParticleTimeRef = useRef<number>(0);
   const mousePositionRef = useRef<MousePosition | null>(null);
+  const clickPositionRef = useRef<ClickPosition | null>(null);
+  const isMobile = useIsMobile();
+
+  // Function to handle creating particles at a specific position
+  const handleCreateParticlesAt = useCallback((x: number, y: number, count: number) => {
+    if (!canvasRef.current) return;
+    
+    const canvas = canvasRef.current;
+    const newParticles = createParticlesAtPosition(
+      texts,
+      canvas.width,
+      canvas.height,
+      colors,
+      particleSpeed,
+      count,
+      x,
+      y
+    );
+    
+    particlesRef.current = [...particlesRef.current, ...newParticles];
+    
+    // Ensure we don't exceed maxParticles
+    if (particlesRef.current.length > maxParticles) {
+      particlesRef.current = particlesRef.current.slice(
+        particlesRef.current.length - maxParticles
+      );
+    }
+  }, [texts, colors, particleSpeed, maxParticles]);
+
+  // Handle click/tap event
+  const handleInteraction = useCallback((event: MouseEvent | TouchEvent) => {
+    if (!canvasRef.current) return;
+    
+    let x: number, y: number;
+    
+    if ('touches' in event) {
+      // Touch event
+      x = event.touches[0].clientX;
+      y = event.touches[0].clientY;
+      
+      if (tapCreateParticles && isMobile) {
+        handleCreateParticlesAt(x, y, tapParticleCount);
+      }
+    } else {
+      // Mouse event
+      x = event.clientX;
+      y = event.clientY;
+      
+      if (clickEffect) {
+        // Record click position for applying forces to nearby particles
+        clickPositionRef.current = {
+          x,
+          y,
+          time: performance.now()
+        };
+        
+        // Create new particles at click position if enabled
+        handleCreateParticlesAt(x, y, clickSpawnCount);
+      }
+    }
+  }, [clickEffect, tapCreateParticles, isMobile, handleCreateParticlesAt, clickSpawnCount, tapParticleCount]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -57,6 +131,8 @@ export const useAnimatedBackground = ({
     window.addEventListener("resize", handleResize);
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseleave", handleMouseLeave);
+    canvas.addEventListener("click", handleInteraction);
+    canvas.addEventListener("touchstart", handleInteraction);
 
     // Function to create a new particle if conditions are met
     const tryCreateParticle = (timestamp: number): void => {
@@ -99,6 +175,9 @@ export const useAnimatedBackground = ({
         // Update particle position and lifecycle
         updateParticlePosition(particle, deltaTime);
         
+        // Keep particles within bounds
+        keepParticleInBounds(particle, canvas.width, canvas.height);
+        
         // Apply mouse repulsion effect
         applyMouseRepulsion(
           particle, 
@@ -107,6 +186,16 @@ export const useAnimatedBackground = ({
           mouseRepelStrength, 
           deltaTime
         );
+        
+        // Apply click effect if active
+        if (clickEffect && clickPositionRef.current) {
+          applyClickEffect(
+            particle,
+            clickPositionRef.current,
+            clickForce,
+            deltaTime
+          );
+        }
 
         // Calculate opacity based on life cycle
         particle.opacity = updateParticleOpacity(particle, fadeInDurationPercent, fadeOutStartPercent);
@@ -135,6 +224,8 @@ export const useAnimatedBackground = ({
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
+      canvas.removeEventListener("click", handleInteraction);
+      canvas.removeEventListener("touchstart", handleInteraction);
       cancelAnimationFrame(animationFrameIdRef.current);
       particlesRef.current = [];
     };
@@ -151,7 +242,10 @@ export const useAnimatedBackground = ({
     fontSize,
     fontFamily,
     mouseRepelStrength,
-    mouseRepelRadius
+    mouseRepelRadius,
+    clickEffect,
+    clickForce,
+    handleInteraction
   ]);
 
   return { canvasRef };
