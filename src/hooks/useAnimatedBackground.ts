@@ -12,6 +12,8 @@ interface UseAnimatedBackgroundProps {
   particleSpeed?: number;
   gridSize?: number;
   gridOpacity?: number;
+  fontSize?: number;
+  fontFamily?: string;
 }
 
 // Types for the particle objects
@@ -43,8 +45,14 @@ export const useAnimatedBackground = ({
   particleSpeed = 0.3,
   gridSize = 50,
   gridOpacity = 0.1,
+  fontSize = 14,
+  fontFamily = "Inter, sans-serif",
 }: UseAnimatedBackgroundProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameIdRef = useRef<number>(0);
+  const lastTimeRef = useRef<number>(0);
+  const particlesRef = useRef<TextParticle[]>([]);
+  const lastParticleTimeRef = useRef<number>(0);
 
   // Main animation effect
   useEffect(() => {
@@ -63,11 +71,13 @@ export const useAnimatedBackground = ({
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    const particles: TextParticle[] = [];
-
     // Create new floating text at random position
-    const createParticle = () => {
-      if (particles.length >= maxParticles) return;
+    const createParticle = (timestamp: number) => {
+      // Check if enough time has passed since the last particle creation
+      if (timestamp - lastParticleTimeRef.current < particleInterval) return;
+      
+      // Check if we've reached the maximum number of particles
+      if (particlesRef.current.length >= maxParticles) return;
       
       const randomText = texts[Math.floor(Math.random() * texts.length)];
       const randomX = Math.random() * canvas.width;
@@ -77,7 +87,7 @@ export const useAnimatedBackground = ({
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       const randomLifespan = 10000 + Math.random() * 5000; // 10-15 seconds
       
-      particles.push({
+      particlesRef.current.push({
         x: randomX,
         y: randomY,
         text: randomText,
@@ -89,6 +99,9 @@ export const useAnimatedBackground = ({
         currentLife: 0,
         color: randomColor,
       });
+      
+      // Update last particle creation time
+      lastParticleTimeRef.current = timestamp;
     };
 
     // Draw futuristic grid pattern
@@ -125,20 +138,33 @@ export const useAnimatedBackground = ({
       }
     };
 
-    // Animation loop
-    const animate = () => {
+    // Optimized animation loop using requestAnimationFrame
+    const animate = (timestamp: number) => {
+      // Skip frame if less than ~16ms has passed (aiming for ~60fps)
+      if (timestamp - lastTimeRef.current < 16) {
+        animationFrameIdRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      
+      // Calculate delta time for smooth animation regardless of frame rate
+      const deltaTime = timestamp - lastTimeRef.current;
+      lastTimeRef.current = timestamp;
+      
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Background effects - grid lines
       drawGridPattern(ctx, canvas);
       
+      // Create particles at regular intervals
+      createParticle(timestamp);
+      
       // Update and draw text particles
-      particles.forEach((particle, index) => {
-        // Update position
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-        particle.currentLife += 16; // ~16ms per frame
+      particlesRef.current = particlesRef.current.filter(particle => {
+        // Update position with delta time for frame-rate independent movement
+        particle.x += particle.speedX * (deltaTime / 16);
+        particle.y += particle.speedY * (deltaTime / 16);
+        particle.currentLife += deltaTime;
 
         // Calculate opacity based on life cycle (fade in, stay, fade out)
         const fadeInDuration = particle.lifespan * fadeInDurationPercent;
@@ -157,14 +183,13 @@ export const useAnimatedBackground = ({
 
         // Remove if past lifespan
         if (particle.currentLife >= particle.lifespan) {
-          particles.splice(index, 1);
-          return;
+          return false;
         }
 
-        // Draw text
+        // Draw text with custom font size and family
         ctx.save();
         ctx.globalAlpha = particle.opacity;
-        ctx.font = `${Math.floor(14 * particle.scale)}px Inter, sans-serif`;
+        ctx.font = `${Math.floor(fontSize * particle.scale)}px ${fontFamily}`;
         ctx.fillStyle = particle.color;
         ctx.fillText(particle.text, particle.x, particle.y);
         ctx.restore();
@@ -175,26 +200,28 @@ export const useAnimatedBackground = ({
           ctx.globalAlpha = particle.opacity * 0.2;
           ctx.shadowColor = particle.color;
           ctx.shadowBlur = 8;
-          ctx.font = `${Math.floor(14 * particle.scale)}px Inter, sans-serif`;
+          ctx.font = `${Math.floor(fontSize * particle.scale)}px ${fontFamily}`;
           ctx.fillStyle = particle.color;
           ctx.fillText(particle.text, particle.x, particle.y);
           ctx.restore();
         }
+        
+        return true;
       });
 
-      requestAnimationFrame(animate);
+      // Continue the animation loop
+      animationFrameIdRef.current = requestAnimationFrame(animate);
     };
-
-    // Create new particles periodically
-    const interval = setInterval(createParticle, particleInterval);
     
     // Start animation loop
-    animate();
+    lastTimeRef.current = performance.now();
+    animationFrameIdRef.current = requestAnimationFrame(animate);
 
     // Cleanup
     return () => {
       window.removeEventListener("resize", resizeCanvas);
-      clearInterval(interval);
+      cancelAnimationFrame(animationFrameIdRef.current);
+      particlesRef.current = [];
     };
   }, [
     texts, 
@@ -205,7 +232,9 @@ export const useAnimatedBackground = ({
     fadeOutStartPercent, 
     particleSpeed, 
     gridSize, 
-    gridOpacity
+    gridOpacity,
+    fontSize,
+    fontFamily
   ]);
 
   return { canvasRef };

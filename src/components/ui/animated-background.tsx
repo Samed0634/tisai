@@ -2,7 +2,7 @@
 import React from "react";
 import { useAnimatedBackground } from "@/hooks/useAnimatedBackground";
 
-interface AnimatedTextProps {
+interface AnimatedBackgroundProps {
   texts: string[];
   maxParticles?: number;
   colors?: string[];
@@ -12,9 +12,11 @@ interface AnimatedTextProps {
   particleSpeed?: number;
   gridSize?: number;
   gridOpacity?: number;
+  fontSize?: number;
+  fontFamily?: string;
 }
 
-export const AnimatedBackground: React.FC<AnimatedTextProps> = (props) => {
+export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = (props) => {
   const { canvasRef } = useAnimatedBackground(props);
 
   return (
