@@ -1,22 +1,9 @@
 
 import React from "react";
 import { useAnimatedBackground } from "@/hooks/useAnimatedBackground";
+import { AnimatedBackgroundConfig } from "@/utils/animation/types";
 
-interface AnimatedBackgroundProps {
-  texts: string[];
-  maxParticles?: number;
-  colors?: string[];
-  particleInterval?: number;
-  fadeInDurationPercent?: number;
-  fadeOutStartPercent?: number;
-  particleSpeed?: number;
-  gridSize?: number;
-  gridOpacity?: number;
-  fontSize?: number;
-  fontFamily?: string;
-  mouseRepelStrength?: number;
-  mouseRepelRadius?: number;
-}
+export type AnimatedBackgroundProps = AnimatedBackgroundConfig;
 
 export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = (props) => {
   const { canvasRef } = useAnimatedBackground(props);
