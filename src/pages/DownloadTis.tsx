@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible } from "@/components/ui/collapsible";
+import { Progress } from "@/components/ui/progress";
 import { useTisData } from "@/features/tis-download/hooks/useTisData";
 import { useTisFilters } from "@/features/tis-download/hooks/useTisFilters";
 import { TisSearchBox } from "@/features/tis-download/components/TisSearchBox";
@@ -41,6 +42,12 @@ const DownloadTis = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold">TİS İndir</CardTitle>
+          {isLoading && (
+            <div className="mt-2">
+              <div className="text-sm text-muted-foreground mb-1">Veriler yükleniyor...</div>
+              <Progress value={45} className="h-2" />
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -50,6 +57,7 @@ const DownloadTis = () => {
                 setSearchTerm={setSearchTerm}
                 resultCount={filteredResults.length}
                 totalCount={allResults.length}
+                isLoading={isLoading}
               />
               
               <Collapsible 

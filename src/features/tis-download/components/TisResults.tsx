@@ -13,7 +13,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TisResultsProps {
   results: TisItem[];
@@ -53,9 +54,24 @@ export const TisResults: React.FC<TisResultsProps> = ({
   
   if (isLoading) {
     return (
-      <p className="text-center text-muted-foreground">
-        Yükleniyor...
-      </p>
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="border rounded-md p-4 mb-4">
+            <div className="space-y-3">
+              <Skeleton className="h-6 w-2/3" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+              <div className="flex justify-between mt-4">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-32" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     );
   }
 

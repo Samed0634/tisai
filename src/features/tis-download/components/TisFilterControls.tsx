@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Filter, SortAsc } from 'lucide-react';
+import { Filter, SortAsc, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { 
@@ -71,7 +71,14 @@ export const TisFilterControls: React.FC<TisFilterControlsProps> = ({
         disabled={isLoading}
         className="ml-2"
       >
-        Yenile
+        {isLoading ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Yükleniyor...
+          </>
+        ) : (
+          "Yenile"
+        )}
       </Button>
     </div>
   );

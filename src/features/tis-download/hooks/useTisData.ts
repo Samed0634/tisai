@@ -57,7 +57,11 @@ export const useTisData = () => {
       
       if (error) throw error;
       
-      setAllResults(data || []);
+      // Simulate a slightly longer loading time to show the loading state clearly
+      setTimeout(() => {
+        setAllResults(data || []);
+        setIsLoading(false);
+      }, 800);
     } catch (error) {
       console.error('Search error:', error);
       toast({
@@ -65,7 +69,6 @@ export const useTisData = () => {
         description: "Arama yapılırken bir hata oluştu.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
