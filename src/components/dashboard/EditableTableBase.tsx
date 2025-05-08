@@ -96,7 +96,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
 };
 
 const getDefaultColumns = (tableType: string): string[] => {
-  // Add 'sure_bilgisi' to all column sets
+  // Add 'sure_bilgisi' to all column sets consistently after 'durum'
   switch (tableType) {
     case "oylamaColumns":
       return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV OYLAMASI TARİHİ"];
