@@ -3,8 +3,6 @@ import React from "react";
 import {
   Table,
   TableHeader,
-  TableHead,
-  TableRow,
   TableBody as TableBodyUI,
 } from "@/components/ui/table";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -14,6 +12,8 @@ import { TablePagination } from "./TablePagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Workplace } from "@/types/workplace";
 import { COLUMNS } from "@/constants/tableColumns";
+import { TableHeaderRow } from "./TableHeaderRow";
+import { useTableColumnProcessor } from "@/hooks/useTableColumnProcessor";
 
 interface TableContentProps {
   data: Workplace[];
@@ -56,7 +56,7 @@ export const TableContent: React.FC<TableContentProps> = ({
   titleClassName,
   editableField,
   showTisUploader = false,
-  logActions = true, // Default to true to ensure all actions are logged
+  logActions = true,
 }) => {
   if (isLoading) {
     return (
@@ -66,61 +66,14 @@ export const TableContent: React.FC<TableContentProps> = ({
     );
   }
 
-  // Make sure we have the "durum" column in our column definitions if it's not there
+  // Get visible column definitions
   const visibleColumnDefinitions = COLUMNS.filter(col => 
     visibleColumns.includes(col.id)
   );
 
-  // Ensure the durum column is defined
-  const durumColumnExists = visibleColumnDefinitions.some(col => col.id === 'durum');
+  // Process columns for special cases
+  const processedColumns = useTableColumnProcessor(visibleColumnDefinitions, visibleColumns);
   
-  if (!durumColumnExists && visibleColumns.includes('durum')) {
-    visibleColumnDefinitions.push({
-      id: 'durum',
-      title: 'Durum',
-      editable: true
-    });
-  }
-
-  // Ensure the sure_bilgisi column is defined
-  const kalansureColumnExists = visibleColumnDefinitions.some(col => col.id === 'sure_bilgisi');
-  
-  if (!kalansureColumnExists && visibleColumns.includes('sure_bilgisi')) {
-    visibleColumnDefinitions.push({
-      id: 'sure_bilgisi',
-      title: 'Kalan Süre'
-    });
-  }
-  
-  // Reorder columns to place 'durum' at the beginning and 'sure_bilgisi' right after it
-  const reorderedColumnDefinitions = [...visibleColumnDefinitions];
-  
-  // Remove durum and sure_bilgisi from current positions
-  const durumIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'durum');
-  const sureIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'sure_bilgisi');
-  
-  let durumColumn, sureColumn;
-  
-  // Remove columns for reordering (if they exist)
-  if (durumIndex !== -1) {
-    [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
-  }
-  
-  if (sureIndex !== -1) {
-    [sureColumn] = reorderedColumnDefinitions.splice(sureIndex < durumIndex && durumIndex !== -1 ? sureIndex : sureIndex - (durumIndex !== -1 ? 1 : 0), 1);
-  }
-  
-  // Add columns back in the desired order
-  // Insert sure_bilgisi at the beginning first
-  if (sureColumn) {
-    reorderedColumnDefinitions.unshift(sureColumn);
-  }
-  
-  // Then insert durum before sure_bilgisi
-  if (durumColumn) {
-    reorderedColumnDefinitions.unshift(durumColumn);
-  }
-
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
@@ -161,20 +114,15 @@ export const TableContent: React.FC<TableContentProps> = ({
           <div className="min-w-max">
             <Table className="text-xs">
               <TableHeader>
-                <TableRow>
-                  {showTisUploader && (
-                    <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">TİS Yükleme</TableHead>
-                  )}
-                  <TableHead className={`text-[#ea384c] ${showTisUploader ? '' : 'sticky left-0'} bg-background z-10 text-xs`}>İşlem</TableHead>
-                  {reorderedColumnDefinitions.map(column => (
-                    <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
-                  ))}
-                </TableRow>
+                <TableHeaderRow 
+                  reorderedColumnDefinitions={processedColumns}
+                  showTisUploader={showTisUploader}
+                />
               </TableHeader>
               <TableBodyUI>
                 <TableBody 
                   data={paginatedData}
-                  visibleColumnDefinitions={reorderedColumnDefinitions}
+                  visibleColumnDefinitions={processedColumns}
                   editingId={editingId}
                   editData={editData}
                   handleEdit={handleEdit}
