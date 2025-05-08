@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { EditableTableBase } from "./EditableTableBase";
 import { Workplace } from "@/types/workplace";
 
@@ -14,9 +14,6 @@ export const CagriYapilacakTable: React.FC<CagriYapilacakTableProps> = ({
   isLoading = false,
   refetch
 }) => {
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-
   return (
     <EditableTableBase 
       data={data}
@@ -25,10 +22,8 @@ export const CagriYapilacakTable: React.FC<CagriYapilacakTableProps> = ({
       tableType="cagriColumns"
       editableField="ÇAĞRI TARİHİ"
       title="Çağrı Yapılacak İşyerleri"
-      pageSize={pageSize}
-      currentPage={currentPage}
-      setPageSize={setPageSize}
-      setCurrentPage={setCurrentPage}
+      showControls={true}
+      logActions={true}
       showHorizontalScrollbar={true}
     />
   );

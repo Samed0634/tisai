@@ -93,9 +93,12 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
         return;
       }
       
+      // Remove view-only fields that don't exist in the isyerleri table
+      const { durum, sure_bilgisi, ...dataToSaveWithoutViewFields } = editData;
+      
       // Add kurum_id to the data being saved
       const dataToSave = {
-        ...editData,
+        ...dataToSaveWithoutViewFields,
         kurum_id
       };
       
@@ -148,7 +151,7 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
       // Always log actions since we want to track all changes
       if (logActions) {
         // Find changed fields and their values
-        const changedFields = Object.entries(editData).filter(([key, value]) => {
+        const changedFields = Object.entries(dataToSave).filter(([key, value]) => {
           return previousData[key as keyof Workplace] !== value;
         });
 
