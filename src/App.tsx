@@ -8,7 +8,6 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import NewData from "./pages/NewData";
-import UploadTis from "./pages/UploadTis";
 import DownloadTis from "./pages/DownloadTis";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
@@ -62,7 +61,6 @@ const App = () => (
               <Route path="statistics" element={<Statistics />} />
               <Route path="procedure-status" element={<ProcedureStatus />} />
               <Route path="new-data" element={<NewData />} />
-              <Route path="upload-tis" element={<UploadTis />} />
               <Route path="download-tis" element={<DownloadTis />} />
               <Route path="activity-history" element={<ActivityHistory />} />
               <Route path="subscription" element={<SubscriptionPlans />} />
