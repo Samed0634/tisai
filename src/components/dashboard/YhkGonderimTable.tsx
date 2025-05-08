@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { EditableTableBase } from "./EditableTableBase";
 import { Workplace } from "@/types/workplace";
 
@@ -14,9 +14,6 @@ export const YhkGonderimTable: React.FC<YhkGonderimTableProps> = ({
   isLoading = false,
   refetch
 }) => {
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-
   return (
     <EditableTableBase 
       data={data}
@@ -25,10 +22,6 @@ export const YhkGonderimTable: React.FC<YhkGonderimTableProps> = ({
       tableType="yhkGonderimColumns"
       editableField="YHK GÖNDERİM TARİHİ"
       title="YHK Gönderim Gereken İşyerleri"
-      pageSize={pageSize}
-      currentPage={currentPage}
-      setPageSize={setPageSize}
-      setCurrentPage={setCurrentPage}
     />
   );
 };

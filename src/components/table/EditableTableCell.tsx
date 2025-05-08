@@ -44,17 +44,6 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
     // Special formatting for different field types
     if (field === 'durum') {
       return <StatusBadge status={value || ''} />;
-    } else if (field === 'sure_bilgisi') {
-      // Display remaining time with appropriate formatting
-      if (!value) return '-';
-      const days = parseInt(value);
-      if (isNaN(days)) return value;
-      
-      return (
-        <span className={`px-2 py-1 rounded text-xs font-medium ${days <= 5 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>
-          {value} gün
-        </span>
-      );
     } else if (field.includes('TARİHİ') && value) {
       return new Date(value).toLocaleDateString('tr-TR');
     } else {

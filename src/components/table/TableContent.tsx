@@ -14,9 +14,6 @@ import { TablePagination } from "./TablePagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Workplace } from "@/types/workplace";
 import { COLUMNS } from "@/constants/tableColumns";
-import { TableLoadingState } from "./TableLoadingState";
-import { EmptyTableBody } from "./EmptyTableBody";
-import { ensureRequiredColumns, reorderImportantColumns } from "@/utils/tableColumnUtils";
 
 interface TableContentProps {
   data: Workplace[];
@@ -59,19 +56,42 @@ export const TableContent: React.FC<TableContentProps> = ({
   titleClassName,
   editableField,
   showTisUploader = false,
-  logActions = true,
+  logActions = true, // Default to true to ensure all actions are logged
 }) => {
   if (isLoading) {
-    return <TableLoadingState />;
+    return (
+      <div className="rounded-md border p-8">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
-  // Get visible column definitions and ensure required columns are present
+  // Make sure we have the "durum" column in our column definitions if it's not there
   const visibleColumnDefinitions = COLUMNS.filter(col => 
     visibleColumns.includes(col.id)
   );
+
+  // Ensure the durum column is defined
+  const durumColumnExists = visibleColumnDefinitions.some(col => col.id === 'durum');
   
-  const updatedColumnDefinitions = ensureRequiredColumns(visibleColumnDefinitions, visibleColumns);
-  const reorderedColumnDefinitions = reorderImportantColumns(updatedColumnDefinitions);
+  if (!durumColumnExists && visibleColumns.includes('durum')) {
+    visibleColumnDefinitions.push({
+      id: 'durum',
+      title: 'Durum',
+      editable: true
+    });
+  }
+
+  // Reorder columns to place 'durum' at the beginning, right after actions column
+  const reorderedColumnDefinitions = [...visibleColumnDefinitions];
+  
+  // Find and remove durum from current position
+  const durumIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'durum');
+  if (durumIndex !== -1) {
+    const [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
+    // Insert durum at the beginning of the array (position 0)
+    reorderedColumnDefinitions.unshift(durumColumn);
+  }
 
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);
@@ -123,26 +143,21 @@ export const TableContent: React.FC<TableContentProps> = ({
                   ))}
                 </TableRow>
               </TableHeader>
-              
               <TableBodyUI>
-                {data.length === 0 ? (
-                  <EmptyTableBody colSpan={reorderedColumnDefinitions.length + (showTisUploader ? 2 : 1)} />
-                ) : (
-                  <TableBody 
-                    data={paginatedData}
-                    visibleColumnDefinitions={reorderedColumnDefinitions}
-                    editingId={editingId}
-                    editData={editData}
-                    handleEdit={handleEdit}
-                    handleCancel={handleCancel}
-                    handleChange={handleChange}
-                    handleSave={handleSave}
-                    editableField={editableField}
-                    showTisUploader={showTisUploader}
-                    refetch={() => {}} 
-                    logActions={logActions}
-                  />
-                )}
+                <TableBody 
+                  data={paginatedData}
+                  visibleColumnDefinitions={reorderedColumnDefinitions}
+                  editingId={editingId}
+                  editData={editData}
+                  handleEdit={handleEdit}
+                  handleCancel={handleCancel}
+                  handleChange={handleChange}
+                  handleSave={handleSave}
+                  editableField={editableField}
+                  showTisUploader={showTisUploader}
+                  refetch={() => {}} 
+                  logActions={logActions}
+                />
               </TableBodyUI>
             </Table>
           </div>

@@ -35,8 +35,18 @@ export const TableBody: React.FC<TableBodyProps> = ({
   editableField,
   showTisUploader = false,
   refetch,
-  logActions = true,
+  logActions = true, // Default to true to ensure all actions are logged
 }) => {
+  if (data.length === 0) {
+    return (
+      <TableRow>
+        <TableCell colSpan={visibleColumnDefinitions.length + (showTisUploader ? 2 : 1)} className="text-center py-6 text-xs">
+          Görüntülenecek veri bulunamadı
+        </TableCell>
+      </TableRow>
+    );
+  }
+
   return (
     <>
       {data.map((item) => (
