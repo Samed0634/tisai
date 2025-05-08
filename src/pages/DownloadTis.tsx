@@ -1,10 +1,11 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { Download, Filter, SortAsc } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { normalizeText, fuzzySearch } from '@/utils/searchUtils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -17,9 +18,9 @@ const DownloadTis = () => {
   const [allResults, setAllResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [branchFilter, setBranchFilter] = useState<string>('');
-  const [yearFilter, setYearFilter] = useState<string>('');
-  const [expertFilter, setExpertFilter] = useState<string>('');
+  const [branchFilter, setBranchFilter] = useState<string>('all');
+  const [yearFilter, setYearFilter] = useState<string>('all');
+  const [expertFilter, setExpertFilter] = useState<string>('all');
   const [sortOption, setSortOption] = useState<SortOption>('expiryDate');
   const { toast } = useToast();
 
@@ -66,16 +67,16 @@ const DownloadTis = () => {
         fuzzySearch(searchTerm, item['SGK NO'] || '');
       
       // Branch filter
-      const branchMatch = !branchFilter || 
+      const branchMatch = branchFilter === 'all' || 
         item['BAĞLI OLDUĞU ŞUBE'] === branchFilter;
       
       // Year filter (from TİS İMZA TARİHİ)
-      const yearMatch = !yearFilter || 
+      const yearMatch = yearFilter === 'all' || 
         (item['TİS İMZA TARİHİ'] && 
           new Date(item['TİS İMZA TARİHİ']).getFullYear().toString() === yearFilter);
       
       // Expert filter
-      const expertMatch = !expertFilter || 
+      const expertMatch = expertFilter === 'all' || 
         item['SORUMLU UZMAN'] === expertFilter;
       
       return textMatch && branchMatch && yearMatch && expertMatch;
@@ -144,9 +145,9 @@ const DownloadTis = () => {
   };
 
   const clearFilters = () => {
-    setBranchFilter('');
-    setYearFilter('');
-    setExpertFilter('');
+    setBranchFilter('all');
+    setYearFilter('all');
+    setExpertFilter('all');
   };
 
   // Load data when component mounts
@@ -235,7 +236,7 @@ const DownloadTis = () => {
                         <SelectValue placeholder="Tüm Şubeler" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Tüm Şubeler</SelectItem>
+                        <SelectItem value="all">Tüm Şubeler</SelectItem>
                         {branches.map(branch => (
                           <SelectItem key={branch} value={branch}>{branch}</SelectItem>
                         ))}
@@ -250,7 +251,7 @@ const DownloadTis = () => {
                         <SelectValue placeholder="Tüm Yıllar" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Tüm Yıllar</SelectItem>
+                        <SelectItem value="all">Tüm Yıllar</SelectItem>
                         {years.map(year => (
                           <SelectItem key={year} value={year}>{year}</SelectItem>
                         ))}
@@ -265,7 +266,7 @@ const DownloadTis = () => {
                         <SelectValue placeholder="Tüm Uzmanlar" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Tüm Uzmanlar</SelectItem>
+                        <SelectItem value="all">Tüm Uzmanlar</SelectItem>
                         {experts.map(expert => (
                           <SelectItem key={expert} value={expert}>{expert}</SelectItem>
                         ))}
