@@ -1,11 +1,13 @@
+
 import React from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, FileDown, Filter } from "lucide-react";
+import { ArrowDown, FileDown, Filter, Building, Users } from "lucide-react";
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
+import { BranchExpertFilter } from "@/components/procedure-status/BranchExpertFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
 import { exportToExcel } from "@/utils/exportUtils";
@@ -36,6 +38,41 @@ const ProcedureStatus = () => {
   const [searchTerm, setSearchTerm] = useFilterMemory("procedureStatus_searchTerm", "");
   const [sortBy, setSortBy] = useFilterMemory("procedureStatus_sortBy", "İŞYERİ ADI");
   const [selectedStatuses, setSelectedStatuses] = useFilterMemory("procedureStatus_selectedStatuses", [] as string[]);
+  const [selectedBranches, setSelectedBranches] = useFilterMemory("procedureStatus_selectedBranches", [] as string[]);
+  const [selectedExperts, setSelectedExperts] = useFilterMemory("procedureStatus_selectedExperts", [] as string[]);
+
+  // Extract unique branches and experts from workplaces data
+  const branchOptions = React.useMemo(() => {
+    if (!workplaces) return [];
+    const branches = new Set<string>();
+    
+    workplaces.forEach(workplace => {
+      if (workplace["BAĞLI OLDUĞU ŞUBE"]) {
+        branches.add(workplace["BAĞLI OLDUĞU ŞUBE"].toString());
+      }
+    });
+    
+    return Array.from(branches).sort().map(branch => ({
+      value: branch,
+      label: branch
+    }));
+  }, [workplaces]);
+
+  const expertOptions = React.useMemo(() => {
+    if (!workplaces) return [];
+    const experts = new Set<string>();
+    
+    workplaces.forEach(workplace => {
+      if (workplace["SORUMLU UZMAN"]) {
+        experts.add(workplace["SORUMLU UZMAN"].toString());
+      }
+    });
+    
+    return Array.from(experts).sort().map(expert => ({
+      value: expert,
+      label: expert
+    }));
+  }, [workplaces]);
 
   const filteredAndSortedWorkplaces = React.useMemo(() => {
     if (!workplaces) return [];
@@ -48,9 +85,26 @@ const ProcedureStatus = () => {
         }
       }
 
+      // Branch filter
+      if (selectedBranches.length > 0) {
+        if (!workplace["BAĞLI OLDUĞU ŞUBE"] || !selectedBranches.includes(workplace["BAĞLI OLDUĞU ŞUBE"].toString())) {
+          return false;
+        }
+      }
+
+      // Expert filter
+      if (selectedExperts.length > 0) {
+        if (!workplace["SORUMLU UZMAN"] || !selectedExperts.includes(workplace["SORUMLU UZMAN"].toString())) {
+          return false;
+        }
+      }
+
       // Text search filter - case insensitive
       if (normalizedSearchTerm) {
-        return workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm);
+        return workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm) || 
+               workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm) || 
+               workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm) || 
+               workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm);
       }
       return true;
     });
@@ -59,10 +113,20 @@ const ProcedureStatus = () => {
       const bValue = (b[sortBy] || "").toString().toLowerCase();
       return aValue.localeCompare(bValue);
     });
-  }, [workplaces, searchTerm, sortBy, selectedStatuses]);
+  }, [workplaces, searchTerm, sortBy, selectedStatuses, selectedBranches, selectedExperts]);
 
   const handleStatusChange = (statuses: string[]) => {
     setSelectedStatuses(statuses);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleBranchChange = (branches: string[]) => {
+    setSelectedBranches(branches);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleExpertChange = (experts: string[]) => {
+    setSelectedExperts(experts);
     setCurrentPage(1); // Reset to first page when filters change
   };
 
@@ -73,6 +137,8 @@ const ProcedureStatus = () => {
   };
 
   const statusFilterCount = selectedStatuses.length;
+  const branchFilterCount = selectedBranches.length;
+  const expertFilterCount = selectedExperts.length;
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -83,8 +149,8 @@ const ProcedureStatus = () => {
         </Button>
       </div>
       
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 flex-col sm:flex-row gap-2 sm:items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between flex-wrap">
+        <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:items-center flex-wrap">
           <SearchBox searchTerm={searchTerm} onSearchChange={setSearchTerm} placeholder="İşyeri, uzman veya durum ara..." />
           
           <Popover>
@@ -99,6 +165,50 @@ const ProcedureStatus = () => {
             </PopoverTrigger>
             <PopoverContent className="w-[350px] p-0" align="start">
               <StatusFilter selectedStatuses={selectedStatuses} onChange={handleStatusChange} />
+            </PopoverContent>
+          </Popover>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
+                <Building className="h-4 w-4" />
+                <span>Şube Filtresi</span>
+                {branchFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
+                    {branchFilterCount}
+                  </span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[350px] p-0" align="start">
+              <BranchExpertFilter 
+                selectedBranches={selectedBranches} 
+                onBranchChange={handleBranchChange}
+                selectedExperts={selectedExperts}
+                onExpertChange={handleExpertChange}
+                branchOptions={branchOptions}
+                expertOptions={expertOptions}
+              />
+            </PopoverContent>
+          </Popover>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
+                <Users className="h-4 w-4" />
+                <span>Uzman Filtresi</span>
+                {expertFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
+                    {expertFilterCount}
+                  </span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[350px] p-0" align="start">
+              <BranchExpertFilter 
+                selectedBranches={selectedBranches} 
+                onBranchChange={handleBranchChange}
+                selectedExperts={selectedExperts}
+                onExpertChange={handleExpertChange}
+                branchOptions={branchOptions}
+                expertOptions={expertOptions}
+              />
             </PopoverContent>
           </Popover>
         </div>
