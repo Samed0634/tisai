@@ -22,6 +22,8 @@ export const UyusmazlikTable: React.FC<UyusmazlikTableProps> = ({
       tableType="uyusmazlikColumns"
       editableField="UYUŞMAZLIK TARİHİ"
       title="Uyuşmazlık Gereken İşyerleri"
+      showControls={true}
+      logActions={true}
     />
   );
 };

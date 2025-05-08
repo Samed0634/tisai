@@ -44,17 +44,36 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
   };
 
   const handleSave = async () => {
-    if (!editData || !previousData) return;
+    if (!editData || !previousData) {
+      console.error("No data to save");
+      return;
+    }
     
     try {
-      console.log("Saving workplace data:", editData);
+      console.log("Preparing to save workplace data:", editData);
       
       // Get the current user's kurum_id
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: userAuthError } = await supabase.auth.getUser();
+      
+      if (userAuthError) {
+        console.error('Authentication error:', userAuthError);
+        throw userAuthError;
+      }
+      
+      if (!user) {
+        console.error('No authenticated user found');
+        toast({
+          title: "Hata",
+          description: "Oturum bilgisi bulunamadı. Lütfen tekrar giriş yapın.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       const { data: userData, error: userError } = await supabase
         .from('kullanici_kurumlar')
         .select('kurum_id')
-        .eq('user_id', user?.id)
+        .eq('user_id', user.id)
         .maybeSingle();
 
       if (userError) {
@@ -63,6 +82,16 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
       }
 
       const kurum_id = userData?.kurum_id;
+      
+      if (!kurum_id) {
+        console.error('No kurum_id found for user');
+        toast({
+          title: "Hata",
+          description: "Kurum bilgisi bulunamadı. Lütfen yöneticinize başvurun.",
+          variant: "destructive",
+        });
+        return;
+      }
       
       // Add kurum_id to the data being saved
       const dataToSave = {
@@ -80,31 +109,40 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
       console.log("Check if workplace exists:", existingData, checkError);
       
       let saveError;
+      let saveData;
       
       if (existingData) {
         // Update existing record
         console.log("Updating existing workplace with ID:", editData.ID);
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('isyerleri')
           .update(dataToSave)
-          .eq('ID', editData.ID);
+          .eq('ID', editData.ID)
+          .select();
         
         saveError = error;
-        console.log("Update result:", error ? "Error" : "Success");
+        saveData = data;
+        console.log("Update result:", error ? "Error" : "Success", data);
       } else {
         // Insert new record with the specified ID
         console.log("Inserting new workplace with ID:", editData.ID);
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('isyerleri')
-          .insert(dataToSave);
+          .insert(dataToSave)
+          .select();
         
         saveError = error;
-        console.log("Insert result:", error ? "Error" : "Success");
+        saveData = data;
+        console.log("Insert result:", error ? "Error" : "Success", data);
       }
       
       if (saveError) {
         console.error("Error saving data:", saveError);
         throw saveError;
+      }
+      
+      if (!saveData || saveData.length === 0) {
+        console.warn("Save operation returned no data");
       }
 
       // Always log actions since we want to track all changes
@@ -142,12 +180,16 @@ export const useTableEdit = (refetch: () => void, logActions: boolean = true) =>
       setEditingId(null);
       setEditData(null);
       setPreviousData(null);
+      
+      // Important: Make sure to refetch data after a successful update
+      // This ensures that the views reflect the changes
+      console.log("Refetching data after successful save");
       refetch();
     } catch (error) {
       console.error("Error updating workplace:", error);
       toast({
         title: "Hata",
-        description: "İşyeri bilgileri güncellenirken bir hata oluştu.",
+        description: "İşyeri bilgileri güncellenirken bir hata oluştu. Lütfen tekrar deneyin.",
         variant: "destructive",
       });
     }

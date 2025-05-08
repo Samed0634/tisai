@@ -22,6 +22,8 @@ export const YhkGonderimTable: React.FC<YhkGonderimTableProps> = ({
       tableType="yhkColumns"
       editableField="YHK GÖNDERİM TARİHİ"
       title="YHK Gönderim Gereken İşyerleri"
+      showControls={true}
+      logActions={true}
     />
   );
 };

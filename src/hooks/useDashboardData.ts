@@ -153,7 +153,7 @@ export const useDashboardData = () => {
   return useQuery({
     queryKey: ['dashboardData'],
     queryFn: fetchDashboardData,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 1000, // 5 seconds to ensure data is refreshed more frequently
     gcTime: 10 * 60 * 1000,   // 10 minutes
     retry: 2,
     meta: {

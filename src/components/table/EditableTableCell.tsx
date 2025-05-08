@@ -23,10 +23,17 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
 }) => {
   if (isEditing && isEditable) {
     if (field.includes('TARİHİ')) {
+      // Ensure the date is properly formatted for the date input
+      const formattedDate = value ? 
+        (typeof value === 'string' ? 
+          value.split('T')[0] : 
+          new Date(value).toISOString().split('T')[0]
+        ) : '';
+      
       return (
         <Input
           type="date"
-          value={value ? new Date(value).toISOString().split('T')[0] : ''}
+          value={formattedDate}
           onChange={(e) => onChange(field, e.target.value)}
           className="w-40 text-xs"
         />
@@ -57,7 +64,13 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
         </span>
       );
     } else if (field.includes('TARİHİ') && value) {
-      return new Date(value).toLocaleDateString('tr-TR');
+      // Format date values properly
+      try {
+        return new Date(value).toLocaleDateString('tr-TR');
+      } catch (e) {
+        console.error("Error formatting date:", e, value);
+        return value;
+      }
     } else {
       return value;
     }

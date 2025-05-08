@@ -20,8 +20,10 @@ export const MuzakereSuresiTable: React.FC<MuzakereSuresiTableProps> = ({
       isLoading={isLoading}
       refetch={refetch}
       tableType="muzakereSuresiColumns"
-      editableField="UYUŞMAZLIK TARİHİ"
+      editableField="MÜZAKERE SÜRESİ SON TARİH"
       title="Müzakere Süresi Dolan İşyerleri"
+      showControls={true}
+      logActions={true}
     />
   );
 };
