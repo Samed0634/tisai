@@ -31,7 +31,9 @@ const ActivityHistory: React.FC = () => {
 
   const handleExportToExcel = () => {
     // Export all filtered activities, not just the current page
-    exportToExcel(filteredActivities, "İşlem_Geçmişi");
+    // Make sure to exclude kurum_id from the exported data
+    const exportData = filteredActivities.map(({ kurum_id, ...rest }) => rest);
+    exportToExcel(exportData, "İşlem_Geçmişi");
   };
 
   if (loading) {
