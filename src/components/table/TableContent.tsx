@@ -82,14 +82,42 @@ export const TableContent: React.FC<TableContentProps> = ({
     });
   }
 
-  // Reorder columns to place 'durum' at the beginning, right after actions column
+  // Ensure the sure_bilgisi column is defined
+  const kalansureColumnExists = visibleColumnDefinitions.some(col => col.id === 'sure_bilgisi');
+  
+  if (!kalansureColumnExists && visibleColumns.includes('sure_bilgisi')) {
+    visibleColumnDefinitions.push({
+      id: 'sure_bilgisi',
+      title: 'Kalan Süre'
+    });
+  }
+  
+  // Reorder columns to place 'durum' at the beginning and 'sure_bilgisi' right after it
   const reorderedColumnDefinitions = [...visibleColumnDefinitions];
   
-  // Find and remove durum from current position
+  // Remove durum and sure_bilgisi from current positions
   const durumIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'durum');
+  const sureIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'sure_bilgisi');
+  
+  let durumColumn, sureColumn;
+  
+  // Remove columns for reordering (if they exist)
   if (durumIndex !== -1) {
-    const [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
-    // Insert durum at the beginning of the array (position 0)
+    [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
+  }
+  
+  if (sureIndex !== -1) {
+    [sureColumn] = reorderedColumnDefinitions.splice(sureIndex < durumIndex && durumIndex !== -1 ? sureIndex : sureIndex - (durumIndex !== -1 ? 1 : 0), 1);
+  }
+  
+  // Add columns back in the desired order
+  // Insert sure_bilgisi at the beginning first
+  if (sureColumn) {
+    reorderedColumnDefinitions.unshift(sureColumn);
+  }
+  
+  // Then insert durum before sure_bilgisi
+  if (durumColumn) {
     reorderedColumnDefinitions.unshift(durumColumn);
   }
 

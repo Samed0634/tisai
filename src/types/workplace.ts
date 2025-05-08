@@ -32,4 +32,6 @@ export interface Workplace {
   "TİS BAŞLANGIÇ TARİHİ": string | null;
   "TİS BİTİŞ TARİHİ": string | null;
   kurum_id: string;
+  durum?: string | null;
+  sure_bilgisi?: string | null;
 }

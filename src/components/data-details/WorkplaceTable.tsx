@@ -13,6 +13,7 @@ import {
 import { StatusBadge } from "./StatusBadge";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { COLUMNS } from "@/constants/tableColumns";
+import { cn } from "@/lib/utils";
 
 interface WorkplaceItem {
   id: string;
@@ -77,8 +78,17 @@ export const WorkplaceTable: React.FC<WorkplaceTableProps> = ({
                 </TableCell>
                 {visibleColumnDefinitions.map(column => (
                   <TableCell key={column.id}>
-                    {column.id === 'SON DURUM' ? (
+                    {column.id === 'durum' ? (
                       <StatusBadge status={item[column.id] || 'Bekliyor'} />
+                    ) : column.id === 'sure_bilgisi' ? (
+                      <span className={cn(
+                        "px-2 py-1 rounded text-xs font-medium",
+                        item[column.id] && item[column.id].toLowerCase().includes('geçti') 
+                          ? "text-red-600 bg-red-50" 
+                          : "text-blue-600 bg-blue-50"
+                      )}>
+                        {item[column.id] || ''}
+                      </span>
                     ) : (
                       item[column.id]
                     )}

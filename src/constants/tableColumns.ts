@@ -38,5 +38,6 @@ export const COLUMNS: ColumnType[] = [
   { id: 'TİS İMZA TARİHİ', title: 'TİS İMZA TARİHİ' },
   { id: 'TİS BAŞLANGIÇ TARİHİ', title: 'TİS BAŞLANGIÇ TARİHİ' },
   { id: 'TİS BİTİŞ TARİHİ', title: 'TİS BİTİŞ TARİHİ' },
-  { id: 'durum', title: 'Durum', editable: true }
+  { id: 'durum', title: 'Durum', editable: true },
+  { id: 'sure_bilgisi', title: 'Kalan Süre' }
 ];

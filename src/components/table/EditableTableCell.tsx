@@ -2,6 +2,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "../data-details/StatusBadge";
+import { cn } from "@/lib/utils";
 
 interface EditableTableCellProps {
   value: any;
@@ -44,6 +45,17 @@ export const EditableTableCell: React.FC<EditableTableCellProps> = ({
     // Special formatting for different field types
     if (field === 'durum') {
       return <StatusBadge status={value || ''} />;
+    } else if (field === 'sure_bilgisi') {
+      // Special formatting for remaining time (süre bilgisi)
+      const isExpired = value && value.toLowerCase().includes('geçti');
+      return (
+        <span className={cn(
+          "px-2 py-1 rounded text-xs font-medium",
+          isExpired ? "text-red-600 bg-red-50" : "text-blue-600 bg-blue-50"
+        )}>
+          {value || ''}
+        </span>
+      );
     } else if (field.includes('TARİHİ') && value) {
       return new Date(value).toLocaleDateString('tr-TR');
     } else {
