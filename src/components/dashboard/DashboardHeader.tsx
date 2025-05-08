@@ -8,19 +8,19 @@ import { useFilterMemory } from "@/hooks/useFilterMemory";
 import { SearchBox } from "@/components/data-details/SearchBox";
 
 interface DashboardHeaderProps {
-  allDashboardData: DashboardItem[];
-  selectedCards: string[];
-  onToggleCard: (cardId: string) => void;
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
+  allDashboardData?: DashboardItem[];
+  selectedCards?: string[];
+  onToggleCard?: (cardId: string) => void;
+  searchTerm?: string;
+  onSearchChange?: (value: string) => void;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-  allDashboardData,
-  selectedCards,
-  onToggleCard,
-  searchTerm,
-  onSearchChange
+  allDashboardData = [],
+  selectedCards = [],
+  onToggleCard = () => {},
+  searchTerm = "",
+  onSearchChange = () => {}
 }) => {
   // Use our filterMemory hook instead of localStorage directly
   const [savedSelections, setSavedSelections] = useFilterMemory('dashboardCardFilters', [] as string[]);

@@ -1,190 +1,73 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDashboardData } from "@/components/dashboard/dashboardCards";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import WorkplaceItemDetails from "@/components/dashboard/WorkplaceItemDetails";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardGrid from "@/components/dashboard/DashboardGrid";
-import { EditableWorkplaceTable } from "@/components/dashboard/EditableWorkplaceTable";
-import { GrevOylamasiTable } from "@/components/dashboard/GrevOylamasiTable";
-import { CagriYapilacakTable } from "@/components/dashboard/CagriYapilacakTable";
-import { YetkiTespitTable } from "@/components/dashboard/YetkiTespitTable";
-import { YetkiBelgesiTable } from "@/components/dashboard/YetkiBelgesiTable";
-import { YerGunTespitTable } from "@/components/dashboard/YerGunTespitTable";
-import { OncedenBelirlenenTable } from "@/components/dashboard/OncedenBelirlenenTable";
-import { IlkOturumTable } from "@/components/dashboard/IlkOturumTable";
-import { MuzakereSuresiTable } from "@/components/dashboard/MuzakereSuresiTable";
-import { UyusmazlikTable } from "@/components/dashboard/UyusmazlikTable";
-import { YhkGonderimTable } from "@/components/dashboard/YhkGonderimTable";
-import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTable";
-import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
+import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
+import UpcomingMeetings from "@/components/dashboard/UpcomingMeetings";
+import RecentActivities from "@/components/dashboard/RecentActivities";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { GrevKarariTable } from "@/components/dashboard/GrevKarariTable";
-import { SearchBox } from "@/components/data-details/SearchBox";
+import { useAuth } from "@/hooks/useAuth";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { recentActivities } from "@/components/dashboard/recentActivities";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const staticDashboardData = getDashboardData();
+  const { user } = useAuth();
+  const { data: dashboardData, isLoading, error, refetch } = useDashboardData();
+  const [selectedCard, setSelectedCard] = useState<string | null>(null);
   
-  const [selectedCards, setSelectedCards] = useState<string[]>(() => {
-    const savedFilters = localStorage.getItem('dashboardCardFilters');
-    return savedFilters ? JSON.parse(savedFilters) : staticDashboardData.map(item => item.id);
-  });
-  const [selectedItem, setSelectedItem] = useState<any | null>(null);
-  const [showEditableTable, setShowEditableTable] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  
-  const {
-    data: dashboardData,
-    isLoading,
-    refetch
-  } = useDashboardData();
-
-  const getListItems = (listName: string) => {
-    if (!dashboardData) return [];
-    return dashboardData[listName] as any[] || [];
-  };
-
-  // Filter workplaces based on search term
-  const filterItemsBySearchTerm = (items: any[]) => {
-    if (!searchTerm.trim()) return items;
-    
-    const normalizedSearchTerm = searchTerm.toLowerCase().trim();
-    
-    return items.filter(item => {
-      return (
-        (item["İŞYERİ ADI"] && item["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (item["SORUMLU UZMAN"] && item["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (item["BAĞLI OLDUĞU ŞUBE"] && item["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm)) ||
-        (item["durum"] && item["durum"].toString().toLowerCase().includes(normalizedSearchTerm))
-      );
-    });
-  };
-
-  const allDashboardData = staticDashboardData.map(item => {
-    const originalItems = getListItems(item.dataSource);
-    const filteredItems = filterItemsBySearchTerm(originalItems);
-    
-    // Calculate average remaining time if applicable
-    let averageRemainingTime;
-    if (filteredItems.length > 0 && filteredItems[0].sure_bilgisi) {
-      const validItems = filteredItems.filter(item => item.sure_bilgisi && !isNaN(parseInt(item.sure_bilgisi)));
-      if (validItems.length > 0) {
-        const totalDays = validItems.reduce((sum, item) => {
-          const days = parseInt(item.sure_bilgisi);
-          return sum + days;
-        }, 0);
-        averageRemainingTime = Math.round(totalDays / validItems.length).toString();
-      }
+  // Check authentication
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
     }
-    
-    return {
-      ...item,
-      value: filteredItems.length,
-      items: filteredItems,
-      remainingTime: averageRemainingTime
-    };
-  });
+  }, [user, navigate]);
 
-  const handleCardClick = (categoryId: string) => {
-    const category = allDashboardData.find(item => item.id === categoryId);
-    if (categoryId === 'grevKarari' || categoryId === 'grevOylamasi' || categoryId === 'cagri' || 
-        categoryId === 'yetkiTespit' || categoryId === 'yetkiBelgesi' || categoryId === 'yerGunTespit' || 
-        categoryId === 'oncedenBelirlenen' || categoryId === 'ilkOturum' || categoryId === 'muzakereSuresi' || 
-        categoryId === 'uyusmazlik' || categoryId === 'yhk' || categoryId === 'imzalananTisler' || 
-        categoryId === 'grevYasagi') {
-      setSelectedCategory(categoryId);
-      setShowEditableTable(true);
-    } else if (category?.items) {
-      navigate(`/details/${categoryId}`, {
-        state: {
-          items: category.items
-        }
-      });
-    } else {
-      console.log("No items found for this category:", categoryId);
-    }
-  };
-
-  const toggleCard = (cardId: string) => {
-    setSelectedCards(current => current.includes(cardId) ? current.filter(id => id !== cardId) : [...current, cardId]);
-  };
-
-  const filteredDashboardData = allDashboardData.filter(item => selectedCards.includes(item.id));
-
+  // If loading or error, show appropriate UI
   if (isLoading) {
-    return <div>Yükleniyor...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
-  const grevKarariData = filterItemsBySearchTerm(getListItems('grev_kararı_alınması_gereken_view'));
-  const grevOylamasiData = filterItemsBySearchTerm(getListItems('grev_oylaması_yapılması_gereken_view'));
-  const cagriYapilacakData = filterItemsBySearchTerm(getListItems('çağrı_yapılacak_view'));
-  const yetkiTespitData = filterItemsBySearchTerm(getListItems('yetki_tespit_istenecek_view'));
-  const yetkiBelgesiData = filterItemsBySearchTerm(getListItems('yetki_belgesi_tebliğ_yapılan_view'));
-  const yerGunTespitData = filterItemsBySearchTerm(getListItems('yer_ve_gün_tespit_tarihli_view'));
-  const oncedenBelirlenenData = filterItemsBySearchTerm(getListItems('önceden_belirlenen_ilk_oturum_view'));
-  const ilkOturumData = filterItemsBySearchTerm(getListItems('ilk_oturum_tutulması_gereken_view'));
-  const muzakereSuresiData = filterItemsBySearchTerm(getListItems('müzakere_süresi_dolan_view'));
-  const uyusmazlikData = filterItemsBySearchTerm(getListItems('uyuşmazlık_bildirimi_yapılması_gereken_view'));
-  const yhkGonderimData = filterItemsBySearchTerm(getListItems('yhk_gönderim_gereken_view'));
-  const imzalananTislerData = filterItemsBySearchTerm(getListItems('imzalanan_tisler_view'));
-  const grevYasagiData = filterItemsBySearchTerm(getListItems('grev_yasağı_olan_view'));
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h2 className="text-2xl font-bold text-red-500 mb-4">Veri yüklenirken hata oluştu</h2>
+        <button 
+          className="px-4 py-2 bg-primary text-white rounded-md"
+          onClick={() => refetch()}
+        >
+          Yeniden Dene
+        </button>
+      </div>
+    );
+  }
 
-  return <div className="space-y-6">
-      <DashboardHeader 
-        allDashboardData={allDashboardData} 
-        selectedCards={selectedCards} 
-        onToggleCard={toggleCard}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm} 
-      />
-
-      {showEditableTable ? <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <Button variant="outline" onClick={() => setShowEditableTable(false)}>
-              Gösterge Paneline Dön
-            </Button>
-          </div>
-          
-          {selectedCategory === 'grevKarari' && <GrevKarariTable data={grevKarariData} isLoading={isLoading} refetch={refetch} />}
-          
-          {selectedCategory === 'grevOylamasi' && <GrevOylamasiTable data={grevOylamasiData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'cagri' && <CagriYapilacakTable data={cagriYapilacakData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'yetkiTespit' && <YetkiTespitTable data={yetkiTespitData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'yetkiBelgesi' && <YetkiBelgesiTable data={yetkiBelgesiData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'yerGunTespit' && <YerGunTespitTable data={yerGunTespitData} isLoading={isLoading} refetch={refetch} />}
-          
-          {selectedCategory === 'oncedenBelirlenen' && <OncedenBelirlenenTable data={oncedenBelirlenenData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'ilkOturum' && <IlkOturumTable data={ilkOturumData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'muzakereSuresi' && <MuzakereSuresiTable data={muzakereSuresiData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'uyusmazlik' && <UyusmazlikTable data={uyusmazlikData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'yhk' && <YhkGonderimTable data={yhkGonderimData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'imzalananTisler' && <ImzalananTislerTable data={imzalananTislerData} isLoading={isLoading} refetch={refetch} />}
-
-          {selectedCategory === 'grevYasagi' && <GrevYasakTable data={grevYasagiData} isLoading={isLoading} refetch={refetch} />}
-        </div> : <DashboardGrid items={filteredDashboardData} onCardClick={handleCardClick} />}
-
-      <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden">
-          <DialogHeader>
-            <DialogTitle>İşyeri Detayları</DialogTitle>
-          </DialogHeader>
-          {selectedItem && <WorkplaceItemDetails item={selectedItem} />}
-        </DialogContent>
-      </Dialog>
-    </div>;
+  return (
+    <div className="container mx-auto p-4 space-y-8">
+      <DashboardHeader />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <DashboardGrid 
+            data={dashboardData} 
+            selectedCard={selectedCard}
+            setSelectedCard={setSelectedCard}
+          />
+          <DashboardAnalytics data={dashboardData} />
+        </div>
+        
+        <div className="space-y-8">
+          <UpcomingMeetings />
+          <RecentActivities />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Dashboard;

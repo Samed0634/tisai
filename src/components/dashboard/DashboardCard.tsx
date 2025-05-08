@@ -11,7 +11,6 @@ interface DashboardCardProps {
   onClick: () => void;
   color: string;
   className?: string;
-  remainingTime?: string; // Add this new prop for "sure_bilgisi"
 }
 
 const DashboardCard: React.FC<DashboardCardProps> = ({ 
@@ -20,8 +19,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   icon: Icon, 
   onClick,
   color,
-  className,
-  remainingTime
+  className
 }) => {
   // Extract text color class for highlighting red items
   const isHighlightedRed = className?.includes("text-destructive");
@@ -77,21 +75,6 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         )}>
           İşyeri
         </p>
-        
-        {/* Add remaining time display */}
-        {remainingTime && (
-          <div className="mt-3 pt-2 border-t border-border/30">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-medium">Kalan Süre:</span>
-              <span className={cn(
-                "text-xs font-bold", 
-                parseInt(remainingTime) < 5 ? "text-destructive" : "text-primary"
-              )}>
-                {remainingTime} gün
-              </span>
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
