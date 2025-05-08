@@ -19,7 +19,7 @@ export const YhkGonderimTable: React.FC<YhkGonderimTableProps> = ({
       data={data}
       isLoading={isLoading}
       refetch={refetch}
-      tableType="yhkGonderimColumns"
+      tableType="yhkColumns"
       editableField="YHK GÖNDERİM TARİHİ"
       title="YHK Gönderim Gereken İşyerleri"
     />

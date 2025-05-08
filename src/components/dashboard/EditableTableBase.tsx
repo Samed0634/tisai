@@ -104,9 +104,11 @@ const getDefaultColumns = (tableType: string): string[] => {
     case "yetkiTespitColumns":
       return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YETKİ BELGESİ TEBLİĞ TARİHİ"];
     case "yetkiBelgesiColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÇAĞRI TARİHİ"];
+      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
     case "yerGunTespitColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YER VE GÜN TESPİT TARİHİ"];
+      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
+    case "oncedenBelirlenenColumns":
+      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"];
     case "ilkOturumColumns":
       return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"];
     case "muzakereSuresiColumns":
@@ -118,12 +120,10 @@ const getDefaultColumns = (tableType: string): string[] => {
     case "imzalananTislerColumns":
       return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "TİS GELİŞ TARİHİ"];
     case "grevYasagiColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU"];
+      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
     case "grevKarariColumns":
       return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV KARARI TARİHİ"];
-    case "grevYasakColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV YASAĞI DURUMU"];
     default:
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI"];
+      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
   }
 };

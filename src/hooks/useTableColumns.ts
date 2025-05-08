@@ -7,8 +7,11 @@ interface UseTableColumnsProps {
 }
 
 export const useTableColumns = ({ tableType, defaultColumns }: UseTableColumnsProps) => {
+  const storageKey = `tableColumns_${tableType}`;
+
   const getInitialColumns = () => {
-    const storageKey = `tableColumns_${tableType}`;
+    if (typeof window === 'undefined') return defaultColumns;
+
     const savedColumns = localStorage.getItem(storageKey);
     return savedColumns ? JSON.parse(savedColumns) : defaultColumns;
   };
@@ -16,9 +19,8 @@ export const useTableColumns = ({ tableType, defaultColumns }: UseTableColumnsPr
   const [visibleColumns, setVisibleColumns] = useState<string[]>(getInitialColumns());
 
   useEffect(() => {
-    const storageKey = `tableColumns_${tableType}`;
     localStorage.setItem(storageKey, JSON.stringify(visibleColumns));
-  }, [visibleColumns, tableType]);
+  }, [visibleColumns, storageKey]);
 
   const toggleColumn = (column: string) => {
     setVisibleColumns(prevColumns =>
@@ -28,5 +30,14 @@ export const useTableColumns = ({ tableType, defaultColumns }: UseTableColumnsPr
     );
   };
 
-  return { visibleColumns, toggleColumn };
+  // Varsayılan görünür sütunlara sıfırla
+  const resetToDefaults = () => {
+    setVisibleColumns(defaultColumns);
+  };
+
+  return { 
+    visibleColumns, 
+    toggleColumn,
+    resetToDefaults 
+  };
 };
