@@ -47,7 +47,9 @@ const DownloadTis = () => {
             <div className="flex flex-wrap gap-4">
               <TisSearchBox 
                 searchTerm={searchTerm} 
-                setSearchTerm={setSearchTerm} 
+                setSearchTerm={setSearchTerm}
+                resultCount={filteredResults.length}
+                totalCount={allResults.length}
               />
               
               <Collapsible 
