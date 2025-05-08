@@ -3,3 +3,4 @@
 export { updateSupabaseRecord } from './recordUpdater';
 export { handleFormElementChange } from './formHandler';
 export { getColumnMappingByDataAttribute } from './columnMappers';
+export { formatSupabaseValue } from './formatSupabaseValue';

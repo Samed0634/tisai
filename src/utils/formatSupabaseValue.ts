@@ -1,5 +1,5 @@
 
-// Utility for formatting values for Supabase
+// Format value based on the column data type for Supabase
 export const formatSupabaseValue = (value: any, type: string): any => {
   if (value === '' || value === undefined) return null;
   
@@ -9,11 +9,11 @@ export const formatSupabaseValue = (value: any, type: string): any => {
     case 'boolean':
       return value === 'true' || value === true;
     case 'date':
-      // Tarih değerini ISO formatına dönüştür
+      // Convert date value to ISO format
       if (value instanceof Date) {
         return value.toISOString();
       }
-      // Eğer string ise ve geçerli bir tarih ise
+      // If string and valid date, convert to ISO format
       if (typeof value === 'string' && !isNaN(Date.parse(value))) {
         return new Date(value).toISOString();
       }
