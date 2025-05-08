@@ -14,6 +14,9 @@ import { TablePagination } from "./TablePagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Workplace } from "@/types/workplace";
 import { COLUMNS } from "@/constants/tableColumns";
+import { TableLoadingState } from "./TableLoadingState";
+import { EmptyTableBody } from "./EmptyTableBody";
+import { ensureRequiredColumns, reorderImportantColumns } from "@/utils/tableColumnUtils";
 
 interface TableContentProps {
   data: Workplace[];
@@ -56,73 +59,19 @@ export const TableContent: React.FC<TableContentProps> = ({
   titleClassName,
   editableField,
   showTisUploader = false,
-  logActions = true, // Default to true to ensure all actions are logged
+  logActions = true,
 }) => {
   if (isLoading) {
-    return (
-      <div className="rounded-md border p-8">
-        <LoadingSpinner />
-      </div>
-    );
+    return <TableLoadingState />;
   }
 
-  // Make sure we have the "durum" and "sure_bilgisi" columns in our column definitions if they're not there
+  // Get visible column definitions and ensure required columns are present
   const visibleColumnDefinitions = COLUMNS.filter(col => 
     visibleColumns.includes(col.id)
   );
-
-  // Ensure the durum column is defined
-  const durumColumnExists = visibleColumnDefinitions.some(col => col.id === 'durum');
   
-  if (!durumColumnExists && visibleColumns.includes('durum')) {
-    visibleColumnDefinitions.push({
-      id: 'durum',
-      title: 'Durum',
-      editable: true
-    });
-  }
-
-  // Ensure the sure_bilgisi column is defined
-  const sureBilgisiColumnExists = visibleColumnDefinitions.some(col => col.id === 'sure_bilgisi');
-  
-  if (!sureBilgisiColumnExists && visibleColumns.includes('sure_bilgisi')) {
-    visibleColumnDefinitions.push({
-      id: 'sure_bilgisi',
-      title: 'Kalan Süre',
-      editable: false
-    });
-  }
-
-  // Reorder columns to place 'durum' at the beginning, right after actions column
-  // and sure_bilgisi before durum
-  let reorderedColumnDefinitions = [...visibleColumnDefinitions];
-  
-  // Find and remove durum and sure_bilgisi from current positions
-  const durumIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'durum');
-  const sureBilgisiIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'sure_bilgisi');
-  
-  let durumColumn = null;
-  let sureBilgisiColumn = null;
-
-  if (durumIndex !== -1) {
-    [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
-  }
-  
-  if (sureBilgisiIndex !== -1) {
-    [sureBilgisiColumn] = reorderedColumnDefinitions.splice(sureBilgisiIndex > durumIndex && durumIndex !== -1 ? sureBilgisiIndex - 1 : sureBilgisiIndex, 1);
-  }
-  
-  // Insert columns at the beginning, first durum then sure_bilgisi
-  const columnsToInsert = [];
-  if (durumColumn) columnsToInsert.push(durumColumn);
-  if (sureBilgisiColumn) columnsToInsert.push(sureBilgisiColumn);
-  
-  if (columnsToInsert.length > 0) {
-    reorderedColumnDefinitions = [
-      ...columnsToInsert,
-      ...reorderedColumnDefinitions
-    ];
-  }
+  const updatedColumnDefinitions = ensureRequiredColumns(visibleColumnDefinitions, visibleColumns);
+  const reorderedColumnDefinitions = reorderImportantColumns(updatedColumnDefinitions);
 
   // Pagination calculations
   const totalPages = Math.ceil(data.length / pageSize);
@@ -174,21 +123,26 @@ export const TableContent: React.FC<TableContentProps> = ({
                   ))}
                 </TableRow>
               </TableHeader>
+              
               <TableBodyUI>
-                <TableBody 
-                  data={paginatedData}
-                  visibleColumnDefinitions={reorderedColumnDefinitions}
-                  editingId={editingId}
-                  editData={editData}
-                  handleEdit={handleEdit}
-                  handleCancel={handleCancel}
-                  handleChange={handleChange}
-                  handleSave={handleSave}
-                  editableField={editableField}
-                  showTisUploader={showTisUploader}
-                  refetch={() => {}} 
-                  logActions={logActions}
-                />
+                {data.length === 0 ? (
+                  <EmptyTableBody colSpan={reorderedColumnDefinitions.length + (showTisUploader ? 2 : 1)} />
+                ) : (
+                  <TableBody 
+                    data={paginatedData}
+                    visibleColumnDefinitions={reorderedColumnDefinitions}
+                    editingId={editingId}
+                    editData={editData}
+                    handleEdit={handleEdit}
+                    handleCancel={handleCancel}
+                    handleChange={handleChange}
+                    handleSave={handleSave}
+                    editableField={editableField}
+                    showTisUploader={showTisUploader}
+                    refetch={() => {}} 
+                    logActions={logActions}
+                  />
+                )}
               </TableBodyUI>
             </Table>
           </div>
