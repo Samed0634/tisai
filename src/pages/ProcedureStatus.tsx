@@ -1,11 +1,13 @@
-import React from "react";
+
+import React, { useMemo } from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
-import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
+import { EditableTable } from "@/components/procedure-status/EditableTable";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, FileDown, Filter } from "lucide-react";
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
+import { BranchExpertFilter } from "@/components/procedure-status/BranchExpertFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
 import { exportToExcel } from "@/utils/exportUtils";
@@ -36,8 +38,34 @@ const ProcedureStatus = () => {
   const [searchTerm, setSearchTerm] = useFilterMemory("procedureStatus_searchTerm", "");
   const [sortBy, setSortBy] = useFilterMemory("procedureStatus_sortBy", "İŞYERİ ADI");
   const [selectedStatuses, setSelectedStatuses] = useFilterMemory("procedureStatus_selectedStatuses", [] as string[]);
+  const [selectedBranch, setSelectedBranch] = useFilterMemory("procedureStatus_selectedBranch", null as string | null);
+  const [selectedExpert, setSelectedExpert] = useFilterMemory("procedureStatus_selectedExpert", null as string | null);
 
-  const filteredAndSortedWorkplaces = React.useMemo(() => {
+  // Extract unique branches and experts from the data
+  const { branches, experts } = useMemo(() => {
+    if (!workplaces || workplaces.length === 0) {
+      return { branches: [], experts: [] };
+    }
+
+    const branchSet = new Set<string>();
+    const expertSet = new Set<string>();
+
+    workplaces.forEach(workplace => {
+      if (workplace["BAĞLI OLDUĞU ŞUBE"]) {
+        branchSet.add(workplace["BAĞLI OLDUĞU ŞUBE"] as string);
+      }
+      if (workplace["SORUMLU UZMAN"]) {
+        expertSet.add(workplace["SORUMLU UZMAN"] as string);
+      }
+    });
+
+    return {
+      branches: Array.from(branchSet).sort(),
+      experts: Array.from(expertSet).sort()
+    };
+  }, [workplaces]);
+
+  const filteredAndSortedWorkplaces = useMemo(() => {
     if (!workplaces) return [];
     const normalizedSearchTerm = searchTerm.toLowerCase().trim();
     let filtered = workplaces.filter(workplace => {
@@ -46,6 +74,16 @@ const ProcedureStatus = () => {
         if (!workplace["durum"] || !selectedStatuses.includes(workplace["durum"].toString())) {
           return false;
         }
+      }
+
+      // Branch filter
+      if (selectedBranch && workplace["BAĞLI OLDUĞU ŞUBE"] !== selectedBranch) {
+        return false;
+      }
+
+      // Expert filter
+      if (selectedExpert && workplace["SORUMLU UZMAN"] !== selectedExpert) {
+        return false;
       }
 
       // Text search filter - case insensitive
@@ -59,10 +97,20 @@ const ProcedureStatus = () => {
       const bValue = (b[sortBy] || "").toString().toLowerCase();
       return aValue.localeCompare(bValue);
     });
-  }, [workplaces, searchTerm, sortBy, selectedStatuses]);
+  }, [workplaces, searchTerm, sortBy, selectedStatuses, selectedBranch, selectedExpert]);
 
   const handleStatusChange = (statuses: string[]) => {
     setSelectedStatuses(statuses);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleBranchChange = (branch: string | null) => {
+    setSelectedBranch(branch);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleExpertChange = (expert: string | null) => {
+    setSelectedExpert(expert);
     setCurrentPage(1); // Reset to first page when filters change
   };
 
@@ -72,7 +120,9 @@ const ProcedureStatus = () => {
     }
   };
 
+  // Count active filters for UI indicators
   const statusFilterCount = selectedStatuses.length;
+  const hasAdditionalFilters = selectedBranch !== null || selectedExpert !== null;
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -87,20 +137,44 @@ const ProcedureStatus = () => {
         <div className="flex flex-1 flex-col sm:flex-row gap-2 sm:items-center">
           <SearchBox searchTerm={searchTerm} onSearchChange={setSearchTerm} placeholder="İşyeri, uzman veya durum ara..." />
           
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
-                <Filter className="h-4 w-4" />
-                <span>Durum Filtresi</span>
-                {statusFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
-                    {statusFilterCount}
-                  </span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[350px] p-0" align="start">
-              <StatusFilter selectedStatuses={selectedStatuses} onChange={handleStatusChange} />
-            </PopoverContent>
-          </Popover>
+          <div className="flex gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
+                  <Filter className="h-4 w-4" />
+                  <span>Durum Filtresi</span>
+                  {statusFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
+                      {statusFilterCount}
+                    </span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[350px] p-0" align="start">
+                <StatusFilter selectedStatuses={selectedStatuses} onChange={handleStatusChange} />
+              </PopoverContent>
+            </Popover>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
+                  <Filter className="h-4 w-4" />
+                  <span>Şube & Uzman</span>
+                  {hasAdditionalFilters && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
+                      {(selectedBranch ? 1 : 0) + (selectedExpert ? 1 : 0)}
+                    </span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[350px] p-0" align="start">
+                <BranchExpertFilter 
+                  branches={branches}
+                  experts={experts}
+                  selectedBranch={selectedBranch}
+                  selectedExpert={selectedExpert}
+                  onBranchChange={handleBranchChange}
+                  onExpertChange={handleExpertChange}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
         
         <DropdownMenu>
@@ -121,22 +195,18 @@ const ProcedureStatus = () => {
       </div>
 
       <div className="rounded-md border shadow-sm overflow-hidden">
-        <EditableTableBase 
+        <EditableTable 
           data={filteredAndSortedWorkplaces} 
-          isLoading={isLoading} 
-          refetch={refetch} 
-          tableType="default" 
-          editableField="durum" 
-          title="Prosedür Durumu" 
-          defaultColumns={DEFAULT_VISIBLE_COLUMNS} 
-          titleClassName="text-xl" 
-          pageSize={pageSize} 
-          currentPage={currentPage} 
-          setPageSize={setPageSize} 
-          setCurrentPage={setCurrentPage} 
-          pageSizeOptions={[10, 20, 30, 40, 50]} 
-          showHorizontalScrollbar={true}
-          logActions={true}
+          isLoading={isLoading}
+          visibleColumns={DEFAULT_VISIBLE_COLUMNS}
+          setVisibleColumns={(columns) => {
+            localStorage.setItem('procedureStatusColumns', JSON.stringify(columns));
+          }}
+          onUpdate={(workplace) => {
+            console.log("Updating workplace:", workplace);
+            refetch();
+          }}
+          defaultColumns={DEFAULT_VISIBLE_COLUMNS}
         />
       </div>
     </div>
