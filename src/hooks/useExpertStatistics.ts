@@ -32,10 +32,10 @@ export const useExpertStatistics = () => {
     setError(null);
     
     try {
-      // Fetch all workplace data
+      // Fetch all workplace data where SORUMLU UZMAN is not null
       const { data, error } = await supabase
         .from('isyerleri')
-        .select('SORUMLU UZMAN, ID')
+        .select('SORUMLU UZMAN')
         .not('SORUMLU UZMAN', 'is', null);
       
       if (error) throw error;
