@@ -1,11 +1,10 @@
-
 import React from "react";
 import { useWorkplaceData } from "@/hooks/useWorkplaceData";
 import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
 import { SearchBox } from "@/components/data-details/SearchBox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, FileDown, Filter, Building, Users } from "lucide-react";
+import { ArrowDown, FileDown, Filter, Building } from "lucide-react";
 import { StatusFilter } from "@/components/procedure-status/StatusFilter";
 import { BranchExpertFilter } from "@/components/procedure-status/BranchExpertFilter";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -137,8 +136,7 @@ const ProcedureStatus = () => {
   };
 
   const statusFilterCount = selectedStatuses.length;
-  const branchFilterCount = selectedBranches.length;
-  const expertFilterCount = selectedExperts.length;
+  const branchExpertFilterCount = selectedBranches.length + selectedExperts.length;
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -172,31 +170,9 @@ const ProcedureStatus = () => {
             <PopoverTrigger asChild>
               <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
                 <Building className="h-4 w-4" />
-                <span>Şube Filtresi</span>
-                {branchFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
-                    {branchFilterCount}
-                  </span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[350px] p-0" align="start">
-              <BranchExpertFilter 
-                selectedBranches={selectedBranches} 
-                onBranchChange={handleBranchChange}
-                selectedExperts={selectedExperts}
-                onExpertChange={handleExpertChange}
-                branchOptions={branchOptions}
-                expertOptions={expertOptions}
-              />
-            </PopoverContent>
-          </Popover>
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
-                <Users className="h-4 w-4" />
-                <span>Uzman Filtresi</span>
-                {expertFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
-                    {expertFilterCount}
+                <span>Şube & Uzman Filtresi</span>
+                {branchExpertFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
+                    {branchExpertFilterCount}
                   </span>}
               </Button>
             </PopoverTrigger>
