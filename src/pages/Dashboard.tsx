@@ -68,10 +68,24 @@ const Dashboard = () => {
     const originalItems = getListItems(item.dataSource);
     const filteredItems = filterItemsBySearchTerm(originalItems);
     
+    // Calculate average remaining time if applicable
+    let averageRemainingTime;
+    if (filteredItems.length > 0 && filteredItems[0].sure_bilgisi) {
+      const validItems = filteredItems.filter(item => item.sure_bilgisi && !isNaN(parseInt(item.sure_bilgisi)));
+      if (validItems.length > 0) {
+        const totalDays = validItems.reduce((sum, item) => {
+          const days = parseInt(item.sure_bilgisi);
+          return sum + days;
+        }, 0);
+        averageRemainingTime = Math.round(totalDays / validItems.length).toString();
+      }
+    }
+    
     return {
       ...item,
       value: filteredItems.length,
-      items: filteredItems
+      items: filteredItems,
+      remainingTime: averageRemainingTime
     };
   });
 

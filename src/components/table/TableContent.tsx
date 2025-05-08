@@ -82,6 +82,17 @@ export const TableContent: React.FC<TableContentProps> = ({
     });
   }
 
+  // Ensure the sure_bilgisi column is defined
+  const sureColumnExists = visibleColumnDefinitions.some(col => col.id === 'sure_bilgisi');
+  
+  if (!sureColumnExists && visibleColumns.includes('sure_bilgisi')) {
+    visibleColumnDefinitions.push({
+      id: 'sure_bilgisi',
+      title: 'Kalan Süre',
+      editable: true
+    });
+  }
+
   // Reorder columns to place 'durum' at the beginning, right after actions column
   const reorderedColumnDefinitions = [...visibleColumnDefinitions];
   
@@ -91,6 +102,14 @@ export const TableContent: React.FC<TableContentProps> = ({
     const [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
     // Insert durum at the beginning of the array (position 0)
     reorderedColumnDefinitions.unshift(durumColumn);
+  }
+
+  // Add sure_bilgisi (Kalan Süre) near the beginning of the columns
+  const sureIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'sure_bilgisi');
+  if (sureIndex !== -1) {
+    const [sureColumn] = reorderedColumnDefinitions.splice(sureIndex, 1);
+    // Insert sure_bilgisi at position 1, just after durum
+    reorderedColumnDefinitions.splice(1, 0, sureColumn);
   }
 
   // Pagination calculations

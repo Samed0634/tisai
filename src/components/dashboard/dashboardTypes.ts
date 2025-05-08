@@ -9,6 +9,7 @@ export interface DashboardItem {
   color: string;
   items?: any[];
   dataSource: string;
+  remainingTime?: string;
 }
 
 export interface RecentActivity {

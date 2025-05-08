@@ -30,6 +30,25 @@ function shouldHighlightRed(items: any[]): boolean {
   });
 }
 
+// Helper to get average remaining time for a card
+function getAverageRemainingTime(items: any[]): string | undefined {
+  if (!items || items.length === 0) return undefined;
+  
+  // Find items with sure_bilgisi
+  const itemsWithTime = items.filter(item => item.sure_bilgisi && !isNaN(parseInt(item.sure_bilgisi)));
+  
+  if (itemsWithTime.length === 0) return undefined;
+  
+  // Calculate average remaining time
+  const total = itemsWithTime.reduce((sum, item) => {
+    // Extract numeric value from sure_bilgisi (assuming it's in format like "5 gün")
+    const days = parseInt(item.sure_bilgisi);
+    return sum + days;
+  }, 0);
+  
+  return Math.round(total / itemsWithTime.length).toString();
+}
+
 interface DashboardGridProps {
   items: DashboardItem[];
   onCardClick: (categoryId: string) => void;
@@ -40,6 +59,8 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => 
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {items.map((item) => {
         const highlightRed = shouldHighlightRed(item.items || []);
+        const remainingTime = getAverageRemainingTime(item.items || []);
+        
         return (
           <DashboardCard
             key={item.id}
@@ -49,6 +70,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => 
             color={item.color}
             onClick={() => onCardClick(item.id)}
             className={highlightRed ? "text-destructive" : ""}
+            remainingTime={remainingTime}
           />
         );
       })}
