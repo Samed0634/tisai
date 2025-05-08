@@ -1,7 +1,6 @@
-
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Filter } from "lucide-react";
 import { DashboardItem } from "./dashboardTypes";
 import { useFilterMemory } from "@/hooks/useFilterMemory";
@@ -24,6 +23,12 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 }) => {
   // Use our filterMemory hook instead of localStorage directly
   const [savedSelections, setSavedSelections] = useFilterMemory('dashboardCardFilters', [] as string[]);
+  
+  // Get all card IDs
+  const allCardIds = allDashboardData.map(card => card.id);
+
+  // Check if all cards are selected
+  const areAllCardsSelected = allCardIds.length > 0 && allCardIds.every(id => selectedCards.includes(id));
 
   // Load saved selections from memory hook when component mounts
   useEffect(() => {
@@ -42,6 +47,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     setSavedSelections(selectedCards);
   }, [selectedCards, setSavedSelections]);
 
+  // Handler for selecting or deselecting all cards
+  const handleToggleAll = () => {
+    if (areAllCardsSelected) {
+      // If all are selected, deselect all (though typically you might want to keep at least one selected)
+      onToggleCard('all');
+    } else {
+      // If not all are selected, select all
+      onToggleCard('all');
+    }
+  };
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center">
@@ -55,6 +71,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[200px]">
+              <DropdownMenuCheckboxItem
+                checked={areAllCardsSelected}
+                onCheckedChange={handleToggleAll}
+                className="font-semibold"
+              >
+                Tümü
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
               {allDashboardData.map((card) => (
                 <DropdownMenuCheckboxItem
                   key={card.id}

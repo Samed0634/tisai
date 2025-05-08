@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboardData } from "@/components/dashboard/dashboardCards";
@@ -96,7 +95,22 @@ const Dashboard = () => {
   };
 
   const toggleCard = (cardId: string) => {
-    setSelectedCards(current => current.includes(cardId) ? current.filter(id => id !== cardId) : [...current, cardId]);
+    if (cardId === 'all') {
+      // If all cards are currently selected, deselect all (or keep at least one)
+      if (selectedCards.length === staticDashboardData.length) {
+        setSelectedCards([]);
+      } else {
+        // Otherwise select all
+        setSelectedCards(staticDashboardData.map(item => item.id));
+      }
+    } else {
+      // Toggle individual card
+      setSelectedCards(current => 
+        current.includes(cardId) 
+          ? current.filter(id => id !== cardId) 
+          : [...current, cardId]
+      );
+    }
   };
 
   const filteredDashboardData = allDashboardData.filter(item => selectedCards.includes(item.id));
