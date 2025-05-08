@@ -5,7 +5,6 @@ import {
   TableHeader,
   TableBody as TableBodyUI,
 } from "@/components/ui/table";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { TableBody } from "./TableBody";
 import { TableHeader as TableHeaderComponent } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
@@ -14,25 +13,23 @@ import { Workplace } from "@/types/workplace";
 import { COLUMNS } from "@/constants/tableColumns";
 import { TableHeaderRow } from "./TableHeaderRow";
 import { useTableColumnProcessor } from "@/hooks/useTableColumnProcessor";
+import { useTableEdit } from "@/hooks/useTableEdit";
+import { useTableColumns } from "@/hooks/useTableColumns";
 
 interface TableContentProps {
   data: Workplace[];
   isLoading: boolean;
-  visibleColumns: string[];
-  toggleColumn: (columnId: string) => void;
-  editingId: number | null;
-  editData: Workplace | null;
-  handleEdit: (item: Workplace) => void;
-  handleCancel: () => void;
-  handleChange: (field: string, value: string | number) => void;
-  handleSave: () => void;
-  pageSize: number;
-  setPageSize: (size: number) => void;
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
-  title: string;
-  titleClassName?: string;
+  refetch: () => void;
+  tableType: string;
   editableField: string;
+  title: string;
+  defaultColumns?: string[];
+  titleClassName?: string;
+  pageSize: number;
+  currentPage: number;
+  setPageSize: (size: number) => void;
+  setCurrentPage: (page: number) => void;
+  showHorizontalScrollbar?: boolean;
   showTisUploader?: boolean;
   logActions?: boolean;
 }
@@ -40,31 +37,26 @@ interface TableContentProps {
 export const TableContent: React.FC<TableContentProps> = ({
   data,
   isLoading,
-  visibleColumns,
-  toggleColumn,
-  editingId,
-  editData,
-  handleEdit,
-  handleCancel,
-  handleChange,
-  handleSave,
-  pageSize,
-  setPageSize,
-  currentPage,
-  setCurrentPage,
-  title,
-  titleClassName,
+  refetch,
+  tableType,
   editableField,
+  title,
+  defaultColumns,
+  titleClassName,
+  pageSize,
+  currentPage,
+  setPageSize,
+  setCurrentPage,
+  showHorizontalScrollbar = false,
   showTisUploader = false,
   logActions = true,
 }) => {
-  if (isLoading) {
-    return (
-      <div className="rounded-md border p-8">
-        <LoadingSpinner />
-      </div>
-    );
-  }
+  const { visibleColumns, toggleColumn } = useTableColumns({
+    tableType,
+    defaultColumns: defaultColumns || []
+  });
+
+  const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave } = useTableEdit(refetch, logActions);
 
   // Get visible column definitions
   const visibleColumnDefinitions = COLUMNS.filter(col => 
@@ -110,7 +102,7 @@ export const TableContent: React.FC<TableContentProps> = ({
       />
       
       <div className="border rounded-md overflow-hidden">
-        <ScrollArea className="w-full" showTopScrollbar={true} showBottomScrollbar={true}>
+        <ScrollArea className="w-full" showTopScrollbar={showHorizontalScrollbar} showBottomScrollbar={showHorizontalScrollbar}>
           <div className="min-w-max">
             <Table className="text-xs">
               <TableHeader>
@@ -131,7 +123,7 @@ export const TableContent: React.FC<TableContentProps> = ({
                   handleSave={handleSave}
                   editableField={editableField}
                   showTisUploader={showTisUploader}
-                  refetch={() => {}} 
+                  refetch={refetch} 
                   logActions={logActions}
                 />
               </TableBodyUI>

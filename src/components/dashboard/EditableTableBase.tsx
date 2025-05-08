@@ -1,12 +1,10 @@
 
-import React, { useState } from 'react';
-import { useTableColumns } from '@/hooks/useTableColumns';
-import { usePagination } from '@/hooks/usePagination';
-import { Workplace } from '@/types/workplace';
-import { TableContent } from '../table/TableContent';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { useTableEdit } from '@/hooks/useTableEdit';
-import { TableColumnFilter } from './table/TableColumnFilter';
+import React from "react";
+import { Workplace } from "@/types/workplace";
+import { useTableColumns } from "@/hooks/useTableColumns";
+import { TableContainer } from "@/components/table/TableContainer";
+import { useTablePagination } from "@/hooks/useTablePagination";
+import { useDefaultColumns } from "@/hooks/useDefaultColumns";
 
 interface EditableTableBaseProps {
   data: Workplace[];
@@ -38,92 +36,53 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   defaultColumns,
   titleClassName = 'text-2xl',
   showControls = true,
-  pageSize: externalPageSize = 10,
-  currentPage: externalCurrentPage = 1,
+  pageSize: externalPageSize,
+  currentPage: externalCurrentPage,
   setPageSize: externalSetPageSize,
   setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
   showHorizontalScrollbar = false,
   showTisUploader = false,
-  logActions = true // Default to true to ensure all actions are logged
+  logActions = true
 }) => {
+  // Get default columns based on table type
+  const defaultTableColumns = useDefaultColumns(tableType, defaultColumns);
+  
   const { visibleColumns, toggleColumn } = useTableColumns({
     tableType,
-    defaultColumns: defaultColumns || getDefaultColumns(tableType)
+    defaultColumns: defaultTableColumns
   });
 
-  const { editingId, editData, handleEdit, handleCancel, handleChange, handleSave } = useTableEdit(refetch, logActions);
-
-  const [internalPageSize, setInternalPageSize] = useState(externalPageSize);
-  const [internalCurrentPage, setInternalCurrentPage] = useState(externalCurrentPage);
-
-  const pageSize = externalSetPageSize ? externalPageSize : internalPageSize;
-  const currentPage = externalSetCurrentPage ? externalCurrentPage : internalCurrentPage;
-  const setPageSizeInternal = externalSetPageSize || setInternalPageSize;
-  const setCurrentPageInternal = externalSetCurrentPage || setInternalCurrentPage;
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
-      </div>
-    );
-  }
+  // Handle pagination
+  const {
+    pageSize,
+    currentPage,
+    setPageSize,
+    setCurrentPage
+  } = useTablePagination({
+    externalPageSize,
+    externalCurrentPage,
+    setPageSize: externalSetPageSize,
+    setCurrentPage: externalSetCurrentPage
+  });
 
   return (
-    <TableContent
+    <TableContainer
       data={data}
       isLoading={isLoading}
-      visibleColumns={visibleColumns}
-      toggleColumn={toggleColumn}
-      editingId={editingId}
-      editData={editData}
-      handleEdit={handleEdit}
-      handleCancel={handleCancel}
-      handleChange={handleChange}
-      handleSave={handleSave}
-      pageSize={pageSize}
-      setPageSize={setPageSizeInternal}
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPageInternal}
-      title={title}
-      titleClassName={titleClassName}
+      refetch={refetch}
+      tableType={tableType}
       editableField={editableField}
+      title={title}
+      defaultColumns={defaultTableColumns}
+      titleClassName={titleClassName}
+      pageSize={pageSize}
+      currentPage={currentPage}
+      setPageSize={setPageSize}
+      setCurrentPage={setCurrentPage}
+      showHorizontalScrollbar={showHorizontalScrollbar}
       showTisUploader={showTisUploader}
       logActions={logActions}
     />
   );
-};
-
-const getDefaultColumns = (tableType: string): string[] => {
-  switch (tableType) {
-    case "oylamaColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV OYLAMASI TARİHİ"];
-    case "cagriColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÇAĞRI TARİHİ"];
-    case "yetkiTespitColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YETKİ BELGESİ TEBLİĞ TARİHİ"];
-    case "yetkiBelgesiColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
-    case "yerGunTespitColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
-    case "oncedenBelirlenenColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"];
-    case "ilkOturumColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İLK OTURUM TARİHİ"];
-    case "muzakereSuresiColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "MÜZAKERE SÜRESİ SON TARİH"];
-    case "uyusmazlikColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "UYUŞMAZLIK TARİHİ"];
-    case "yhkColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "YHK GÖNDERİM TARİHİ"];
-    case "imzalananTislerColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "TİS GELİŞ TARİHİ"];
-    case "grevYasagiColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
-    case "grevKarariColumns":
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "GREV KARARI TARİHİ"];
-    default:
-      return ["durum", "sure_bilgisi", "SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI"];
-  }
 };
