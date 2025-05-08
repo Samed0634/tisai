@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { upcomingMeetings } from "./upcomingMeetings";
 
 interface Meeting {
   id: number;
@@ -12,10 +11,10 @@ interface Meeting {
 }
 
 interface UpcomingMeetingsProps {
-  meetings?: Meeting[];
+  meetings: Meeting[];
 }
 
-const UpcomingMeetings: React.FC<UpcomingMeetingsProps> = ({ meetings = upcomingMeetings }) => {
+const UpcomingMeetings: React.FC<UpcomingMeetingsProps> = ({ meetings }) => {
   return (
     <Card>
       <CardHeader>

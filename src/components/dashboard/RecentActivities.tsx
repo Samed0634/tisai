@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { recentActivities } from "./recentActivities";
 
 interface RecentActivity {
   id: number;
@@ -13,10 +12,23 @@ interface RecentActivity {
 }
 
 interface RecentActivitiesProps {
-  activities?: RecentActivity[]; // Make activities prop optional with a default value
+  activities: RecentActivity[];
 }
 
-const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities = recentActivities }) => {
+const getActivityColor = (category: string): string => {
+  const colorMap: { [key: string]: string } = {
+    "authorization-requests": "bg-blue-100 text-blue-800",
+    "authorization-notices": "bg-green-100 text-green-800",
+    "call-required": "bg-yellow-100 text-yellow-800",
+    "first-session": "bg-purple-100 text-purple-800",
+    "dispute-notices": "bg-orange-100 text-orange-800",
+    "strike-decisions": "bg-red-100 text-red-800",
+    "yhk-submissions": "bg-teal-100 text-teal-800",
+  };
+  return colorMap[category] || "bg-gray-100 text-gray-800";
+};
+
+const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
   const lastTenActivities = activities.slice(0, 10);
 
   return (
@@ -41,19 +53,6 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities = recent
       </CardContent>
     </Card>
   );
-};
-
-const getActivityColor = (category: string): string => {
-  const colorMap: { [key: string]: string } = {
-    "authorization-requests": "bg-blue-100 text-blue-800",
-    "authorization-notices": "bg-green-100 text-green-800",
-    "call-required": "bg-yellow-100 text-yellow-800",
-    "first-session": "bg-purple-100 text-purple-800",
-    "dispute-notices": "bg-orange-100 text-orange-800",
-    "strike-decisions": "bg-red-100 text-red-800",
-    "yhk-submissions": "bg-teal-100 text-teal-800",
-  };
-  return colorMap[category] || "bg-gray-100 text-gray-800";
 };
 
 export default RecentActivities;
