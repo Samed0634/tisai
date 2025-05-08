@@ -11,6 +11,7 @@ interface DashboardCardProps {
   onClick: () => void;
   color: string;
   className?: string;
+  remainingTime?: string; // Added remainingTime prop
 }
 
 const DashboardCard: React.FC<DashboardCardProps> = ({ 
@@ -19,7 +20,8 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   icon: Icon, 
   onClick,
   color,
-  className
+  className,
+  remainingTime // Added remainingTime prop
 }) => {
   // Extract text color class for highlighting red items
   const isHighlightedRed = className?.includes("text-destructive");
@@ -68,13 +70,23 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         }}>
           {value.toLocaleString('tr-TR')}
         </div>
-        <p className={cn(
-          "text-xs text-muted-foreground mt-1 opacity-70",
-          "group-hover:text-foreground/70 transition-colors",
-          className
-        )}>
-          İşyeri
-        </p>
+        <div className="flex justify-between items-center">
+          <p className={cn(
+            "text-xs text-muted-foreground mt-1 opacity-70",
+            "group-hover:text-foreground/70 transition-colors",
+            className
+          )}>
+            İşyeri
+          </p>
+          {remainingTime && (
+            <p className={cn(
+              "text-xs font-medium px-2 py-0.5 rounded-md mt-1",
+              parseInt(remainingTime) <= 5 ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"
+            )}>
+              {remainingTime} gün
+            </p>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

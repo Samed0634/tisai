@@ -66,7 +66,7 @@ export const TableContent: React.FC<TableContentProps> = ({
     );
   }
 
-  // Make sure we have the "durum" column in our column definitions if it's not there
+  // Make sure we have the "durum" and "sure_bilgisi" columns in our column definitions if they're not there
   const visibleColumnDefinitions = COLUMNS.filter(col => 
     visibleColumns.includes(col.id)
   );
@@ -82,15 +82,46 @@ export const TableContent: React.FC<TableContentProps> = ({
     });
   }
 
-  // Reorder columns to place 'durum' at the beginning, right after actions column
-  const reorderedColumnDefinitions = [...visibleColumnDefinitions];
+  // Ensure the sure_bilgisi column is defined
+  const sureBilgisiColumnExists = visibleColumnDefinitions.some(col => col.id === 'sure_bilgisi');
   
-  // Find and remove durum from current position
+  if (!sureBilgisiColumnExists && visibleColumns.includes('sure_bilgisi')) {
+    visibleColumnDefinitions.push({
+      id: 'sure_bilgisi',
+      title: 'Kalan Süre',
+      editable: false
+    });
+  }
+
+  // Reorder columns to place 'durum' at the beginning, right after actions column
+  // and sure_bilgisi before durum
+  let reorderedColumnDefinitions = [...visibleColumnDefinitions];
+  
+  // Find and remove durum and sure_bilgisi from current positions
   const durumIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'durum');
+  const sureBilgisiIndex = reorderedColumnDefinitions.findIndex(col => col.id === 'sure_bilgisi');
+  
+  let durumColumn = null;
+  let sureBilgisiColumn = null;
+
   if (durumIndex !== -1) {
-    const [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
-    // Insert durum at the beginning of the array (position 0)
-    reorderedColumnDefinitions.unshift(durumColumn);
+    [durumColumn] = reorderedColumnDefinitions.splice(durumIndex, 1);
+  }
+  
+  if (sureBilgisiIndex !== -1) {
+    [sureBilgisiColumn] = reorderedColumnDefinitions.splice(sureBilgisiIndex > durumIndex && durumIndex !== -1 ? sureBilgisiIndex - 1 : sureBilgisiIndex, 1);
+  }
+  
+  // Insert columns at the beginning, first durum then sure_bilgisi
+  const columnsToInsert = [];
+  if (durumColumn) columnsToInsert.push(durumColumn);
+  if (sureBilgisiColumn) columnsToInsert.push(sureBilgisiColumn);
+  
+  if (columnsToInsert.length > 0) {
+    reorderedColumnDefinitions = [
+      ...columnsToInsert,
+      ...reorderedColumnDefinitions
+    ];
   }
 
   // Pagination calculations
