@@ -1,190 +1,144 @@
+import React from "react";
+import { useWorkplaceData } from "@/hooks/useWorkplaceData";
+import { EditableTableBase } from "@/components/dashboard/EditableTableBase";
+import { SearchBox } from "@/components/data-details/SearchBox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ArrowDown, FileDown, Filter } from "lucide-react";
+import { StatusFilter } from "@/components/procedure-status/StatusFilter";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { useFilterMemory } from "@/hooks/useFilterMemory";
+import { exportToExcel } from "@/utils/exportUtils";
 
-import React, { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
-import { useDashboardData } from "@/hooks/useDashboardData";
-import { CagriYapilacakTable } from "@/components/dashboard/CagriYapilacakTable";
-import { YetkiTespitTable } from "@/components/dashboard/YetkiTespitTable";
-import { YetkiBelgesiTable } from "@/components/dashboard/YetkiBelgesiTable";
-import { YerGunTespitTable } from "@/components/dashboard/YerGunTespitTable";
-import { OncedenBelirlenenTable } from "@/components/dashboard/OncedenBelirlenenTable";
-import { IlkOturumTable } from "@/components/dashboard/IlkOturumTable";
-import { MuzakereSuresiTable } from "@/components/dashboard/MuzakereSuresiTable";
-import { UyusmazlikTable } from "@/components/dashboard/UyusmazlikTable";
-import { GrevKarariTable } from "@/components/dashboard/GrevKarariTable";
-import { GrevOylamasiTable } from "@/components/dashboard/GrevOylamasiTable";
-import { YhkGonderimTable } from "@/components/dashboard/YhkGonderimTable";
-import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTable";
-import { GrevYasakTable } from "@/components/dashboard/GrevYasakTable";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+const DEFAULT_VISIBLE_COLUMNS = ["SORUMLU UZMAN", "BAĞLI OLDUĞU ŞUBE", "İŞYERİ ADI", "İŞÇİ SAYISI", "ÜYE SAYISI", "durum"];
+
+type SortOption = {
+  value: string;
+  label: string;
+};
+
+const sortOptions: SortOption[] = [
+  { value: "İŞYERİ ADI", label: "İşyeri Adı" },
+  { value: "SORUMLU UZMAN", label: "Sorumlu Uzman" },
+  { value: "BAĞLI OLDUĞU ŞUBE", label: "Bağlı Olduğu Şube" },
+  { value: "durum", label: "Durum" }
+];
 
 const ProcedureStatus = () => {
-  const [activeTab, setActiveTab] = useState("cagri");
-  const { data, isLoading, refetch } = useDashboardData();
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const {
+    workplaces,
+    isLoading,
+    refetch
+  } = useWorkplaceData();
+  
+  const [pageSize, setPageSize] = useFilterMemory("procedureStatus_pageSize", 10);
+  const [currentPage, setCurrentPage] = useFilterMemory("procedureStatus_currentPage", 1);
+  const [searchTerm, setSearchTerm] = useFilterMemory("procedureStatus_searchTerm", "");
+  const [sortBy, setSortBy] = useFilterMemory("procedureStatus_sortBy", "İŞYERİ ADI");
+  const [selectedStatuses, setSelectedStatuses] = useFilterMemory("procedureStatus_selectedStatuses", [] as string[]);
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
+  const filteredAndSortedWorkplaces = React.useMemo(() => {
+    if (!workplaces) return [];
+    const normalizedSearchTerm = searchTerm.toLowerCase().trim();
+    let filtered = workplaces.filter(workplace => {
+      // Status filter
+      if (selectedStatuses.length > 0) {
+        if (!workplace["durum"] || !selectedStatuses.includes(workplace["durum"].toString())) {
+          return false;
+        }
+      }
+
+      // Text search filter - case insensitive
+      if (normalizedSearchTerm) {
+        return workplace["İŞYERİ ADI"] && workplace["İŞYERİ ADI"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["SORUMLU UZMAN"] && workplace["SORUMLU UZMAN"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["BAĞLI OLDUĞU ŞUBE"] && workplace["BAĞLI OLDUĞU ŞUBE"].toString().toLowerCase().includes(normalizedSearchTerm) || workplace["durum"] && workplace["durum"].toString().toLowerCase().includes(normalizedSearchTerm);
+      }
+      return true;
+    });
+    return [...filtered].sort((a, b) => {
+      const aValue = (a[sortBy] || "").toString().toLowerCase();
+      const bValue = (b[sortBy] || "").toString().toLowerCase();
+      return aValue.localeCompare(bValue);
+    });
+  }, [workplaces, searchTerm, sortBy, selectedStatuses]);
+
+  const handleStatusChange = (statuses: string[]) => {
+    setSelectedStatuses(statuses);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleExportToExcel = () => {
+    if (filteredAndSortedWorkplaces.length > 0) {
+      exportToExcel(filteredAndSortedWorkplaces, "Prosedür_Durumu");
     }
-  }, [user, navigate]);
+  };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner className="text-lg" />
-      </div>
-    );
-  }
+  const statusFilterCount = selectedStatuses.length;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Süreç Durumları</h1>
+    <div className="container mx-auto py-6 space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleExportToExcel}>
+          <FileDown className="h-4 w-4" />
+          <span>Excel İndir</span>
+        </Button>
+      </div>
+      
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-1 flex-col sm:flex-row gap-2 sm:items-center">
+          <SearchBox searchTerm={searchTerm} onSearchChange={setSearchTerm} placeholder="İşyeri, uzman veya durum ara..." />
+          
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
+                <Filter className="h-4 w-4" />
+                <span>Durum Filtresi</span>
+                {statusFilterCount > 0 && <span className="ml-1 rounded-full bg-primary w-5 h-5 text-xs flex items-center justify-center text-primary-foreground">
+                    {statusFilterCount}
+                  </span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[350px] p-0" align="start">
+              <StatusFilter selectedStatuses={selectedStatuses} onChange={handleStatusChange} />
+            </PopoverContent>
+          </Popover>
+        </div>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-full sm:w-[240px]">
+              <ArrowDown className="mr-2 h-4 w-4" />
+              Sıralama: {sortOptions.find(opt => opt.value === sortBy)?.label}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[240px]">
+            <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+              {sortOptions.map(option => <DropdownMenuRadioItem key={option.value} value={option.value}>
+                  {option.label}
+                </DropdownMenuRadioItem>)}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 lg:grid-cols-6 mb-6">
-          <TabsTrigger value="cagri">Çağrı</TabsTrigger>
-          <TabsTrigger value="yetki">Yetki Tespiti</TabsTrigger>
-          <TabsTrigger value="yetkiBelgesi">Yetki Belgesi</TabsTrigger>
-          <TabsTrigger value="yerGun">Yer ve Gün</TabsTrigger>
-          <TabsTrigger value="oturum">Oturum</TabsTrigger>
-          <TabsTrigger value="diger">Diğer</TabsTrigger>
-        </TabsList>
-
-        <Card>
-          <CardContent className="pt-6">
-            <TabsContent value="cagri">
-              <CagriYapilacakTable 
-                data={data?.çağrı_yapılacak_view || []} 
-                isLoading={isLoading} 
-                refetch={refetch}
-              />
-            </TabsContent>
-            
-            <TabsContent value="yetki">
-              <YetkiTespitTable 
-                data={data?.yetki_tespit_istenecek_view || []} 
-                isLoading={isLoading} 
-                refetch={refetch}
-              />
-            </TabsContent>
-            
-            <TabsContent value="yetkiBelgesi">
-              <YetkiBelgesiTable 
-                data={data?.yetki_belgesi_tebliğ_yapılan_view || []} 
-                isLoading={isLoading} 
-                refetch={refetch}
-              />
-            </TabsContent>
-            
-            <TabsContent value="yerGun">
-              <YerGunTespitTable 
-                data={data?.yer_ve_gün_tespit_tarihli_view || []} 
-                isLoading={isLoading} 
-                refetch={refetch}
-              />
-            </TabsContent>
-            
-            <TabsContent value="oturum">
-              <Tabs defaultValue="onceden">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="onceden">Önceden Belirlenen</TabsTrigger>
-                  <TabsTrigger value="ilkOturum">İlk Oturum</TabsTrigger>
-                  <TabsTrigger value="muzakere">Müzakere Süresi</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="onceden">
-                  <OncedenBelirlenenTable 
-                    data={data?.önceden_belirlenen_ilk_oturum_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="ilkOturum">
-                  <IlkOturumTable 
-                    data={data?.ilk_oturum_tutulması_gereken_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="muzakere">
-                  <MuzakereSuresiTable 
-                    data={data?.müzakere_süresi_dolan_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
-            
-            <TabsContent value="diger">
-              <Tabs defaultValue="uyusmazlik">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="uyusmazlik">Uyuşmazlık</TabsTrigger>
-                  <TabsTrigger value="grevKarari">Grev Kararı</TabsTrigger>
-                  <TabsTrigger value="grevOylamasi">Grev Oylaması</TabsTrigger>
-                  <TabsTrigger value="yhk">YHK</TabsTrigger>
-                  <TabsTrigger value="tis">İmzalanan TİSler</TabsTrigger>
-                  <TabsTrigger value="grevYasak">Grev Yasağı</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="uyusmazlik">
-                  <UyusmazlikTable 
-                    data={data?.uyuşmazlık_bildirimi_yapılması_gereken_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="grevKarari">
-                  <GrevKarariTable 
-                    data={data?.grev_kararı_alınması_gereken_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="grevOylamasi">
-                  <GrevOylamasiTable 
-                    data={data?.grev_oylaması_yapılması_gereken_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="yhk">
-                  <YhkGonderimTable 
-                    data={data?.yhk_gönderim_gereken_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="tis">
-                  <ImzalananTislerTable 
-                    data={data?.imzalanan_tisler_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="grevYasak">
-                  <GrevYasakTable 
-                    data={data?.grev_yasağı_olan_view || []} 
-                    isLoading={isLoading} 
-                    refetch={refetch}
-                  />
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
-          </CardContent>
-        </Card>
-      </Tabs>
+      <div className="rounded-md border shadow-sm overflow-hidden">
+        <EditableTableBase 
+          data={filteredAndSortedWorkplaces} 
+          isLoading={isLoading} 
+          refetch={refetch} 
+          tableType="default" 
+          editableField="durum" 
+          title="Prosedür Durumu" 
+          defaultColumns={DEFAULT_VISIBLE_COLUMNS} 
+          titleClassName="text-xl" 
+          pageSize={pageSize} 
+          currentPage={currentPage} 
+          setPageSize={setPageSize} 
+          setCurrentPage={setCurrentPage} 
+          pageSizeOptions={[10, 20, 30, 40, 50]} 
+          showHorizontalScrollbar={true}
+          logActions={true}
+        />
+      </div>
     </div>
   );
 };

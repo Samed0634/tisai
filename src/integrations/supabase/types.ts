@@ -326,7 +326,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -362,7 +361,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -398,7 +396,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -447,7 +444,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -483,7 +479,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -519,7 +514,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -558,7 +552,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -594,7 +587,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -630,7 +622,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -669,7 +660,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -705,7 +695,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -741,7 +730,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -780,7 +768,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -816,7 +803,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -852,7 +838,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -891,7 +876,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -927,7 +911,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -963,7 +946,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1002,7 +984,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -1038,7 +1019,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1074,7 +1054,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1113,7 +1092,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -1149,7 +1127,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1185,7 +1162,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1224,7 +1200,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -1260,7 +1235,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1296,7 +1270,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1335,7 +1308,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -1371,7 +1343,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1407,7 +1378,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1446,7 +1416,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -1482,7 +1451,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1518,7 +1486,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1557,7 +1524,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -1593,7 +1559,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1629,7 +1594,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1668,7 +1632,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ": string | null
           "SGK NO": string | null
           "SORUMLU UZMAN": string | null
-          sure_bilgisi: string | null
           "TİS BAŞLANGIÇ TARİHİ": string | null
           "TİS BİTİŞ TARİHİ": string | null
           "TİS GELİŞ TARİHİ": string | null
@@ -1704,7 +1667,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null
@@ -1740,7 +1702,6 @@ export type Database = {
           "ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ"?: string | null
           "SGK NO"?: string | null
           "SORUMLU UZMAN"?: string | null
-          sure_bilgisi?: never
           "TİS BAŞLANGIÇ TARİHİ"?: string | null
           "TİS BİTİŞ TARİHİ"?: string | null
           "TİS GELİŞ TARİHİ"?: string | null

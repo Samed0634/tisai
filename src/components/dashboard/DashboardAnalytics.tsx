@@ -1,11 +1,7 @@
 
 import React from "react";
 
-interface DashboardAnalyticsProps {
-  data?: any;
-}
-
-const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ data }) => {
+const DashboardAnalytics: React.FC = () => {
   return null; // Removing all dashboard analytics components
 };
 
