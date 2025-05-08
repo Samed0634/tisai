@@ -27,6 +27,14 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({
   onPreviousPage,
   onNextPage
 }) => {
+  // Function to clean action descriptions from kurum_id mentions
+  const cleanActionName = (actionName: string): string => {
+    if (actionName.includes("kurum_id")) {
+      return actionName.replace(/\s*"kurum_id".*?(?=\s*\w+|$)/g, '');
+    }
+    return actionName;
+  };
+
   return (
     <>
       <div className="min-w-max">
@@ -49,7 +57,7 @@ export const ActivityTable: React.FC<ActivityTableProps> = ({
                   <TableCell>
                     {formatInTimeZone(new Date(`${activity["Tarih"]}T${activity["Saat"]}`), 'Europe/Istanbul', 'HH:mm:ss', { locale: tr })}
                   </TableCell>
-                  <TableCell>{activity["İşlem Adı"]}</TableCell>
+                  <TableCell>{cleanActionName(activity["İşlem Adı"])}</TableCell>
                   <TableCell>{activity["İşlem Yapan Kullanıcı"]}</TableCell>
                 </TableRow>
               ))

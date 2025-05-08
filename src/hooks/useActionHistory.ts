@@ -48,11 +48,18 @@ export const useActionHistory = () => {
         return;
       }
 
+      // Format the action name to remove any kurum_id mentions
+      let formattedActionName = actionName;
+      if (formattedActionName.includes("kurum_id")) {
+        // Replace the entire segment containing kurum_id information
+        formattedActionName = formattedActionName.replace(/\s*"kurum_id".*?(?=\s*\w+|$)/g, '');
+      }
+
       // Log action to İşlem Geçmişi table
       const { error } = await supabase
         .from('İşlem Geçmişi')
         .insert({
-          "İşlem Adı": actionName,
+          "İşlem Adı": formattedActionName,
           "İşlem Yapan Kullanıcı": user?.email || 'Sistem',
           "Tarih": turkishDate,
           "Saat": turkishTime,
