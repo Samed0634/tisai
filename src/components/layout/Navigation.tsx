@@ -45,7 +45,7 @@ export function Navigation() {
 
       <NavigationLink to="/statistics" onClick={handleLinkClick}>
         <ChartPie className="h-4 w-4" />
-        <span className="truncate">İstatistik &amp; Raporlama</span>
+        <span className="truncate">Canlı İstatistikler</span>
       </NavigationLink>
       
       <div className="space-y-1">
