@@ -28,7 +28,7 @@ const fetchDashboardData = async () => {
     // Fetch data from all views in parallel
     const fetchPromises = viewNames.map(async (viewName) => {
       const { data, error } = await supabase
-        .from(viewName)
+        .from(viewName as any)
         .select('*');
         
       if (error) {

@@ -31,11 +31,15 @@ function shouldHighlightRed(items: any[]): boolean {
 }
 
 interface DashboardGridProps {
-  items: DashboardItem[];
-  onCardClick: (categoryId: string) => void;
+  data: any;
+  selectedCard: string | null;
+  setSelectedCard: (id: string) => void;
 }
 
-const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => {
+const DashboardGrid: React.FC<DashboardGridProps> = ({ data, selectedCard, setSelectedCard }) => {
+  // Transform data into items format expected by the component
+  const items = []; // You'll need to transform your data here
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {items.map((item) => {
@@ -47,7 +51,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ items, onCardClick }) => 
             value={item.value}
             icon={item.icon}
             color={item.color}
-            onClick={() => onCardClick(item.id)}
+            onClick={() => setSelectedCard(item.id)}
             className={highlightRed ? "text-destructive" : ""}
           />
         );

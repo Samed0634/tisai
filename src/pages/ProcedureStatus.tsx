@@ -35,7 +35,7 @@ const ProcedureStatus = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner className="text-lg" />
       </div>
     );
   }

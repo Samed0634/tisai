@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { DashboardGrid } from "@/components/dashboard/DashboardGrid";
-import { DashboardAnalytics } from "@/components/dashboard/DashboardAnalytics";
-import { UpcomingMeetings } from "@/components/dashboard/UpcomingMeetings";
-import { RecentActivities } from "@/components/dashboard/RecentActivities";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardGrid from "@/components/dashboard/DashboardGrid";
+import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
+import UpcomingMeetings from "@/components/dashboard/UpcomingMeetings";
+import RecentActivities from "@/components/dashboard/RecentActivities";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useAuth } from "@/hooks/useAuth";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -27,7 +27,7 @@ const Dashboard = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner className="text-lg" />
       </div>
     );
   }
