@@ -1,11 +1,10 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { Download, Filter, SortAsc } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { normalizeText, fuzzySearch } from '@/utils/searchUtils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -22,6 +21,7 @@ const DownloadTis = () => {
   const [yearFilter, setYearFilter] = useState<string>('');
   const [expertFilter, setExpertFilter] = useState<string>('');
   const [sortOption, setSortOption] = useState<SortOption>('expiryDate');
+  const { toast } = useToast();
 
   // Get unique values for filter dropdowns
   const branches = useMemo(() => {
@@ -188,101 +188,104 @@ const DownloadTis = () => {
                     {isFilterOpen ? "Filtreleri Gizle" : "Filtreleri Göster"}
                   </Button>
                 </CollapsibleTrigger>
-              </Collapsible>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline"
-                    className="flex items-center gap-2"
-                  >
-                    <SortAsc className="h-4 w-4" />
-                    <span>Sırala</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => setSortOption('alphabetical')}>
-                    Alfabeye Göre
-                    {sortOption === 'alphabetical' && <span className="ml-2">✓</span>}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortOption('expiryDate')}>
-                    Yürürlük Sona Erme Tarihine Göre
-                    {sortOption === 'expiryDate' && <span className="ml-2">✓</span>}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortOption('receivedDate')}>
-                    TİS Geliş Tarihine Göre
-                    {sortOption === 'receivedDate' && <span className="ml-2">✓</span>}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              <Button 
-                onClick={handleSearch} 
-                disabled={isLoading}
-              >
-                Yenile
-              </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="outline"
+                      className="flex items-center gap-2 ml-2"
+                    >
+                      <SortAsc className="h-4 w-4" />
+                      <span>Sırala</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setSortOption('alphabetical')}>
+                      Alfabeye Göre
+                      {sortOption === 'alphabetical' && <span className="ml-2">✓</span>}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOption('expiryDate')}>
+                      Yürürlük Sona Erme Tarihine Göre
+                      {sortOption === 'expiryDate' && <span className="ml-2">✓</span>}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOption('receivedDate')}>
+                      TİS Geliş Tarihine Göre
+                      {sortOption === 'receivedDate' && <span className="ml-2">✓</span>}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
+                <Button 
+                  onClick={handleSearch} 
+                  disabled={isLoading}
+                  className="ml-2"
+                >
+                  Yenile
+                </Button>
+              </Collapsible>
             </div>
 
-            <CollapsibleContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-4 border-t">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Bağlı Olduğu Şube</label>
-                  <Select value={branchFilter} onValueChange={setBranchFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tüm Şubeler" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Tüm Şubeler</SelectItem>
-                      {branches.map(branch => (
-                        <SelectItem key={branch} value={branch}>{branch}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-1">TİS İmza Yılı</label>
-                  <Select value={yearFilter} onValueChange={setYearFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tüm Yıllar" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Tüm Yıllar</SelectItem>
-                      {years.map(year => (
-                        <SelectItem key={year} value={year}>{year}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-1">Sorumlu Uzman</label>
-                  <Select value={expertFilter} onValueChange={setExpertFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tüm Uzmanlar" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Tüm Uzmanlar</SelectItem>
-                      {experts.map(expert => (
-                        <SelectItem key={expert} value={expert}>{expert}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+            <Collapsible open={isFilterOpen} className="mt-4">
+              <CollapsibleContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Bağlı Olduğu Şube</label>
+                    <Select value={branchFilter} onValueChange={setBranchFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Tüm Şubeler" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Tüm Şubeler</SelectItem>
+                        {branches.map(branch => (
+                          <SelectItem key={branch} value={branch}>{branch}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">TİS İmza Yılı</label>
+                    <Select value={yearFilter} onValueChange={setYearFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Tüm Yıllar" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Tüm Yıllar</SelectItem>
+                        {years.map(year => (
+                          <SelectItem key={year} value={year}>{year}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Sorumlu Uzman</label>
+                    <Select value={expertFilter} onValueChange={setExpertFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Tüm Uzmanlar" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Tüm Uzmanlar</SelectItem>
+                        {experts.map(expert => (
+                          <SelectItem key={expert} value={expert}>{expert}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div className="md:col-span-3">
-                  <Button 
-                    variant="secondary" 
-                    onClick={clearFilters}
-                    size="sm"
-                    className="w-full"
-                  >
-                    Filtreleri Temizle
-                  </Button>
+                  <div className="md:col-span-3">
+                    <Button 
+                      variant="secondary" 
+                      onClick={clearFilters}
+                      size="sm"
+                      className="w-full"
+                    >
+                      Filtreleri Temizle
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CollapsibleContent>
+              </CollapsibleContent>
+            </Collapsible>
 
             <div className="space-y-4 mt-6">
               {results.map(item => (
