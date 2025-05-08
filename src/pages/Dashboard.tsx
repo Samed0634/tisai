@@ -9,6 +9,7 @@ import RecentActivities from "@/components/dashboard/RecentActivities";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useAuth } from "@/hooks/useAuth";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { recentActivities } from "@/components/dashboard/recentActivities";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Dashboard = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner className="text-lg" />
+        <LoadingSpinner />
       </div>
     );
   }
