@@ -1,23 +1,22 @@
-
 import { useState, useEffect } from "react";
 import { COLUMNS } from "@/constants/tableColumns";
 
 // Define default columns for different table types
 const DEFAULT_COLUMNS_MAP = {
-  default: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'İŞÇİ SAYISI', 'ÜYE SAYISI'],
-  grevKarariColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'GREV KARARI TARİHİ'],
-  oylamaColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'GREV OYLAMASI TARİHİ'],
-  cagriColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'ÇAĞRI TARİHİ'],
-  yetkiTespitColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YETKİ BELGESİ TEBLİĞ TARİHİ'],
-  yetkiBelgesiColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI'],
-  yerGunTespitColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI'],
-  oncedenBelirlenenColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ'],
-  ilkOturumColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'İLK OTURUM TARİHİ'],
-  muzakereSuresiColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'MÜZAKERE SÜRESİ SON TARİH'],
-  uyusmazlikColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'UYUŞMAZLIK TARİHİ'],
-  yhkGonderimColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YHK GÖNDERİM TARİHİ'],
-  imzalananTislerColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'TİS GELİŞ TARİHİ'],
-  grevYasakColumns: ['durum', 'sure_bilgisi', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI']
+  default: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'İŞÇİ SAYISI', 'ÜYE SAYISI'],
+  grevKarariColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'GREV KARARI TARİHİ'],
+  oylamaColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'GREV OYLAMASI TARİHİ'],
+  cagriColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'ÇAĞRI TARİHİ'],
+  yetkiTespitColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YETKİ BELGESİ TEBLİĞ TARİHİ'],
+  yetkiBelgesiColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI'],
+  yerGunTespitColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI'],
+  oncedenBelirlenenColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'ÖNCEDEN BELİRLENEN İLK OTURUM TARİHİ'],
+  ilkOturumColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'İLK OTURUM TARİHİ'],
+  muzakereSuresiColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'MÜZAKERE SÜRESİ SON TARİH'],
+  uyusmazlikColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'UYUŞMAZLIK TARİHİ'],
+  yhkGonderimColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'YHK GÖNDERİM TARİHİ'],
+  imzalananTislerColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI', 'TİS GELİŞ TARİHİ'],
+  grevYasakColumns: ['durum', 'SORUMLU UZMAN', 'BAĞLI OLDUĞU ŞUBE', 'İŞYERİ ADI']
 };
 
 export type TableType = keyof typeof DEFAULT_COLUMNS_MAP;
