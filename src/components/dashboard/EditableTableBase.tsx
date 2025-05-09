@@ -41,7 +41,7 @@ export const EditableTableBase: React.FC<EditableTableBaseProps> = ({
   setPageSize: externalSetPageSize,
   setCurrentPage: externalSetCurrentPage,
   pageSizeOptions = [10, 20, 30, 40, 50],
-  showHorizontalScrollbar = false,
+  showHorizontalScrollbar = true,
   showTisUploader = false,
   logActions = true
 }) => {

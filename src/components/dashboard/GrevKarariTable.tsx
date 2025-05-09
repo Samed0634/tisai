@@ -22,6 +22,7 @@ export const GrevKarariTable: React.FC<GrevKarariTableProps> = ({
       tableType="grevKarariColumns"
       editableField="GREV KARARI TARİHİ"
       title="Grev Kararı Alınması Gereken İşyerleri"
+      showHorizontalScrollbar={true}
     />
   );
 };

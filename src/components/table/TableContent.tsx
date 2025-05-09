@@ -47,7 +47,7 @@ export const TableContent: React.FC<TableContentProps> = ({
   currentPage,
   setPageSize,
   setCurrentPage,
-  showHorizontalScrollbar = false,
+  showHorizontalScrollbar = true,
   showTisUploader = false,
   logActions = true,
 }) => {

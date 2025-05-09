@@ -29,6 +29,7 @@ export const YetkiBelgesiTable: React.FC<YetkiBelgesiTableProps> = ({
       pageSize={pageSize}
       setCurrentPage={setCurrentPage}
       setPageSize={setPageSize}
+      showHorizontalScrollbar={true}
     />
   );
 };

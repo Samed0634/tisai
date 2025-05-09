@@ -22,6 +22,7 @@ export const YetkiTespitTable: React.FC<YetkiTespitTableProps> = ({
       tableType="yetkiTespitColumns"
       editableField="YETKİ BELGESİ TEBLİĞ TARİHİ"
       title="Yetki Tespiti İstenen İşyerleri"
+      showHorizontalScrollbar={true}
     />
   );
 };

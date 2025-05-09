@@ -22,6 +22,7 @@ export const GrevOylamasiTable: React.FC<GrevOylamasiTableProps> = ({
       tableType="oylamaColumns"
       editableField="GREV OYLAMASI TARİHİ"
       title="Grev Oylaması Yapılması Gereken İşyerleri"
+      showHorizontalScrollbar={true}
     />
   );
 };

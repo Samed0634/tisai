@@ -22,6 +22,7 @@ export const GrevYasakTable: React.FC<GrevYasakTableProps> = ({
       tableType="grevYasakColumns"
       editableField="GREV YASAĞI DURUMU"
       title="Grev Yasağı Olan İşyerleri"
+      showHorizontalScrollbar={true}
     />
   );
 };

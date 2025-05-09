@@ -22,6 +22,7 @@ export const IlkOturumTable: React.FC<IlkOturumTableProps> = ({
       tableType="ilkOturumColumns"
       editableField="İLK OTURUM TARİHİ"
       title="İlk Oturum Gereken İşyerleri"
+      showHorizontalScrollbar={true}
     />
   );
 };
