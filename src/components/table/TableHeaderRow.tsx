@@ -2,6 +2,7 @@
 import React from "react";
 import { TableHead, TableRow } from "@/components/ui/table";
 import { ColumnType } from "@/constants/tableColumns";
+import { cn } from "@/lib/utils";
 
 interface TableHeaderRowProps {
   reorderedColumnDefinitions: ColumnType[];
@@ -15,11 +16,23 @@ export const TableHeaderRow: React.FC<TableHeaderRowProps> = ({
   return (
     <TableRow>
       {showTisUploader && (
-        <TableHead className="text-[#ea384c] sticky left-0 bg-background z-10 text-xs">TİS Yükleme</TableHead>
+        <TableHead className="action-column sticky left-0 bg-[#f5f7fa] z-10 text-xs font-medium text-[#475569]">
+          TİS Yükleme
+        </TableHead>
       )}
-      <TableHead className={`text-[#ea384c] ${showTisUploader ? '' : 'sticky left-0'} bg-background z-10 text-xs`}>İşlem</TableHead>
+      <TableHead className={cn(
+        "action-column z-10 text-xs font-medium text-[#475569]",
+        !showTisUploader && "sticky left-0 bg-[#f5f7fa]"
+      )}>
+        İşlem
+      </TableHead>
       {reorderedColumnDefinitions.map(column => (
-        <TableHead key={column.id} className="text-xs">{column.title}</TableHead>
+        <TableHead 
+          key={column.id} 
+          className="text-xs font-medium text-[#475569]"
+        >
+          {column.title}
+        </TableHead>
       ))}
     </TableRow>
   );
