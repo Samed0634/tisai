@@ -15,7 +15,6 @@ import { YetkiBelgesiTable } from "@/components/dashboard/YetkiBelgesiTable";
 import { YerGunTespitTable } from "@/components/dashboard/YerGunTespitTable";
 import { OncedenBelirlenenTable } from "@/components/dashboard/OncedenBelirlenenTable";
 import { IlkOturumTable } from "@/components/dashboard/IlkOturumTable";
-import { MuzakereSuresiTable } from "@/components/dashboard/MuzakereSuresiTable";
 import { UyusmazlikTable } from "@/components/dashboard/UyusmazlikTable";
 import { YhkGonderimTable } from "@/components/dashboard/YhkGonderimTable";
 import { ImzalananTislerTable } from "@/components/dashboard/ImzalananTislerTable";
@@ -79,7 +78,7 @@ const Dashboard = () => {
     const category = allDashboardData.find(item => item.id === categoryId);
     if (categoryId === 'grevKarari' || categoryId === 'grevOylamasi' || categoryId === 'cagri' || 
         categoryId === 'yetkiTespit' || categoryId === 'yetkiBelgesi' || categoryId === 'yerGunTespit' || 
-        categoryId === 'oncedenBelirlenen' || categoryId === 'ilkOturum' || categoryId === 'muzakereSuresi' || 
+        categoryId === 'oncedenBelirlenen' || categoryId === 'ilkOturum' || 
         categoryId === 'uyusmazlik' || categoryId === 'yhk' || categoryId === 'imzalananTisler' || 
         categoryId === 'grevYasagi') {
       setSelectedCategory(categoryId);
@@ -118,7 +117,6 @@ const Dashboard = () => {
   const yerGunTespitData = filterItemsBySearchTerm(getListItems('yer_ve_gün_tespit_tarihli_view'));
   const oncedenBelirlenenData = filterItemsBySearchTerm(getListItems('önceden_belirlenen_ilk_oturum_view'));
   const ilkOturumData = filterItemsBySearchTerm(getListItems('ilk_oturum_tutulması_gereken_view'));
-  const muzakereSuresiData = filterItemsBySearchTerm(getListItems('müzakere_süresi_dolan_view'));
   const uyusmazlikData = filterItemsBySearchTerm(getListItems('uyuşmazlık_bildirimi_yapılması_gereken_view'));
   const yhkGonderimData = filterItemsBySearchTerm(getListItems('yhk_gönderim_gereken_view'));
   const imzalananTislerData = filterItemsBySearchTerm(getListItems('imzalanan_tisler_view'));
@@ -199,14 +197,6 @@ const Dashboard = () => {
           {selectedCategory === 'ilkOturum' && (
             <IlkOturumTable 
               data={ilkOturumData} 
-              isLoading={isLoading} 
-              refetch={refetch} 
-            />
-          )}
-
-          {selectedCategory === 'muzakereSuresi' && (
-            <MuzakereSuresiTable 
-              data={muzakereSuresiData} 
               isLoading={isLoading} 
               refetch={refetch} 
             />

@@ -77,15 +77,6 @@ const fetchDashboardData = async () => {
       throw new Error(`Error fetching ilk oturum data: ${ilkOturumError.message}`);
     }
     
-    // Fetch data for müzakere süresi
-    const { data: muzakereSuresiData, error: muzakereSuresiError } = await supabase
-      .from('müzakere_süresi_dolan_view')
-      .select('*');
-    
-    if (muzakereSuresiError) {
-      throw new Error(`Error fetching müzakere süresi data: ${muzakereSuresiError.message}`);
-    }
-    
     // Fetch data for uyuşmazlık
     const { data: uyusmazlikData, error: uyusmazlikError } = await supabase
       .from('uyuşmazlık_bildirimi_yapılması_gereken_view')
@@ -130,7 +121,6 @@ const fetchDashboardData = async () => {
       yer_ve_gün_tespit_tarihli_view: yerGunTespitData || [],
       önceden_belirlenen_ilk_oturum_view: oncedenBelirlenenData || [],
       ilk_oturum_tutulması_gereken_view: ilkOturumData || [],
-      müzakere_süresi_dolan_view: muzakereSuresiData || [],
       uyuşmazlık_bildirimi_yapılması_gereken_view: uyusmazlikData || [],
       grev_kararı_alınması_gereken_view: grevKarariData || [],
       grev_oylaması_yapılması_gereken_view: grevOylamasiData || [],

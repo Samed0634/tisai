@@ -53,14 +53,6 @@ export const getDashboardData = (): DashboardItem[] => {
       dataSource: "ilk_oturum_tutulması_gereken_view"
     },
     {
-      id: "muzakereSuresi",
-      title: "Müzakere Süresi Dolan İşyerleri",
-      value: 0,
-      icon: Briefcase,
-      color: "#FFA500", // Orange
-      dataSource: "müzakere_süresi_dolan_view"
-    },
-    {
       id: "uyusmazlik",
       title: "Uyuşmazlık Gereken İşyerleri",
       value: 0,
