@@ -1,17 +1,9 @@
 
 import React from "react";
-import { TablePageSizeSelector } from "./TablePageSizeSelector";
-import { TablePaginationControls } from "./TablePaginationControls";
-import { TableSummaryInfo } from "./TableSummaryInfo";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { TableSummaryInfo } from "./TableSummaryInfo";
+import { TablePageSizeSelector } from "./TablePageSizeSelector";
 
 interface TablePaginationProps {
   currentPage: number;
@@ -22,8 +14,6 @@ interface TablePaginationProps {
   onPageSizeChange: (value: string) => void;
   onPreviousPage: () => void;
   onNextPage: () => void;
-  setPageSize?: (size: number) => void;
-  setCurrentPage?: (page: number) => void;
 }
 
 export const TablePagination: React.FC<TablePaginationProps> = ({
@@ -36,124 +26,139 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   onPreviousPage,
   onNextPage,
 }) => {
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    
+    // Logic for page number range
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    
+    // Adjust the range if we're near the end
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
     }
     
-    // Always show first, last, current and some pages around current
-    const pages = [1];
-    
-    let startPage = Math.max(2, currentPage - 2);
-    let endPage = Math.min(totalPages - 1, currentPage + 2);
-    
-    // Adjust to show 5 pages in the middle section
-    if (startPage <= 3) {
-      startPage = 2;
-      endPage = Math.min(totalPages - 1, 6);
+    // First page
+    if (startPage > 1) {
+      pageNumbers.push(
+        <Button
+          key={1}
+          variant={currentPage === 1 ? "default" : "outline"}
+          size="sm"
+          onClick={() => onPageChange(1)}
+          className="h-8 w-8 p-0"
+        >
+          1
+        </Button>
+      );
+      
+      // Show ellipsis if there's a gap
+      if (startPage > 2) {
+        pageNumbers.push(
+          <div key="ellipsis1" className="px-2 py-1 text-sm text-muted-foreground">
+            ...
+          </div>
+        );
+      }
     }
     
-    if (endPage >= totalPages - 2) {
-      endPage = totalPages - 1;
-      startPage = Math.max(2, totalPages - 5);
-    }
-    
-    // Add ellipsis if needed
-    if (startPage > 2) {
-      pages.push(-1); // Use -1 as indicator for ellipsis
-    }
-    
-    // Add middle pages
+    // Numbered pages
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pageNumbers.push(
+        <Button
+          key={i}
+          variant={currentPage === i ? "default" : "outline"}
+          size="sm"
+          onClick={() => onPageChange(i)}
+          className="h-8 w-8 p-0"
+        >
+          {i}
+        </Button>
+      );
     }
     
-    // Add ellipsis if needed
-    if (endPage < totalPages - 1) {
-      pages.push(-2); // Use -2 as indicator for ellipsis (to have unique keys)
+    // Last page
+    if (endPage < totalPages) {
+      // Show ellipsis if there's a gap
+      if (endPage < totalPages - 1) {
+        pageNumbers.push(
+          <div key="ellipsis2" className="px-2 py-1 text-sm text-muted-foreground">
+            ...
+          </div>
+        );
+      }
+      
+      pageNumbers.push(
+        <Button
+          key={totalPages}
+          variant={currentPage === totalPages ? "default" : "outline"}
+          size="sm"
+          onClick={() => onPageChange(totalPages)}
+          className="h-8 w-8 p-0"
+        >
+          {totalPages}
+        </Button>
+      );
     }
     
-    // Add last page
-    if (totalPages > 1) {
-      pages.push(totalPages);
-    }
-    
-    return pages;
+    return pageNumbers;
   };
 
-  const pageNumbers = getPageNumbers();
-
+  // Define onPageChange function that was missing
+  const onPageChange = (page: number) => {
+    // Navigate directly to the specified page
+    if (page < currentPage) {
+      onPreviousPage();
+    } else if (page > currentPage) {
+      onNextPage();
+    }
+  };
+  
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-2 text-sm border-t mt-1 pt-4">
-      <div className="flex items-center gap-2">
-        <span className="text-gray-600">Sayfa başına:</span>
-        <Select value={pageSize.toString()} onValueChange={onPageSizeChange}>
-          <SelectTrigger className="w-[70px] h-8">
-            <SelectValue placeholder={pageSize} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="5">5</SelectItem>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="20">20</SelectItem>
-            <SelectItem value="50">50</SelectItem>
-            <SelectItem value="100">100</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
+      <TableSummaryInfo 
+        pageSize={pageSize}
+        totalItems={totalItems}
+        startIndex={startIndex}
+        endIndex={Math.min(startIndex + pageSize, totalItems)}
+      />
       
-      <div className="flex items-center">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onPreviousPage()}
-          disabled={currentPage === 1}
-          className="h-8 w-8 rounded-r-none"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
+      <div className="flex items-center gap-2">
+        <TablePageSizeSelector
+          pageSize={pageSize}
+          onPageSizeChange={onPageSizeChange}
+        />
         
         <div className="flex items-center">
-          {pageNumbers.map((page, index) => {
-            if (page < 0) {
-              // Render ellipsis
-              return (
-                <div
-                  key={`ellipsis-${index}`}
-                  className="h-8 w-8 flex items-center justify-center text-gray-500"
-                >
-                  ...
-                </div>
-              );
-            }
-            
-            return (
-              <Button
-                key={`page-${page}`}
-                variant={currentPage === page ? "default" : "outline"}
-                size="sm"
-                onClick={() => currentPage !== page && setCurrentPage && setCurrentPage(page)}
-                className="h-8 w-8 rounded-none border-l-0"
-              >
-                {page}
-              </Button>
-            );
-          })}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onPreviousPage}
+            disabled={currentPage === 1}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          
+          <div className="hidden sm:flex items-center mx-2 space-x-1">
+            {renderPageNumbers()}
+          </div>
+          
+          <div className="sm:hidden mx-2 text-sm">
+            <span className="font-medium">{currentPage}</span>
+            <span className="text-muted-foreground"> / {totalPages}</span>
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onNextPage}
+            disabled={currentPage === totalPages}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
-        
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onNextPage()}
-          disabled={currentPage === totalPages}
-          className="h-8 w-8 rounded-l-none border-l-0"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-      
-      <div className="text-gray-600">
-        {startIndex + 1}-{Math.min(startIndex + pageSize, totalItems)} / {totalItems} kayıt
       </div>
     </div>
   );

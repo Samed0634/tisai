@@ -4,6 +4,9 @@ import {
   Table,
   TableHeader,
   TableBody as TableBodyUI,
+  TableRow,
+  TableHead,
+  TableCell
 } from "@/components/ui/table";
 import { TableBody } from "./TableBody";
 import { TableHeader as TableHeaderComponent } from "./TableHeader";
