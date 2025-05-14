@@ -1,20 +1,20 @@
 
 import React from "react";
-import { Table } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableBody as TableBodyUI,
+} from "@/components/ui/table";
 import { TableBody } from "./TableBody";
 import { TableHeader as TableHeaderComponent } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Workplace } from "@/types/workplace";
 import { COLUMNS } from "@/constants/tableColumns";
+import { TableHeaderRow } from "./TableHeaderRow";
+import { useTableColumnProcessor } from "@/hooks/useTableColumnProcessor";
 import { useTableEdit } from "@/hooks/useTableEdit";
 import { useTableColumns } from "@/hooks/useTableColumns";
-import { FilterControls } from "./FilterControls";
-import { cn } from "@/lib/utils";
-import { useTableColumnProcessor } from "@/hooks/useTableColumnProcessor";
-import { useTableFiltering } from "@/hooks/useTableFiltering";
-import { useTableSorting } from "@/hooks/useTableSorting";
-import { TableHeaderSection } from "./TableHeaderSection";
 
 interface TableContentProps {
   data: Workplace[];
@@ -66,16 +66,10 @@ export const TableContent: React.FC<TableContentProps> = ({
   // Process columns for special cases
   const processedColumns = useTableColumnProcessor(visibleColumnDefinitions, visibleColumns);
   
-  // Filtering logic
-  const { filters, setFilters, filterOptions, filteredData, resetFilters } = useTableFiltering(data);
-  
-  // Sorting logic
-  const { sortConfig, requestSort, sortedData } = useTableSorting(filteredData);
-
   // Pagination calculations
-  const totalPages = Math.ceil(sortedData.length / pageSize);
+  const totalPages = Math.ceil(data.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedData = sortedData.slice(startIndex, startIndex + pageSize);
+  const paginatedData = data.slice(startIndex, startIndex + pageSize);
 
   const handlePageSizeChange = (value: string) => {
     setPageSize(Number(value));
@@ -107,50 +101,43 @@ export const TableContent: React.FC<TableContentProps> = ({
         onPageSizeChange={handlePageSizeChange}
       />
       
-      <FilterControls
-        filters={filters}
-        setFilters={setFilters}
-        filterOptions={filterOptions}
-        resetFilters={resetFilters}
-        dataCount={sortedData.length}
-        totalCount={data.length}
-      />
-      
-      <div className="border rounded-md overflow-hidden shadow-sm">
+      <div className="border rounded-md overflow-hidden">
         <ScrollArea className="w-full" showTopScrollbar={showHorizontalScrollbar} showBottomScrollbar={showHorizontalScrollbar}>
           <div className="min-w-max">
             <Table className="text-xs">
-              <TableHeaderSection 
-                processedColumns={processedColumns}
-                sortConfig={sortConfig}
-                requestSort={requestSort}
-                showTisUploader={showTisUploader}
-              />
-              <TableBody 
-                data={paginatedData}
-                visibleColumnDefinitions={processedColumns}
-                editingId={editingId}
-                editData={editData}
-                handleEdit={handleEdit}
-                handleCancel={handleCancel}
-                handleChange={handleChange}
-                handleSave={handleSave}
-                editableField={editableField}
-                showTisUploader={showTisUploader}
-                refetch={refetch} 
-                logActions={logActions}
-              />
+              <TableHeader>
+                <TableHeaderRow 
+                  reorderedColumnDefinitions={processedColumns}
+                  showTisUploader={showTisUploader}
+                />
+              </TableHeader>
+              <TableBodyUI>
+                <TableBody 
+                  data={paginatedData}
+                  visibleColumnDefinitions={processedColumns}
+                  editingId={editingId}
+                  editData={editData}
+                  handleEdit={handleEdit}
+                  handleCancel={handleCancel}
+                  handleChange={handleChange}
+                  handleSave={handleSave}
+                  editableField={editableField}
+                  showTisUploader={showTisUploader}
+                  refetch={refetch} 
+                  logActions={logActions}
+                />
+              </TableBodyUI>
             </Table>
           </div>
         </ScrollArea>
       </div>
 
-      {sortedData.length > 0 && (
+      {data.length > 0 && (
         <TablePagination
           currentPage={currentPage}
           totalPages={totalPages}
           pageSize={pageSize}
-          totalItems={sortedData.length}
+          totalItems={data.length}
           startIndex={startIndex}
           onPageSizeChange={handlePageSizeChange}
           onPreviousPage={handlePreviousPage}

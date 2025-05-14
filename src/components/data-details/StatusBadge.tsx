@@ -1,44 +1,47 @@
 
-import React from "react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface StatusBadgeProps {
   status: string;
-  className?: string;
 }
 
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className }) => {
-  const getStatusStyle = (status: string) => {
-    const lowercaseStatus = status.toLowerCase();
+export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+  const getStatusClassName = () => {
+    if (!status) return "bg-gray-100 text-gray-800";
     
-    if (lowercaseStatus.includes("bekli") || lowercaseStatus === "bekliyor") {
-      return "bg-[#FEF7CD] text-amber-800 border-amber-200";
+    switch(status.toUpperCase()) {
+      case "YETKİ BELGESİ BEKLENİYOR":
+        return "bg-purple-100 text-purple-800";
+      case "ÇAĞRI YAPILMASI BEKLENİYOR":
+        return "bg-cyan-100 text-cyan-800";
+      case "İLK OTURUM BEKLENİYOR":
+        return "bg-blue-100 text-blue-800";
+      case "MÜZAKERE SÜRESİNDE":
+        return "bg-orange-100 text-orange-800";
+      case "UYUŞMAZLIK İÇİN BEKLENİYOR":
+        return "bg-red-100 text-red-800";
+      case "ARABULUCU RAPORU BEKLENİYOR":
+        return "bg-yellow-100 text-yellow-800";
+      case "GREV KARARI AŞAMASINDA":
+        return "bg-amber-100 text-amber-800";
+      case "GREV OYLAMASI BEKLENİYOR":
+        return "bg-sky-100 text-sky-800";
+      case "YHK'YA GÖNDERİLMESİ BEKLENİYOR":
+        return "bg-emerald-100 text-emerald-800";
+      case "TİS İMZALANDI":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
-    
-    if (lowercaseStatus.includes("tamam") || lowercaseStatus.includes("yapilfded") || lowercaseStatus === "tamamlandı") {
-      return "bg-[#dcfce7] text-green-800 border-green-200";
-    }
-    
-    if (lowercaseStatus.includes("geç") || lowercaseStatus.includes("sür") || lowercaseStatus.includes("iptal")) {
-      return "bg-[#fee2e2] text-red-800 border-red-200";
-    }
-    
-    if (lowercaseStatus.includes("devam") || lowercaseStatus.includes("sürüyor")) {
-      return "bg-[#e0f2fe] text-blue-800 border-blue-200";
-    }
-    
-    return "bg-gray-100 text-gray-800 border-gray-200";
   };
-  
+
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium border",
-        getStatusStyle(status),
-        className
-      )}
+    <Badge 
+      variant="outline" 
+      className={cn("px-2 py-1 font-medium", getStatusClassName())}
     >
-      {status}
-    </span>
+      {status || "Belirsiz"}
+    </Badge>
   );
 };
