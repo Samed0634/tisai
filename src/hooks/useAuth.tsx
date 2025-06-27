@@ -34,6 +34,7 @@ interface AuthState {
 
 interface AuthActions {
   signIn: (data: LoginData) => Promise<{ success: boolean; error?: string }>;
+  signUp: (data: LoginData) => Promise<{ success: boolean; error?: string }>;
   signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   signInWithMagicLink: (email: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
@@ -133,6 +134,35 @@ export const useAuth = (): AuthState & AuthActions => {
     }
   }, []);
 
+  // Sign up with email/password
+  const signUp = useCallback(async (data: LoginData) => {
+    try {
+      const validatedData = loginSchema.parse(data);
+      
+      setState(prev => ({ ...prev, loading: true, error: null }));
+
+      const { error } = await supabase.auth.signUp({
+        email: validatedData.email,
+        password: validatedData.password,
+      });
+
+      if (error) {
+        setState(prev => ({ ...prev, error: error.message, loading: false }));
+        return { success: false, error: error.message };
+      }
+
+      setState(prev => ({ ...prev, loading: false }));
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error instanceof z.ZodError 
+        ? error.errors[0].message 
+        : 'Kayıt olunamadı';
+      
+      setState(prev => ({ ...prev, error: errorMessage, loading: false }));
+      return { success: false, error: errorMessage };
+    }
+  }, []);
+
   // Sign in with Google
   const signInWithGoogle = useCallback(async () => {
     try {
@@ -221,6 +251,7 @@ export const useAuth = (): AuthState & AuthActions => {
   return {
     ...state,
     signIn,
+    signUp,
     signInWithGoogle,
     signInWithMagicLink,
     signOut,
