@@ -12,7 +12,7 @@ import { z } from 'zod';
 const emailSchema = z.string().email('Geçerli bir email adresi giriniz');
 
 const SecureLogin: React.FC = () => {
-  const { signIn, signInWithGoogle, signInWithMagicLink, loading, error, clearError } = useAuth();
+  const { signIn, signUp, signInWithGoogle, signInWithMagicLink, loading, error, clearError } = useAuth();
   
   const [formData, setFormData] = useState<LoginData>({
     email: '',
@@ -23,6 +23,7 @@ const SecureLogin: React.FC = () => {
   const [magicLinkEmail, setMagicLinkEmail] = useState('');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [formErrors, setFormErrors] = useState<Partial<LoginData>>({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Validate form
   const validateForm = (): boolean => {
@@ -57,9 +58,14 @@ const SecureLogin: React.FC = () => {
     if (error) {
       clearError();
     }
+
+    // Clear success message
+    if (successMessage) {
+      setSuccessMessage('');
+    }
   };
 
-  // Handle regular login
+  // Handle login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -71,6 +77,22 @@ const SecureLogin: React.FC = () => {
     
     if (!result.success) {
       console.error('Login failed:', result.error);
+    }
+  };
+
+  // Handle register
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    const result = await signUp(formData);
+    
+    if (result.success) {
+      setSuccessMessage('Kayıt başarılı! Email adresinizi kontrol edin ve onay linkine tıklayın.');
+      setFormData({ email: '', password: '' });
     }
   };
 
@@ -113,21 +135,22 @@ const SecureLogin: React.FC = () => {
         </CardHeader>
         
         <CardContent>
-          <Tabs defaultValue="password" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="password">Şifre ile</TabsTrigger>
+          <Tabs defaultValue="login" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="login">Giriş</TabsTrigger>
+              <TabsTrigger value="register">Kayıt Ol</TabsTrigger>
               <TabsTrigger value="magic">Magic Link</TabsTrigger>
             </TabsList>
             
-            {/* Password Login */}
-            <TabsContent value="password" className="space-y-4">
+            {/* Login Tab */}
+            <TabsContent value="login" className="space-y-4">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="login-email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="email"
+                      id="login-email"
                       type="email"
                       placeholder="ornek@email.com"
                       value={formData.email}
@@ -145,11 +168,11 @@ const SecureLogin: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Şifre</Label>
+                  <Label htmlFor="login-password">Şifre</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="password"
+                      id="login-password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Şifrenizi giriniz"
                       value={formData.password}
@@ -228,7 +251,88 @@ const SecureLogin: React.FC = () => {
               </Button>
             </TabsContent>
 
-            {/* Magic Link Login */}
+            {/* Register Tab */}
+            <TabsContent value="register" className="space-y-4">
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="register-email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="register-email"
+                      type="email"
+                      placeholder="ornek@email.com"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className={`pl-10 ${formErrors.email ? 'border-red-500' : ''}`}
+                      disabled={loading}
+                    />
+                  </div>
+                  {formErrors.email && (
+                    <p className="text-sm text-red-500 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      {formErrors.email}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="register-password">Şifre</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="register-password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Güçlü bir şifre oluşturun (min 8 karakter)"
+                      value={formData.password}
+                      onChange={(e) => handleInputChange('password', e.target.value)}
+                      className={`pl-10 pr-10 ${formErrors.password ? 'border-red-500' : ''}`}
+                      disabled={loading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
+                      disabled={loading}
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </button>
+                  </div>
+                  {formErrors.password && (
+                    <p className="text-sm text-red-500 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      {formErrors.password}
+                    </p>
+                  )}
+                </div>
+
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                {successMessage && (
+                  <Alert className="border-green-200 bg-green-50">
+                    <AlertCircle className="h-4 w-4 text-green-600" />
+                    <AlertDescription className="text-green-800">
+                      {successMessage}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={loading}
+                >
+                  {loading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
+                </Button>
+              </form>
+            </TabsContent>
+
+            {/* Magic Link Tab */}
             <TabsContent value="magic" className="space-y-4">
               {!magicLinkSent ? (
                 <form onSubmit={handleMagicLink} className="space-y-4">
@@ -269,16 +373,10 @@ const SecureLogin: React.FC = () => {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Hesabınız yok mu?{' '}
-              <a href="/register" className="text-blue-600 hover:underline">
-                Kayıt olun
-              </a>
-            </p>
-            <p className="text-sm text-gray-600 mt-2">
-              Şifrenizi mi unuttunuz?{' '}
-              <a href="/forgot-password" className="text-blue-600 hover:underline">
-                Sıfırlayın
-              </a>
+              Sorun mu yaşıyorsunuz?{' '}
+              <button className="text-blue-600 hover:underline">
+                Yardım alın
+              </button>
             </p>
           </div>
         </CardContent>
