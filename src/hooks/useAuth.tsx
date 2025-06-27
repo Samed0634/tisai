@@ -278,7 +278,18 @@ export const useAuth = (): AuthState & AuthActions => {
   }, []);
 
   // Reset password
-  const resetPassword = useCallback(async (email: string) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo:
+const resetPassword = useCallback(async (email: string) => {
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: 'Şifre sıfırlama e-postası gönderilemedi' };
+  }
+}, []);

@@ -418,8 +418,17 @@ export const MFAVerificationModal: React.FC<MFAVerificationModalProps> = ({
         <CardContent className="space-y-4">
           <div>
             <Label htmlFor="mfa-code">Doğrulama Kodu</Label>
-            <Input
-              id="mfa-code"
-              type="text"
-              placeholder="123456"
-              value={co
+<Input
+  id="mfa-code"
+  type="text"
+  placeholder="123456"
+  value={code}
+  onChange={(e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setCode(value);
+    setError('');
+  }}
+  className={`text-center text-2xl tracking-widest ${error ? 'border-red-500' : ''}`}
+  maxLength={6}
+  autoFocus
+/>
